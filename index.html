@@ -34,7 +34,6 @@
     --paper:#F7F4EC; --paper-2:#FDFCF8; --paper-deep:#EFEAE0;
     --ink:#22252B; --ink-soft:#6A6E77; --line:#DDD6C8;
     --shu:#CE3A24; --shu-deep:#B02F1B;
-    --indigo:#2C4A9E; --indigo-deep:#233C81;
     --green:#06C755; --green-deep:#05A94A;
     --f-min:'Shippori Mincho B1',serif;
     --f-body:'Zen Kaku Gothic New',sans-serif;
@@ -59,8 +58,12 @@
 
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
 
-  /* ---- フォーム ---- */
+  /* ---- フォーム(診断申込書) ---- */
   .card{background:var(--paper-2);border:1.5px solid var(--line);border-radius:10px;padding:24px 20px;margin-bottom:20px;}
+  .sheet-form{position:relative;border-radius:4px;overflow:hidden;padding-top:30px;}
+  .sheet-form::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 7px,transparent 7px 14px);}
+  .form-head{margin-bottom:20px;}
   .field{margin-bottom:22px;}
   .field:last-of-type{margin-bottom:8px;}
   .lbl{display:flex;align-items:baseline;gap:8px;font-size:13.5px;font-weight:700;margin-bottom:9px;}
@@ -69,14 +72,14 @@
   .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .seg button{min-height:48px;padding:10px 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:14px;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .1s;}
   .seg button:active{transform:scale(.97);}
-  .seg button.on{background:var(--indigo);border-color:var(--indigo);color:#fff;font-weight:700;}
+  .seg button.on{background:var(--ink);border-color:var(--ink);color:var(--paper-2);font-weight:700;}
   .seg button.wide{grid-column:1/-1;}
   .selbox{position:relative;}
   select{width:100%;min-height:50px;padding:12px 40px 12px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:16px;font-family:inherit;color:var(--ink);background:var(--paper-2);appearance:none;-webkit-appearance:none;cursor:pointer;}
   .selbox::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);transform:translateY(-70%) rotate(45deg);pointer-events:none;}
-  .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;}
-  .cta:active{transform:scale(.985);background:var(--indigo-deep);}
-  .cta:disabled{background:#9AA7CB;cursor:not-allowed;}
+  .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--shu);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;}
+  .cta:active{transform:scale(.985);background:var(--shu-deep);}
+  .cta:disabled{background:#DCA79C;cursor:not-allowed;}
 
   /* ---- 診断書（シグネチャー） ---- */
   #result{scroll-margin-top:12px;}
@@ -102,6 +105,7 @@
     background:repeating-linear-gradient(90deg,transparent 0 24px,rgba(34,37,43,.14) 24px 25px);}
   .gauge>i{display:block;height:100%;background:var(--shu);width:0;transition:width 1.2s ease;}
   .vmsg{font-size:13px;color:var(--ink-soft);margin-top:12px;padding-right:78px;}
+  .basis{font-size:11px;color:var(--ink-soft);margin-top:10px;padding-right:78px;line-height:1.6;}
   .stamp{position:absolute;right:18px;bottom:16px;width:76px;height:76px;border:3px solid var(--shu);border-radius:50%;
     display:flex;align-items:center;justify-content:center;text-align:center;
     font-family:var(--f-min);font-weight:800;font-size:19px;line-height:1.25;color:var(--shu);
@@ -137,13 +141,13 @@
   .lineshare:active{background:var(--green-deep);}
   .copyshare{background:var(--paper-2);color:var(--ink);border:1.5px solid var(--line);font-weight:700;}
   .copyshare:active{background:var(--paper-deep);}
-  .copyshare.copied{border-color:var(--indigo);color:var(--indigo);}
+  .copyshare.copied{border-color:var(--shu);color:var(--shu);}
   @media (min-width:480px){ .sharerow{flex-direction:row;} }
 
   .note{font-size:11.5px;color:var(--ink-soft);margin-top:22px;line-height:1.8;}
   .hidden{display:none;}
   .footer{text-align:center;padding:20px 16px calc(36px + env(safe-area-inset-bottom));font-size:12px;color:var(--ink-soft);}
-  .footer a{color:var(--indigo);text-decoration:none;}
+  .footer a{color:var(--shu);text-decoration:none;}
   .footer a:hover{text-decoration:underline;}
 
   @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
@@ -173,7 +177,11 @@
 
   <noscript><div class="card">診断の実行にはJavaScriptが必要です。Safari や Chrome などのブラウザで開いてください。</div></noscript>
 
-  <section class="card" aria-label="診断フォーム">
+  <section class="card sheet-form" aria-label="診断フォーム">
+    <div class="sheet-head form-head">
+      <span class="sheet-title">診断申込書</span>
+      <span class="sheet-date">記入欄 4項目</span>
+    </div>
     <div class="field">
       <span class="lbl"><span class="no">Q1</span>年代</span>
       <div class="seg cols4" id="age">
@@ -247,6 +255,7 @@
       </dl>
       <div class="gauge"><i id="gauge"></i></div>
       <p class="vmsg" id="msg"></p>
+      <p class="basis" id="basis"></p>
       <p class="sheet-imprint">SALARY CHECK ── clawtech6477.github.io/nenshu-shindan</p>
       <span class="stamp" id="stamp" aria-hidden="true">診断<br>済</span>
     </div>
@@ -272,7 +281,7 @@
 
     <p class="note">
       ※本ページはアフィリエイト広告(PR)を含みます。<br>
-      ※推定年収は年代・業種等をもとにした統計的な参考値であり、実際の年収を保証するものではありません。
+      ※推定年収は国税庁「民間給与実態統計調査」の全産業平均を基準に、年代・業種・志向の傾向係数を掛け合わせた参考値です。業種・職種別の詳細統計は公開資料で数値が確認できなかったため係数は一般的な相対傾向による推定であり、実際の年収を保証するものではありません。
     </p>
   </section>
 </main>
@@ -312,8 +321,15 @@ const AFFILIATE_URLS = {
 // ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
 function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
 
-// ===== 業種別 基準年収 =====
-const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455,maker:440,service:360,childcare:340,other:400};
+// ===== 基準年収 =====
+// 全産業平均478万円は国税庁「民間給与実態統計調査」令和6年分を直接確認して採用
+// (該当箇所: 「１年を通じて勤務した給与所得者の平均給与は478万円」)。
+// 業種別・職種別の内訳は同調査・賃金構造基本統計調査ともに図(グラフ画像)のみで
+// 数値を含む表が確認できなかったため、業種ごとの係数は一般的な相対傾向による
+// 推定値であることを診断書に明記する(競合監査で「根拠データの薄さ」を
+// 指摘されたため、無根拠に見せない=不確かな精度を装わないことを優先)。
+const ALL_INDUSTRY_AVG = 478; // 国税庁 民間給与実態統計調査 令和6年分・全産業平均
+const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455,maker:440,service:360,childcare:340,other:478};
 // ===== 転職サイトDB(タグ+単価。affiはAFFILIATE_URLS参照) =====
 // 全件、A8.netで提携申請済みの実在プログラム。payoutは実際の成果報酬額。
 // R4CAREER(東海3県限定・地域を質問していないため出せない)と
@@ -414,6 +430,9 @@ document.getElementById("go").onclick=()=>{
       : diff>=150 ? "現年収と適正年収の差が大きめ。行動すれば上げられる余地があります。"
       : "着実に年収を伸ばせるタイプ。相性の良いサービスから始めましょう。";
   }
+
+  document.getElementById("basis").textContent =
+    `算出根拠: 全産業平均${ALL_INDUSTRY_AVG}万円(国税庁「民間給与実態統計調査」令和6年分)を基準に、業種・年代・志向の傾向係数を掛けた推定値`;
 
   // 朱印スタンプ（カウントアップ完了後に押される）
   const stamp = document.getElementById("stamp");
