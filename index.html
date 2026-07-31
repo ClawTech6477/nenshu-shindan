@@ -125,7 +125,7 @@
 
   /* ---- 転職サービス推薦状 ---- */
   .sec-t{font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 4px;padding-left:12px;border-left:4px solid var(--shu);}
-  .sec-fit{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);margin:0 0 16px 16px;letter-spacing:.03em;}
+  .sec-fit{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);margin:0 0 16px 16px;letter-spacing:.03em;line-height:1.7;}
   .sec-fit b{color:var(--shu);font-weight:400;}
 
   .site{position:relative;display:block;padding:20px 18px 18px;border:1.5px solid var(--line);border-radius:4px;margin-bottom:14px;text-decoration:none;color:inherit;background:var(--paper-2);overflow:hidden;}
@@ -314,6 +314,10 @@
   <p>運営: <a href="https://clawtech6477.github.io/clawtech-lp/" target="_blank" rel="noopener">ClawTech（クロウテック）</a></p>
 </footer>
 
+<!-- アフィリエイト計測用トラッキングピクセル(提携承認済み分) -->
+<img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE" alt="" style="position:absolute;">
+
 <script>
 // ================================================================
 // 【URL設定】ここを実URLに差し替えてください
@@ -326,7 +330,7 @@ const LINE_URL = "#line"; // ← LINE公式アカウントの友だち追加URL�
 const AFFILIATE_URLS = {
   recruit:     "#recruit",     // s00000011454002 リクルートエージェント(新規WEBエントリー後初回受付¥2,000)
   levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
-  technogo:    "#technogo",    // s00000024757003 TechGo(新規無料面談¥50,000)
+  technogo:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY", // s00000024757003 TechGo 提携承認済み(2026/08/01)
   techgate:    "#techgate",    // s00000025047005 テックゲートエキスパート(新規面談完了¥54,000)
   meiko:       "#meiko",       // s00000026573001 明光キャリアパートナーズエンジニア転職(新規面談設定¥78,000)
   sap:         "#sap",         // s00000026342002 SAPテンショク(新規転職相談¥15,000)
@@ -337,7 +341,7 @@ const AFFILIATE_URLS = {
   buildjob:    "#buildjob",    // s00000024757004 ビルドジョブ(新規無料面談¥50,000)
   rsg:         "#rsg",         // s00000021947004 RSG不動産転職(新規カウンセリング¥3,000)
   keirijobs:   "#keirijobs",   // s00000026359002 経理Jobs(新規転職支援申込¥10,000)
-  twinpro:     "#twinpro",     // s00000024757002 ツインプロ(新規無料面談¥52,500)
+  twinpro:     "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE", // s00000024757002 ツインプロ 提携承認済み(2026/07/31)
   nursesenka:  "#nursesenka",  // s00000001248024 ナース専科 転職(新規申込¥26,000)
   pharmastaff: "#pharmastaff", // s00000010261001 ファルマスタッフ(新規会員登録¥65,000)
 };
@@ -475,12 +479,17 @@ document.getElementById("go").onclick=()=>{
   //    除外が単価の強さで覆らないようにする(高単価だが方向性が違う案件が
   //    1位に出てしまうミスマッチを防ぐため)。
   const isHigh = cur>=600;
+  const isReady = s=>!String(s.affi).startsWith("#");
   const fitsCore = s=>
     s.tags.dir.includes(st.dir) &&
     (s.tags.job.includes("*")||s.tags.job.includes(st.job)) &&
     s.tags.age.includes(st.age) &&
     !(s.tags.income && s.tags.income.includes("high") && !isHigh);
-  const eligible = SITES.filter(fitsCore);
+  // 実際のアフィリエイトURLが設定済み(=審査承認済み)の候補だけを対象にする。
+  // 「準備中」の案件を並べて見せると、まだ大半が未承認の現時点では
+  // 訪問者に「未完成のサイト」という印象を与え信用を損なうため、
+  // リンクが有効な候補が無ければ欄ごと「近日公開」メッセージに切り替える。
+  const eligible = SITES.filter(s=>fitsCore(s) && isReady(s));
   // 2. 方向性・業種・年代が合う候補の中で、高収入ボーナスを加点
   // 3. 単価は sqrt で圧縮したうえで重めに加点(同程度の適合度なら高単価が勝ちやすい)
   // 4. 毎回同じ並びにならないよう小さな乱数も加える
@@ -491,9 +500,11 @@ document.getElementById("go").onclick=()=>{
     return {...s,sc};
   }).sort((a,b)=>b.sc-a.sc).slice(0,3);
   // 万一、dir/job/age全部一致する候補が2件未満だった場合のフォールバック。
-  // 年代の条件だけ緩和する(方向性・業種・収入条件はミスマッチ防止のため維持)。
+  // 年代の条件だけ緩和する(方向性・業種・収入条件はミスマッチ防止のため維持。
+  // こちらもリンク有効な候補のみが対象)。
   if(scored.length < 2){
     const fallback = SITES.filter(s=>
+      isReady(s) &&
       s.tags.dir.includes(st.dir) &&
       (s.tags.job.includes("*")||s.tags.job.includes(st.job)) &&
       !(s.tags.income && s.tags.income.includes("high") && !isHigh) &&
@@ -505,39 +516,39 @@ document.getElementById("go").onclick=()=>{
     scored.push(...fallback.slice(0, 3-scored.length));
   }
 
-  // アフィリエイトURL未設定(プレースホルダー)のカードはクリックできる
-  // リンクにはしない(押しても飛ばない「壊れたサイト」に見える上、偽の
-  // クリック計測がGA4に混ざるため)。ただし欄ごと消すとランキング設計自体が
-  // 確認できなくなるので、「準備中」表示のカードとして見せる。
   const titleEl = document.getElementById("sitesTitle");
+  const fitEl = document.getElementById("sitesFit");
   const box=document.getElementById("sites"); box.innerHTML="";
-  titleEl.classList.remove("hidden"); box.classList.remove("hidden");
-  titleEl.textContent =
-    scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
-  document.getElementById("sitesFit").innerHTML =
-    `あなたの適性: <b>${JOB_LABEL[st.job]||st.job}</b> × <b>${DIR_LABEL[st.dir]||st.dir}</b> を軸に選定`;
 
-  const TIER = ["最有力","注目","候補"];
-  scored.forEach((s,i)=>{
-    const ready = !String(s.affi).startsWith("#");
-    const tag = ready ? "a" : "div";
-    const el=document.createElement(tag);
-    el.className="site"+(i===0?" top":"")+(ready?"":" pending");
-    if(ready){ el.href=s.affi; el.target="_blank"; el.rel="noopener sponsored"; }
-    el.innerHTML=`
-      <div class="site-head">
-        <div class="ord">${ORDINAL[i]||i+1}</div>
-        <div><span class="letter-no">推薦状 其の${ORDINAL[i]||i+1}</span><div class="nm">${s.name}</div></div>
-      </div>
-      <p class="rs">${s.rs}</p>
-      <div class="fitmark"><span>${ready ? TIER[i]||"候補" : "準備中"}</span></div>
-      <div class="site-cta"><span class="go">${ready ? "無料相談へ進む →" : "近日リンク公開"}</span></div>
-      ${i===0?'<div class="seal">推薦</div>':''}`;
-    if(ready){
-      el.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout}); });
-    }
-    box.appendChild(el);
-  });
+  if(scored.length===0){
+    // 該当する提携済みサービスがまだ無い場合は、未完成に見える空のランキングでは
+    // なく「近日公開」の一文だけを見せる(信用を損なう「準備中」の列挙をしない)。
+    titleEl.textContent = "あなたに合う転職サービス";
+    fitEl.innerHTML = `<b>${JOB_LABEL[st.job]||st.job}</b>×<b>${DIR_LABEL[st.dir]||st.dir}</b>に合うサービスを提携準備中です。近日公開しますので、しばらくお待ちください。`;
+  }else{
+    titleEl.textContent =
+      scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
+    fitEl.innerHTML =
+      `あなたの適性: <b>${JOB_LABEL[st.job]||st.job}</b> × <b>${DIR_LABEL[st.dir]||st.dir}</b> を軸に選定`;
+
+    const TIER = ["最有力","注目","候補"];
+    scored.forEach((s,i)=>{
+      const a=document.createElement("a");
+      a.href=s.affi; a.target="_blank"; a.rel="noopener sponsored";
+      a.className="site"+(i===0?" top":"");
+      a.innerHTML=`
+        <div class="site-head">
+          <div class="ord">${ORDINAL[i]||i+1}</div>
+          <div><span class="letter-no">推薦状 其の${ORDINAL[i]||i+1}</span><div class="nm">${s.name}</div></div>
+        </div>
+        <p class="rs">${s.rs}</p>
+        <div class="fitmark"><span>${TIER[i]||"候補"}</span></div>
+        <div class="site-cta"><span class="go">無料相談へ進む →</span></div>
+        ${i===0?'<div class="seal">推薦</div>':''}`;
+      a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout}); });
+      box.appendChild(a);
+    });
+  }
 
   const res=document.getElementById("result");
   res.classList.remove("hidden"); res.classList.add("show");
