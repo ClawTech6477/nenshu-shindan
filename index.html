@@ -2,23 +2,26 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#1e3a8a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F7F4EC">
 <title>年収UPシミュレーター｜30秒で適正年収を診断</title>
-<meta name="description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。無料・30秒。">
+<meta name="description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。無料・30秒・登録不要。">
 <link rel="canonical" href="https://clawtech6477.github.io/nenshu-shindan/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="年収UPシミュレーター｜30秒で適正年収を診断">
-<meta property="og:description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。無料・30秒。">
+<meta property="og:description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。無料・30秒・登録不要。">
 <meta property="og:url" content="https://clawtech6477.github.io/nenshu-shindan/">
-<meta property="og:image" content="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=630&fit=crop&q=80">
+<meta property="og:image" content="https://clawtech6477.github.io/nenshu-shindan/og.png">
 <meta property="og:site_name" content="年収UPシミュレーター">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="年収UPシミュレーター｜30秒で適正年収を診断">
 <meta name="twitter:description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=630&fit=crop&q=80">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231e3a8a'/%3E%3Ctext x='50' y='68' font-size='55' font-family='sans-serif' font-weight='800' fill='%23fff' text-anchor='middle'%3E¥%3C/text%3E%3C/svg%3E">
+<meta name="twitter:image" content="https://clawtech6477.github.io/nenshu-shindan/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23F7F4EC'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23CE3A24' stroke-width='6'/%3E%3Ctext x='50' y='66' font-size='44' font-family='serif' font-weight='800' fill='%23CE3A24' text-anchor='middle'%3E診%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZ1TP2K3N0"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -28,99 +31,116 @@
 </script>
 <style>
   :root{
-    --blue:#2563eb; --blue-deep:#1d4ed8; --navy:#1e3a8a;
-    --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
-    --bg:#f8fafc; --card:#fff;
-    --sky:#eff6ff; --sky-line:#dbeafe;
-    --green:#06c755; --green-deep:#05a94a;
+    --paper:#F7F4EC; --paper-2:#FDFCF8; --paper-deep:#EFEAE0;
+    --ink:#22252B; --ink-soft:#6A6E77; --line:#DDD6C8;
+    --shu:#CE3A24; --shu-deep:#B02F1B;
+    --indigo:#2C4A9E; --indigo-deep:#233C81;
+    --green:#06C755; --green-deep:#05A94A;
+    --f-min:'Shippori Mincho B1',serif;
+    --f-body:'Zen Kaku Gothic New',sans-serif;
+    --f-dot:'DotGothic16',monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html{-webkit-text-size-adjust:100%;}
-  body{font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;}
+  body{font-family:var(--f-body);background:var(--paper);color:var(--ink);line-height:1.75;
+    padding-bottom:env(safe-area-inset-bottom);}
   button{font-family:inherit;}
-  button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--blue-deep);outline-offset:2px;}
+  button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--shu);outline-offset:2px;}
 
-  /* ---- ヒーロー ---- */
-  .hero{background:linear-gradient(120deg,#172f7a 0%,#1e3a8a 45%,#2563eb 100%);color:#fff;padding:44px 20px 52px;}
-  .hero-in{max-width:640px;margin:0 auto;}
-  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;color:#93c5fd;margin-bottom:10px;}
-  .hero h1{font-size:26px;font-weight:800;letter-spacing:-.01em;line-height:1.35;margin-bottom:10px;text-wrap:balance;}
-  .hero p{font-size:14px;color:#dbeafe;max-width:34em;}
+  /* ---- ヒーロー：紙×墨×朱 ---- */
+  .hero{padding:52px 22px 30px;max-width:640px;margin:0 auto;}
+  .eyebrow{font-family:var(--f-dot);font-size:12px;letter-spacing:.14em;color:var(--ink-soft);margin-bottom:14px;}
+  .hero h1{font-family:var(--f-min);font-weight:800;font-size:clamp(27px,7.4vw,40px);line-height:1.42;letter-spacing:.01em;margin-bottom:14px;text-wrap:balance;}
+  .hero h1 em{font-style:normal;color:var(--shu);background:linear-gradient(transparent 68%, rgba(206,58,36,.16) 68%);}
+  .hero .lede{font-size:14px;color:var(--ink-soft);max-width:33em;}
+  .hero .pills{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .hero .pill{font-size:12px;font-weight:700;border:1.5px solid var(--line);background:var(--paper-2);border-radius:999px;padding:4px 12px;color:var(--ink);}
 
-  .wrap{max-width:640px;margin:0 auto;padding:0 16px 72px;}
-
-  /* ---- わかることカード ---- */
-  .info{background:var(--sky);border:1px solid var(--sky-line);border-radius:14px;padding:20px 22px;margin:-26px 0 20px;position:relative;box-shadow:0 8px 24px rgba(30,58,138,.10);}
-  .info h2{font-size:14px;font-weight:800;color:var(--navy);margin-bottom:10px;}
-  .info li{list-style:none;font-size:13.5px;color:#334155;padding-left:1.4em;position:relative;margin-bottom:4px;}
-  .info li::before{content:"✓";position:absolute;left:0;color:var(--blue);font-weight:800;}
-  .info b{color:var(--blue-deep);}
-  .info .mini{font-size:12px;color:var(--muted);margin-top:10px;}
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
 
   /* ---- フォーム ---- */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px 22px;margin-bottom:20px;box-shadow:0 1px 3px rgba(15,23,42,.05);}
-  .field{margin-bottom:20px;}
+  .card{background:var(--paper-2);border:1.5px solid var(--line);border-radius:10px;padding:24px 20px;margin-bottom:20px;}
+  .field{margin-bottom:22px;}
   .field:last-of-type{margin-bottom:8px;}
-  .lbl{display:block;font-size:13px;font-weight:800;margin-bottom:8px;}
-  .lbl small{font-weight:600;color:var(--muted);margin-left:6px;}
+  .lbl{display:flex;align-items:baseline;gap:8px;font-size:13.5px;font-weight:700;margin-bottom:9px;}
+  .lbl .no{font-family:var(--f-dot);font-size:12px;color:var(--shu);letter-spacing:.05em;}
+  .lbl small{font-weight:500;color:var(--ink-soft);}
   .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .seg button{min-height:46px;padding:10px 6px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-size:14px;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .1s;}
+  .seg button{min-height:48px;padding:10px 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:14px;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .1s;}
   .seg button:active{transform:scale(.97);}
-  .seg button.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700;}
+  .seg button.on{background:var(--indigo);border-color:var(--indigo);color:#fff;font-weight:700;}
   .seg button.wide{grid-column:1/-1;}
   .selbox{position:relative;}
-  select{width:100%;min-height:48px;padding:11px 40px 11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;color:var(--ink);background:#fff;appearance:none;-webkit-appearance:none;cursor:pointer;}
-  .selbox::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:translateY(-70%) rotate(45deg);pointer-events:none;}
-  .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;margin-top:16px;box-shadow:0 6px 16px rgba(37,99,235,.30);transition:background .15s,transform .1s;}
-  .cta:active{transform:scale(.985);}
-  .cta:disabled{background:#cbd5e1;box-shadow:none;cursor:not-allowed;}
+  select{width:100%;min-height:50px;padding:12px 40px 12px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:16px;font-family:inherit;color:var(--ink);background:var(--paper-2);appearance:none;-webkit-appearance:none;cursor:pointer;}
+  .selbox::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);transform:translateY(-70%) rotate(45deg);pointer-events:none;}
+  .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;}
+  .cta:active{transform:scale(.985);background:var(--indigo-deep);}
+  .cta:disabled{background:#C9C4B8;cursor:not-allowed;}
 
-  /* ---- 結果 ---- */
-  #result{scroll-margin-top:16px;}
-  .verdict{background:linear-gradient(160deg,#eff6ff,#e0eaff);border:1px solid var(--sky-line);border-radius:16px;padding:30px 22px;text-align:center;margin-bottom:14px;}
-  .verdict .cap{font-size:13px;font-weight:700;color:var(--muted);}
-  .fitnum{font-size:56px;font-weight:800;color:var(--blue-deep);line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
-  .fitnum small{font-size:22px;font-weight:800;margin-left:2px;}
-  .upline{font-size:15px;font-weight:800;color:var(--ink);margin-top:2px;}
-  .upline b{color:var(--blue);font-size:18px;font-variant-numeric:tabular-nums;}
-  .gauge{height:10px;background:#dbeafe;border-radius:99px;overflow:hidden;margin:18px auto 12px;max-width:340px;}
-  .gauge>i{display:block;height:100%;background:linear-gradient(90deg,#60a5fa,var(--blue-deep));width:0;transition:width 1.2s ease;}
-  .vmsg{font-size:13px;color:#334155;max-width:30em;margin:0 auto;}
+  /* ---- 診断書（シグネチャー） ---- */
+  #result{scroll-margin-top:12px;}
+  .sheet{position:relative;background:var(--paper-2);border:1.5px solid var(--line);border-radius:4px;padding:26px 22px 22px;margin-bottom:16px;overflow:hidden;}
+  .sheet::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 7px,transparent 7px 14px);}
+  .sheet-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:4px;}
+  .sheet-title{font-family:var(--f-min);font-weight:800;font-size:17px;letter-spacing:.22em;}
+  .sheet-date{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);}
+  .rows{width:100%;}
+  .rows .row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 2px;border-bottom:1px dashed var(--line);}
+  .rows .row dt{font-size:13px;color:var(--ink-soft);font-weight:500;}
+  .rows .row dd{font-family:var(--f-dot);font-size:19px;letter-spacing:.02em;}
+  .rows .row dd small{font-size:12px;margin-left:2px;font-family:var(--f-body);color:var(--ink-soft);}
+  .rows .fitrow dd{font-size:34px;line-height:1.1;}
+  .rows .diffrow{border-bottom:2px solid var(--ink);}
+  .rows .diffrow dt{color:var(--shu);font-weight:700;}
+  .rows .diffrow dd{color:var(--shu);font-size:26px;}
+  .gauge{height:12px;background:var(--paper-deep);border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:18px 0 4px;position:relative;}
+  .gauge::after{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,transparent 0 24px,rgba(34,37,43,.14) 24px 25px);}
+  .gauge>i{display:block;height:100%;background:var(--shu);width:0;transition:width 1.2s ease;}
+  .vmsg{font-size:13px;color:var(--ink-soft);margin-top:12px;padding-right:78px;}
+  .stamp{position:absolute;right:18px;bottom:16px;width:76px;height:76px;border:3px solid var(--shu);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:var(--f-min);font-weight:800;font-size:19px;line-height:1.25;color:var(--shu);
+    transform:rotate(-8deg);opacity:0;}
+  .stamp.on{animation:stamp .38s cubic-bezier(.2,1.6,.4,1) forwards;}
+  @keyframes stamp{from{opacity:0;transform:rotate(-8deg) scale(1.7);}to{opacity:.92;transform:rotate(-8deg) scale(1);}}
 
   /* ---- LINE誘導 ---- */
-  .linecard{background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:16px;padding:22px;text-align:center;margin-bottom:22px;}
-  .linecard h3{font-size:15px;font-weight:800;margin-bottom:4px;}
-  .linecard p{font-size:12.5px;color:#4d7c0f;margin-bottom:14px;}
-  .linebtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;background:var(--green);color:#fff;border-radius:12px;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 6px 16px rgba(6,199,85,.28);transition:background .15s,transform .1s;}
+  .linecard{background:var(--paper-2);border:1.5px solid var(--line);border-radius:10px;padding:20px;text-align:center;margin-bottom:22px;}
+  .linecard h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .linecard p{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;}
+  .linebtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;background:var(--green);color:#fff;border-radius:8px;text-decoration:none;font-size:15px;font-weight:700;transition:background .15s,transform .1s;}
   .linebtn:active{transform:scale(.985);background:var(--green-deep);}
   .linebtn svg{flex-shrink:0;}
 
-  /* ---- サイトTOP3 ---- */
-  .sec-t{font-size:16px;font-weight:800;margin:26px 0 12px;}
-  .site{display:flex;align-items:center;gap:12px;padding:15px 14px;border:1.5px solid var(--line);border-radius:14px;margin-bottom:10px;text-decoration:none;color:inherit;background:#fff;transition:border-color .15s;}
-  .site.top{border-color:var(--blue);background:#f7faff;box-shadow:0 3px 12px rgba(37,99,235,.10);}
-  .rank{width:32px;height:32px;border-radius:50%;background:var(--sky);color:var(--blue-deep);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;}
-  .site.top .rank{background:var(--blue);color:#fff;}
-  .site .nm{font-weight:800;font-size:15px;line-height:1.4;}
-  .site .rs{font-size:12px;color:var(--muted);line-height:1.5;}
-  .badge{margin-left:auto;font-size:11px;font-weight:700;background:var(--sky);color:var(--blue-deep);padding:4px 9px;border-radius:7px;flex-shrink:0;}
+  /* ---- 転職サイトTOP3 ---- */
+  .sec-t{font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 12px;padding-left:12px;border-left:4px solid var(--shu);}
+  .site{display:flex;align-items:center;gap:13px;padding:16px 14px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:10px;text-decoration:none;color:inherit;background:var(--paper-2);transition:border-color .15s;}
+  .site.top{border-color:var(--shu);border-width:2px;}
+  .rank{width:34px;height:34px;border:1.5px solid var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--f-dot);font-size:17px;flex-shrink:0;}
+  .site.top .rank{background:var(--ink);color:var(--paper-2);}
+  .site .nm{font-weight:700;font-size:15px;line-height:1.4;}
+  .site .rs{font-size:12px;color:var(--ink-soft);line-height:1.55;}
+  .badge{margin-left:auto;font-family:var(--f-min);font-size:11.5px;font-weight:800;color:var(--shu);border:1.5px solid var(--shu);padding:3px 8px;border-radius:3px;flex-shrink:0;letter-spacing:.08em;}
 
-  .sharerow{display:flex;flex-direction:column;gap:10px;margin-top:20px;}
+  /* ---- シェア ---- */
+  .sharerow{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
   .sharerow .cta{margin-top:0;}
-  .xshare{display:flex;align-items:center;justify-content:center;gap:8px;background:#0f1419;box-shadow:none;}
+  .xshare{display:flex;align-items:center;justify-content:center;gap:8px;background:#0f1419;}
+  .xshare:active{background:#000;}
   .xshare .xmark{font-size:17px;font-weight:900;}
-  .lineshare{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--green);box-shadow:none;}
+  .lineshare{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--green);}
   .lineshare:active{background:var(--green-deep);}
-  .copyshare{background:#fff;color:var(--ink);border:1.5px solid var(--line);box-shadow:none;font-weight:700;}
-  .copyshare:active{background:var(--bg);}
-  .copyshare.copied{background:var(--sky);border-color:var(--sky-line);color:var(--blue-deep);}
-  @media (min-width:480px){
-    .sharerow{flex-direction:row;}
-  }
-  .note{font-size:11px;color:#94a3b8;margin-top:20px;line-height:1.8;}
+  .copyshare{background:var(--paper-2);color:var(--ink);border:1.5px solid var(--line);font-weight:700;}
+  .copyshare:active{background:var(--paper-deep);}
+  .copyshare.copied{border-color:var(--indigo);color:var(--indigo);}
+  @media (min-width:480px){ .sharerow{flex-direction:row;} }
+
+  .note{font-size:11px;color:#9B968A;margin-top:22px;line-height:1.8;}
   .hidden{display:none;}
-  .footer{text-align:center;padding:24px 16px 40px;font-size:12px;color:var(--muted);}
-  .footer a{color:var(--blue);text-decoration:none;}
+  .footer{text-align:center;padding:20px 16px calc(36px + env(safe-area-inset-bottom));font-size:12px;color:var(--ink-soft);}
+  .footer a{color:var(--indigo);text-decoration:none;}
   .footer a:hover{text-decoration:underline;}
 
   @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
@@ -128,9 +148,9 @@
   @media (prefers-reduced-motion: reduce){
     #result.show{animation:none;}
     .gauge>i{transition:none;}
+    .stamp.on{animation:none;opacity:.92;}
   }
   @media (min-width:560px){
-    .hero h1{font-size:32px;}
     .seg.cols4{grid-template-columns:repeat(4,1fr);}
     .seg.cols4 button.wide{grid-column:auto;}
   }
@@ -139,30 +159,19 @@
 <body>
 
 <header class="hero">
-  <div class="hero-in">
-    <p class="eyebrow">SALARY SIMULATOR ─ 無料・30秒</p>
-    <h1>あなたの年収、<br>あと何万円上げられる？</h1>
-    <p>同業種・同年代のデータをもとに「適正年収」を推定し、今より上げられる金額と最適な転職サービスを診断します。</p>
-  </div>
+  <p class="eyebrow">SALARY CHECK ── 診断書発行まで 30秒</p>
+  <h1>その年収、<br><em>あと何万円</em>上げられる？</h1>
+  <p class="lede">同業種・同年代の水準からあなたの「適正年収」を推定。提携<span id="svcCount">16</span>の転職サービスの中から、いま選ぶべき3つまで一括でご提案します。</p>
+  <div class="pills"><span class="pill">無料</span><span class="pill">登録不要</span><span class="pill">質問は4つ</span></div>
 </header>
 
 <main class="wrap">
-
-  <section class="info">
-    <h2>この診断でわかること</h2>
-    <ul>
-      <li>あなたの業種・年代から見た<b>適正年収の目安</b></li>
-      <li>今の年収との差額 ─ <b>上げられる余地</b>がいくらあるか</li>
-      <li>あなたの状況に合う<b>転職サービスTOP3</b></li>
-    </ul>
-    <p class="mini">4つの項目を選ぶだけ。結果はその場で表示されます。</p>
-  </section>
 
   <noscript><div class="card">診断の実行にはJavaScriptが必要です。Safari や Chrome などのブラウザで開いてください。</div></noscript>
 
   <section class="card" aria-label="診断フォーム">
     <div class="field">
-      <span class="lbl">年代</span>
+      <span class="lbl"><span class="no">Q1</span>年代</span>
       <div class="seg cols4" id="age">
         <button data-v="20">20〜30歳</button>
         <button data-v="30">31〜40歳</button>
@@ -172,7 +181,7 @@
     </div>
 
     <div class="field">
-      <label class="lbl" for="income">現在の年収</label>
+      <label class="lbl" for="income"><span class="no">Q2</span>現在の年収</label>
       <div class="selbox">
         <select id="income">
           <option value="">選択してください</option>
@@ -187,15 +196,17 @@
     </div>
 
     <div class="field">
-      <label class="lbl" for="job">現在の業種</label>
+      <label class="lbl" for="job"><span class="no">Q3</span>現在の業種</label>
       <div class="selbox">
         <select id="job">
           <option value="">選択してください</option>
           <option value="it">IT・Web</option>
           <option value="sales">営業</option>
-          <option value="office">事務</option>
-          <option value="nurse">看護・医療</option>
+          <option value="acct">事務・経理</option>
+          <option value="nurse">看護師</option>
+          <option value="pharma">薬剤師</option>
           <option value="care">介護・福祉</option>
+          <option value="constr">建設・不動産</option>
           <option value="maker">製造</option>
           <option value="service">販売・サービス</option>
           <option value="childcare">保育</option>
@@ -205,31 +216,38 @@
     </div>
 
     <div class="field">
-      <span class="lbl">これからどうしたい？<small>いちばん近いもの</small></span>
+      <span class="lbl"><span class="no">Q4</span>これからどうしたい？<small>いちばん近いもの</small></span>
       <div class="seg" id="dir">
         <button data-v="same">今の業種で年収UP</button>
-        <button data-v="toit">異業種へ(IT志向)</button>
+        <button data-v="toit">IT・コンサルへ挑戦</button>
         <button data-v="new">未経験の職種</button>
         <button data-v="wlb">働き方を変えたい</button>
         <button data-v="unsure" class="wide">まだ迷っている</button>
       </div>
     </div>
 
-    <button class="cta" id="go" disabled>適正年収を診断する</button>
+    <button class="cta" id="go" disabled>診断書を発行する</button>
   </section>
 
-  <!-- ================= 結果 ================= -->
+  <!-- ================= 結果：診断書 ================= -->
   <section id="result" class="hidden" aria-live="polite">
-    <div class="verdict">
-      <p class="cap">あなたの適正年収</p>
-      <div class="fitnum"><span id="fit">0</span><small>万円</small></div>
-      <p class="upline">今より <b>+<span id="diff">0</span>万円</b> UPの可能性</p>
+    <div class="sheet">
+      <div class="sheet-head">
+        <span class="sheet-title">適正年収診断書</span>
+        <span class="sheet-date" id="issued"></span>
+      </div>
+      <dl class="rows">
+        <div class="row"><dt>現在の年収</dt><dd id="curv">---</dd></div>
+        <div class="row fitrow"><dt>適正年収（推定）</dt><dd><span id="fit">0</span><small>万円</small></dd></div>
+        <div class="row diffrow"><dt>昇給余地</dt><dd>+<span id="diff">0</span><small>万円</small></dd></div>
+      </dl>
       <div class="gauge"><i id="gauge"></i></div>
       <p class="vmsg" id="msg"></p>
+      <span class="stamp" id="stamp" aria-hidden="true">診断<br>済</span>
     </div>
 
-    <!-- LINE集客動線 -->
-    <div class="linecard">
+    <!-- LINE集客動線（LINE_URL設定時のみ表示） -->
+    <div class="linecard" id="linecard">
       <h3>診断結果をもとに、次の一手を無料サポート</h3>
       <p>友だち追加で「適正年収の上げ方ガイド」と非公開求人情報をLINEでお届けします。</p>
       <a class="linebtn" id="linebtn" href="#line" target="_blank" rel="noopener">
@@ -238,13 +256,13 @@
       </a>
     </div>
 
-    <h2 class="sec-t">あなたに合う転職サイト TOP3</h2>
+    <h2 class="sec-t" id="sitesTitle">あなたに合う転職サービス TOP3</h2>
     <div id="sites"></div>
 
     <div class="sharerow">
       <button class="cta xshare" id="xshare"><span class="xmark">𝕏</span>Xでシェア</button>
       <button class="cta lineshare" id="lineshare"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3C6.9 3 2.8 6.4 2.8 10.6c0 3.7 3.3 6.9 7.7 7.5.3.1.7.2.8.5.1.2.1.6 0 .8l-.1.8c0 .2-.2 1 .8.5s5.6-3.3 7.6-5.6c1.4-1.5 2.1-3 2.1-4.5C21.7 6.4 17.1 3 12 3z" fill="#fff"/></svg>LINEでシェア</button>
-      <button class="cta copyshare" id="copyshare">🔗 リンクをコピー</button>
+      <button class="cta copyshare" id="copyshare">リンクをコピー</button>
     </div>
 
     <p class="note">
@@ -264,56 +282,59 @@
 // ================================================================
 const SITE_URL = "https://clawtech6477.github.io/nenshu-shindan/"; // ← このLPの公開URL
 const LINE_URL = "#line"; // ← LINE公式アカウントの友だち追加URL（例: https://lin.ee/XXXXXXX）
-// --- アフィリエイトURL（例: doda: "https://px.a8.net/svt/ejp?a8mat=XXXXX"）---
+// --- アフィリエイトURL（例: recruit: "https://px.a8.net/svt/ejp?a8mat=XXXXX"）---
+// 2026-07-31全面刷新: A8.netで実際に提携申請済み(申込日2026/07/31)のプログラムのみ掲載。
+// コメントのs番号はA8のプログラムID。承認後、広告リンク作成画面で照合して実URLに差し替える。
 const AFFILIATE_URLS = {
-  doda:       "#doda",       // ← doda の実URLに差し替え
-  recruit:    "#recruit",    // ← リクルートエージェント
-  bizreach:   "#bizreach",   // ← ビズリーチ
-  rds:        "#rds",        // ← リクルートダイレクトスカウト
-  mynavi20:   "#mynavi20",   // ← マイナビジョブ20's
-  levtech:    "#levtech",    // ← レバテックキャリア
-  kaigo:      "#kaigo",      // ← かいご畑
-  pasona:     "#pasona",     // ← パソナキャリア
-  next:       "#next",       // ← リクナビNEXT
-  // ↓ 2026-07-31追加。A8.net成果報酬1万円以上ランキング由来の高単価案件(要提携申請・要実URL差し替え)
-  technogo:   "#technogo",   // ← TechGo(テックゴー)
-  myvision:   "#myvision",   // ← MyVision(コンサル特化)
-  meiko:      "#meiko",      // ← 明光キャリアパートナーズ
-  groovement: "#groovement", // ← Groovement Agent
-  anykan:     "#anykan",     // ← AnyKan
-  samuraijob: "#samuraijob", // ← Samurai Job
-  yumecari:   "#yumecari",   // ← ユメキャリ転職エージェント
-  shanaise:   "#shanaise",   // ← 社内SE転職ナビ
+  recruit:     "#recruit",     // s00000011454002 リクルートエージェント(新規WEBエントリー後初回受付¥2,000)
+  levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
+  technogo:    "#technogo",    // s00000024757003 TechGo(新規無料面談¥50,000)
+  techgate:    "#techgate",    // s00000025047005 テックゲートエキスパート(新規面談完了¥54,000)
+  meiko:       "#meiko",       // s00000026573001 明光キャリアパートナーズエンジニア転職(新規面談設定¥78,000)
+  sap:         "#sap",         // s00000026342002 SAPテンショク(新規転職相談¥15,000)
+  techadapt:   "#techadapt",   // s00000024196001 techadapt(新規面談¥70,000)
+  myvision:    "#myvision",    // s00000024757001 MyVision コンサル特化(新規無料面談¥50,000)
+  zeroichi:    "#zeroichi",    // s00000023866002 ゼロイチ転職(新規面談¥15,000)
+  gks:         "#gks",         // s00000022176005 GKSキャリア(新規面談実施¥25,000)
+  buildjob:    "#buildjob",    // s00000024757004 ビルドジョブ(新規無料面談¥50,000)
+  rsg:         "#rsg",         // s00000021947004 RSG不動産転職(新規カウンセリング¥3,000)
+  keirijobs:   "#keirijobs",   // s00000026359002 経理Jobs(新規転職支援申込¥10,000)
+  twinpro:     "#twinpro",     // s00000024757002 ツインプロ(新規無料面談¥52,500)
+  nursesenka:  "#nursesenka",  // s00000001248024 ナース専科 転職(新規申込¥26,000)
+  pharmastaff: "#pharmastaff", // s00000010261001 ファルマスタッフ(新規会員登録¥65,000)
 };
 
 // ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
 function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
 
 // ===== 業種別 基準年収 =====
-const BASE = {it:520,sales:450,office:380,nurse:480,care:360,maker:440,service:360,childcare:340,other:400};
+const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455,maker:440,service:360,childcare:340,other:400};
 // ===== 転職サイトDB(タグ+単価。affiはAFFILIATE_URLS参照) =====
+// 全件、A8.netで提携申請済みの実在プログラム。payoutは実際の成果報酬額。
+// R4CAREER(東海3県限定・地域を質問していないため出せない)と
+// doda新卒エージェント(就活生向けで転職診断の利用者とズレる)は申請済みだが意図的に非掲載。
 const SITES = [
-  {name:"doda",       tags:{dir:["same","new","wlb","unsure","toit"],job:["*"],age:["20","30","40"]}, payout:5500, affi:AFFILIATE_URLS.doda, rs:"求人数トップクラス。幅広く提案"},
-  {name:"リクルートエージェント", tags:{dir:["same","new","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2200, affi:AFFILIATE_URLS.recruit, rs:"実績No.1。地方求人も豊富"},
-  {name:"ビズリーチ",  tags:{dir:["same"],job:["it","sales"],age:["30","40"],income:["high"]}, payout:6600, affi:AFFILIATE_URLS.bizreach, rs:"年収600万〜のハイクラス向け"},
-  {name:"リクルートダイレクトスカウト", tags:{dir:["same"],job:["*"],age:["30","40"],income:["high"]}, payout:4500, affi:AFFILIATE_URLS.rds, rs:"待つだけスカウト型"},
-  {name:"マイナビジョブ20's", tags:{dir:["new","unsure","toit"],job:["*"],age:["20"]}, payout:3572, affi:AFFILIATE_URLS.mynavi20, rs:"20代・第二新卒特化"},
-  {name:"レバテックキャリア", tags:{dir:["toit","same"],job:["it"],age:["20","30","40"]}, payout:4000, affi:AFFILIATE_URLS.levtech, rs:"IT・エンジニア専門"},
-  {name:"かいご畑",   tags:{dir:["same"],job:["care"],age:["20","30","40","50"]}, payout:3000, affi:AFFILIATE_URLS.kaigo, rs:"未経験・無資格から介護UP"},
-  {name:"パソナキャリア", tags:{dir:["wlb"],job:["*"],age:["20","30","40"]}, payout:2750, affi:AFFILIATE_URLS.pasona, rs:"手厚いサポート・働き方相談"},
-  {name:"リクナビNEXT", tags:{dir:["same","wlb","unsure"],job:["*"],age:["20","30"]}, payout:1870, affi:AFFILIATE_URLS.next, rs:"自分のペースで探せる"},
-  // ↓ 2026-07-31追加。士業特化「ツインプロ」・建設特化「ビルドジョブ」・
-  //   障害福祉サービス「Neuro Dive」は、既存の業種選択肢では正確にタグ付けできない
-  //   （無関係な人に出るミスマッチのリスクが高い）ため、意図的に追加していない。
-  {name:"TechGo", tags:{dir:["same","toit"],job:["it"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"ITエンジニア・ITコンサル特化。アドバイザーの8割が元エンジニア"},
-  {name:"MyVision", tags:{dir:["toit","new"],job:["*"],age:["20","30"]}, payout:50000, affi:AFFILIATE_URLS.myvision, rs:"コンサル業界への転身支援。8割超が未経験からの転身実績"},
-  {name:"明光キャリアパートナーズ", tags:{dir:["toit","new"],job:["*"],age:["30","40"],income:["high"]}, payout:78000, affi:AFFILIATE_URLS.meiko, rs:"M&A・コンサル・ファンド特化のハイクラス転職"},
-  {name:"Groovement Agent", tags:{dir:["same","toit"],job:["it"],age:["30","40"],income:["high"]}, payout:18000, affi:AFFILIATE_URLS.groovement, rs:"コンサル・DX特化。想定年収650万〜2000万"},
-  {name:"AnyKan", tags:{dir:["same"],job:["it"],age:["20","30"]}, payout:10000, affi:AFFILIATE_URLS.anykan, rs:"ゲーム・Web・エンタメ業界特化のエンジニア転職"},
-  {name:"Samurai Job", tags:{dir:["same"],job:["*"],age:["30","40"],income:["high"]}, payout:10000, affi:AFFILIATE_URLS.samuraijob, rs:"外資・グローバル企業のハイクラス求人"},
-  {name:"ユメキャリ転職エージェント", tags:{dir:["same","new","unsure"],job:["*"],age:["20"]}, payout:13000, affi:AFFILIATE_URLS.yumecari, rs:"20代・第二新卒・既卒向け"},
-  {name:"社内SE転職ナビ", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:18000, affi:AFFILIATE_URLS.shanaise, rs:"社内SE特化。IT経験を活かしたキャリアに強い"},
+  {name:"リクルートエージェント", tags:{dir:["same","toit","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2000, affi:AFFILIATE_URLS.recruit, rs:"転職支援実績No.1。全業種・全年代に対応"},
+  {name:"レバテックダイレクト", tags:{dir:["same","wlb","unsure"],job:["it"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.levtech, rs:"IT・Webのスカウト型。登録して待つだけ"},
+  {name:"TechGo", tags:{dir:["same","toit"],job:["it"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"ITエンジニアのハイクラス転職"},
+  {name:"テックゲートエキスパート", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:54000, affi:AFFILIATE_URLS.techgate, rs:"20代・30代のITコンサル転職"},
+  {name:"明光キャリアパートナーズ", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:78000, affi:AFFILIATE_URLS.meiko, rs:"エンジニア特化。面談から丁寧に支援"},
+  {name:"SAPテンショク", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:15000, affi:AFFILIATE_URLS.sap, rs:"SAPコンサル・エンジニア経験者専門"},
+  {name:"techadapt", tags:{dir:["same","wlb"],job:["it"],age:["20","30","40","50"]}, payout:70000, affi:AFFILIATE_URLS.techadapt, rs:"正社員ではなくITフリーランス案件を探すなら"},
+  {name:"MyVision", tags:{dir:["toit"],job:["*"],age:["20","30"]}, payout:50000, affi:AFFILIATE_URLS.myvision, rs:"コンサル業界への転身。8割超が未経験から"},
+  {name:"ゼロイチ転職", tags:{dir:["new","unsure"],job:["*"],age:["20"]}, payout:15000, affi:AFFILIATE_URLS.zeroichi, rs:"第二新卒・既卒の完全オーダーメイド就職"},
+  {name:"GKSキャリア", tags:{dir:["new"],job:["*"],age:["20","30"]}, payout:25000, affi:AFFILIATE_URLS.gks, rs:"未経験から施工管理へ。資格取得も支援"},
+  {name:"ビルドジョブ", tags:{dir:["same","new"],job:["constr"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.buildjob, rs:"建設業界特化のキャリア面談"},
+  {name:"RSG不動産転職", tags:{dir:["same"],job:["constr"],age:["20","30","40"]}, payout:3000, affi:AFFILIATE_URLS.rsg, rs:"不動産業界専門。経験を活かして年収UP"},
+  {name:"経理Jobs", tags:{dir:["same"],job:["acct"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.keirijobs, rs:"経理特化の転職エージェント"},
+  {name:"ツインプロ", tags:{dir:["same"],job:["acct"],age:["20","30","40"]}, payout:52500, affi:AFFILIATE_URLS.twinpro, rs:"会計士・税理士向けのキャリア面談"},
+  {name:"ナース専科 転職", tags:{dir:["same","wlb","unsure"],job:["nurse"],age:["20","30","40","50"]}, payout:26000, affi:AFFILIATE_URLS.nursesenka, rs:"登録者100万人以上。看護師転職の定番"},
+  {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
 ];
+
+// ===== 提携サービス数をヒーローに反映 =====
+const svcCountEl = document.getElementById("svcCount");
+if(svcCountEl) svcCountEl.textContent = SITES.length;
 
 // ===== 状態管理（4項目） =====
 const st = {age:"",income:"",job:"",dir:""};
@@ -361,12 +382,25 @@ document.getElementById("go").onclick=()=>{
   const diff = fit - cur;
   lastFit = fit; lastDiff = diff;
 
+  // 診断書ヘッダ（発行日・現在年収の表示）
+  const now = new Date();
+  document.getElementById("issued").textContent =
+    `発行日 ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")}`;
+  const incomeSel = document.getElementById("income");
+  document.getElementById("curv").textContent = incomeSel.selectedOptions[0] ? incomeSel.selectedOptions[0].text : "---";
+
   countUp(document.getElementById("fit"), fit);
   countUp(document.getElementById("diff"), diff);
   document.getElementById("msg").textContent =
     st.dir==="toit" ? "異業種チャレンジは伸びしろ大。特化型エージェントの活用が鍵です。"
     : diff>=150 ? "現年収と適正年収の差が大きめ。行動すれば上げられる余地があります。"
     : "着実に年収を伸ばせるタイプ。相性の良いサービスから始めましょう。";
+
+  // 朱印スタンプ（カウントアップ完了後に押される）
+  const stamp = document.getElementById("stamp");
+  stamp.classList.remove("on");
+  setTimeout(()=>{ stamp.classList.add("on"); },
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1000);
 
   // ===== 出し分けスコアリング =====
   // 1. まず「対象外」を確定する(方向性が合わない・ハイクラス限定を低年収層に出さない等)。
@@ -404,6 +438,8 @@ document.getElementById("go").onclick=()=>{
     scored.push(...fallback.slice(0, 3-scored.length));
   }
 
+  document.getElementById("sitesTitle").textContent =
+    scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
   const box=document.getElementById("sites"); box.innerHTML="";
   scored.forEach((s,i)=>{
     const a=document.createElement("a");
@@ -423,10 +459,14 @@ document.getElementById("go").onclick=()=>{
   track("diagnosis_complete",{fit_income:fit, diff:diff});
 };
 
-// ===== LINE誘導 =====
+// ===== LINE誘導（URL未設定の間はカードごと非表示） =====
 const lb=document.getElementById("linebtn");
-lb.href = LINE_URL;
-lb.addEventListener("click",()=>{ track("line_click"); });
+if(LINE_URL && LINE_URL !== "#line"){
+  lb.href = LINE_URL;
+  lb.addEventListener("click",()=>{ track("line_click"); });
+}else{
+  document.getElementById("linecard").classList.add("hidden");
+}
 
 // ===== シェア共通 =====
 function shareText(){
@@ -453,13 +493,13 @@ document.getElementById("copyshare").onclick=async(e)=>{
   const original=btn.textContent;
   try{
     await navigator.clipboard.writeText(shareUrl());
-    btn.textContent="✓ コピーしました";
+    btn.textContent="コピーしました ✓";
   }catch(err){
     // クリップボードAPI非対応環境向けフォールバック
     const ta=document.createElement("textarea");
     ta.value=shareUrl(); ta.style.position="fixed"; ta.style.opacity="0";
     document.body.appendChild(ta); ta.select();
-    try{ document.execCommand("copy"); btn.textContent="✓ コピーしました"; }
+    try{ document.execCommand("copy"); btn.textContent="コピーしました ✓"; }
     catch(e2){ btn.textContent="コピーに失敗しました"; }
     document.body.removeChild(ta);
   }
