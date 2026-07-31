@@ -121,18 +121,35 @@
   .linebtn:active{transform:scale(.985);background:var(--green-deep);}
   .linebtn svg{flex-shrink:0;}
 
-  /* ---- 転職サイトTOP3 ---- */
-  .sec-t{font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 12px;padding-left:12px;border-left:4px solid var(--shu);}
-  .site{display:flex;align-items:center;gap:13px;padding:16px 14px;border:1.5px solid var(--line);border-radius:10px;margin-bottom:10px;text-decoration:none;color:inherit;background:var(--paper-2);transition:border-color .15s;}
-  .site.top{border-color:var(--shu);border-width:2px;}
-  .rank{width:34px;height:34px;border:1.5px solid var(--ink);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--f-dot);font-size:17px;flex-shrink:0;}
-  .site.top .rank{background:var(--ink);color:var(--paper-2);}
-  .site .nm{font-weight:700;font-size:15px;line-height:1.4;}
-  .site .rs{font-size:12px;color:var(--ink-soft);line-height:1.55;}
-  .badge{margin-left:auto;font-family:var(--f-min);font-size:11.5px;font-weight:800;color:var(--shu);border:1.5px solid var(--shu);padding:3px 8px;border-radius:3px;flex-shrink:0;letter-spacing:.08em;}
-  .site.pending{opacity:.55;cursor:default;}
-  .site.pending .rank{border-style:dashed;}
-  .badge.pendingBadge{color:var(--ink-soft);border-color:var(--line);}
+  /* ---- 転職サービス推薦状 ---- */
+  .sec-t{font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 4px;padding-left:12px;border-left:4px solid var(--shu);}
+  .sec-fit{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);margin:0 0 16px 16px;letter-spacing:.03em;}
+  .sec-fit b{color:var(--shu);font-weight:400;}
+
+  .site{position:relative;display:block;padding:20px 18px 18px;border:1.5px solid var(--line);border-radius:4px;margin-bottom:14px;text-decoration:none;color:inherit;background:var(--paper-2);overflow:hidden;}
+  .site::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 12px);}
+  .site.top{border-color:var(--shu);border-width:2px;box-shadow:0 4px 18px rgba(206,58,36,.12);}
+  .site-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:10px;}
+  .ord{width:38px;height:38px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--f-min);font-size:16px;font-weight:800;flex-shrink:0;background:var(--paper-2);}
+  .site.top .ord{background:var(--ink);color:var(--paper-2);}
+  .site-head .letter-no{font-family:var(--f-dot);font-size:10.5px;color:var(--ink-soft);letter-spacing:.1em;display:block;margin-bottom:2px;}
+  .site .nm{font-weight:800;font-size:16px;line-height:1.4;}
+  .site .rs{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:8px 0 14px;padding-left:2px;}
+  .fitmark{display:flex;align-items:center;gap:7px;margin-bottom:14px;}
+  .fitmark span{font-size:11px;font-weight:700;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink);}
+  .site.top .fitmark span{border-color:var(--shu);color:var(--shu-deep);}
+  .site-cta{display:flex;align-items:center;justify-content:space-between;border-top:1px dashed var(--line);padding-top:12px;}
+  .site-cta .go{font-family:var(--f-min);font-size:13.5px;font-weight:800;color:var(--shu);}
+  .site.top .site-cta .go{font-size:14.5px;}
+  .seal{position:absolute;top:14px;right:16px;width:52px;height:52px;border:2.5px solid var(--shu);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--shu);font-family:var(--f-min);font-weight:800;font-size:13px;
+    transform:rotate(-10deg);line-height:1.15;text-align:center;}
+
+  .site.pending{opacity:.5;}
+  .site.pending .ord{border-style:dashed;}
+  .site.pending .site-cta .go{color:var(--ink-soft);}
 
   /* ---- シェア ---- */
   .sharerow{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
@@ -274,6 +291,7 @@
     </div>
 
     <h2 class="sec-t" id="sitesTitle">あなたに合う転職サービス TOP3</h2>
+    <p class="sec-fit" id="sitesFit"></p>
     <div id="sites"></div>
 
     <div class="sharerow">
@@ -323,6 +341,11 @@ const AFFILIATE_URLS = {
 
 // ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
 function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
+
+// ===== 表示用ラベル(推薦状の「あなたの適性」表示・位番号に使用) =====
+const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
+const DIR_LABEL = {same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種へ",wlb:"働き方重視",unsure:"方向性を模索中"};
+const ORDINAL = ["壱","弐","参"];
 
 // ===== 基準年収 =====
 // 全産業平均478万円は国税庁「民間給与実態統計調査」令和6年分を直接確認して採用
@@ -488,15 +511,25 @@ document.getElementById("go").onclick=()=>{
   titleEl.classList.remove("hidden"); box.classList.remove("hidden");
   titleEl.textContent =
     scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
+  document.getElementById("sitesFit").innerHTML =
+    `あなたの適性: <b>${JOB_LABEL[st.job]||st.job}</b> × <b>${DIR_LABEL[st.dir]||st.dir}</b> を軸に選定`;
+
+  const TIER = ["最有力","注目","候補"];
   scored.forEach((s,i)=>{
     const ready = !String(s.affi).startsWith("#");
     const tag = ready ? "a" : "div";
     const el=document.createElement(tag);
     el.className="site"+(i===0?" top":"")+(ready?"":" pending");
     if(ready){ el.href=s.affi; el.target="_blank"; el.rel="noopener sponsored"; }
-    el.innerHTML=`<div class="rank">${i+1}</div>
-      <div><div class="nm">${s.name}</div><div class="rs">${s.rs}</div></div>
-      ${ready ? (i===0?'<span class="badge">最有力</span>':'') : '<span class="badge pendingBadge">準備中</span>'}`;
+    el.innerHTML=`
+      <div class="site-head">
+        <div class="ord">${ORDINAL[i]||i+1}</div>
+        <div><span class="letter-no">推薦状 其の${ORDINAL[i]||i+1}</span><div class="nm">${s.name}</div></div>
+      </div>
+      <p class="rs">${s.rs}</p>
+      <div class="fitmark"><span>${ready ? TIER[i]||"候補" : "準備中"}</span></div>
+      <div class="site-cta"><span class="go">${ready ? "無料相談へ進む →" : "近日リンク公開"}</span></div>
+      ${i===0?'<div class="seal">推薦</div>':''}`;
     if(ready){
       el.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout}); });
     }
