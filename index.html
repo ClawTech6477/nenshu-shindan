@@ -130,6 +130,9 @@
   .site .nm{font-weight:700;font-size:15px;line-height:1.4;}
   .site .rs{font-size:12px;color:var(--ink-soft);line-height:1.55;}
   .badge{margin-left:auto;font-family:var(--f-min);font-size:11.5px;font-weight:800;color:var(--shu);border:1.5px solid var(--shu);padding:3px 8px;border-radius:3px;flex-shrink:0;letter-spacing:.08em;}
+  .site.pending{opacity:.55;cursor:default;}
+  .site.pending .rank{border-style:dashed;}
+  .badge.pendingBadge{color:var(--ink-soft);border-color:var(--line);}
 
   /* ---- シェア ---- */
   .sharerow{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
@@ -476,29 +479,29 @@ document.getElementById("go").onclick=()=>{
     scored.push(...fallback.slice(0, 3-scored.length));
   }
 
-  // アフィリエイトURL未設定(プレースホルダー)のカードは表示しない。
-  // 押しても飛ばないリンクは「壊れたサイト」に見える上、偽のクリック計測が
-  // GA4に混ざり実URL設定後の比較を汚染するため。
-  const renderable = scored.filter(s=>!String(s.affi).startsWith("#"));
+  // アフィリエイトURL未設定(プレースホルダー)のカードはクリックできる
+  // リンクにはしない(押しても飛ばない「壊れたサイト」に見える上、偽の
+  // クリック計測がGA4に混ざるため)。ただし欄ごと消すとランキング設計自体が
+  // 確認できなくなるので、「準備中」表示のカードとして見せる。
   const titleEl = document.getElementById("sitesTitle");
   const box=document.getElementById("sites"); box.innerHTML="";
-  if(renderable.length===0){
-    titleEl.classList.add("hidden"); box.classList.add("hidden");
-  }else{
-    titleEl.classList.remove("hidden"); box.classList.remove("hidden");
-    titleEl.textContent =
-      renderable.length>=2 ? `あなたに合う転職サービス TOP${renderable.length}` : "あなたに合う転職サービス";
-    renderable.forEach((s,i)=>{
-      const a=document.createElement("a");
-      a.href=s.affi; a.className="site"+(i===0?" top":"");
-      a.target="_blank"; a.rel="noopener sponsored";
-      a.innerHTML=`<div class="rank">${i+1}</div>
-        <div><div class="nm">${s.name}</div><div class="rs">${s.rs}</div></div>
-        ${i===0?'<span class="badge">最有力</span>':''}`;
-      a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout}); });
-      box.appendChild(a);
-    });
-  }
+  titleEl.classList.remove("hidden"); box.classList.remove("hidden");
+  titleEl.textContent =
+    scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
+  scored.forEach((s,i)=>{
+    const ready = !String(s.affi).startsWith("#");
+    const tag = ready ? "a" : "div";
+    const el=document.createElement(tag);
+    el.className="site"+(i===0?" top":"")+(ready?"":" pending");
+    if(ready){ el.href=s.affi; el.target="_blank"; el.rel="noopener sponsored"; }
+    el.innerHTML=`<div class="rank">${i+1}</div>
+      <div><div class="nm">${s.name}</div><div class="rs">${s.rs}</div></div>
+      ${ready ? (i===0?'<span class="badge">最有力</span>':'') : '<span class="badge pendingBadge">準備中</span>'}`;
+    if(ready){
+      el.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout}); });
+    }
+    box.appendChild(el);
+  });
 
   const res=document.getElementById("result");
   res.classList.remove("hidden"); res.classList.add("show");
