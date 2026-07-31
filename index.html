@@ -55,6 +55,7 @@
   .hero .lede{font-size:14px;color:var(--ink-soft);max-width:33em;}
   .hero .pills{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap;}
   .hero .pill{font-size:12px;font-weight:700;border:1.5px solid var(--line);background:var(--paper-2);border-radius:999px;padding:4px 12px;color:var(--ink);}
+  .prline{font-size:12px;color:var(--ink-soft);margin-top:14px;}
 
   .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
 
@@ -75,7 +76,7 @@
   .selbox::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);transform:translateY(-70%) rotate(45deg);pointer-events:none;}
   .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;}
   .cta:active{transform:scale(.985);background:var(--indigo-deep);}
-  .cta:disabled{background:#C9C4B8;cursor:not-allowed;}
+  .cta:disabled{background:#9AA7CB;cursor:not-allowed;}
 
   /* ---- 診断書（シグネチャー） ---- */
   #result{scroll-margin-top:12px;}
@@ -90,10 +91,12 @@
   .rows .row dt{font-size:13px;color:var(--ink-soft);font-weight:500;}
   .rows .row dd{font-family:var(--f-dot);font-size:19px;letter-spacing:.02em;}
   .rows .row dd small{font-size:12px;margin-left:2px;font-family:var(--f-body);color:var(--ink-soft);}
-  .rows .fitrow dd{font-size:34px;line-height:1.1;}
+  .rows .fitrow dd{font-size:26px;line-height:1.1;}
   .rows .diffrow{border-bottom:2px solid var(--ink);}
   .rows .diffrow dt{color:var(--shu);font-weight:700;}
-  .rows .diffrow dd{color:var(--shu);font-size:26px;}
+  .rows .diffrow dd{color:var(--shu);font-size:38px;line-height:1.1;}
+  .okmark{font-family:var(--f-min);font-size:24px;font-weight:800;letter-spacing:.08em;}
+  .sheet-imprint{font-family:var(--f-dot);font-size:10.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:.06em;}
   .gauge{height:12px;background:var(--paper-deep);border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:18px 0 4px;position:relative;}
   .gauge::after{content:"";position:absolute;inset:0;
     background:repeating-linear-gradient(90deg,transparent 0 24px,rgba(34,37,43,.14) 24px 25px);}
@@ -137,7 +140,7 @@
   .copyshare.copied{border-color:var(--indigo);color:var(--indigo);}
   @media (min-width:480px){ .sharerow{flex-direction:row;} }
 
-  .note{font-size:11px;color:#9B968A;margin-top:22px;line-height:1.8;}
+  .note{font-size:11.5px;color:var(--ink-soft);margin-top:22px;line-height:1.8;}
   .hidden{display:none;}
   .footer{text-align:center;padding:20px 16px calc(36px + env(safe-area-inset-bottom));font-size:12px;color:var(--ink-soft);}
   .footer a{color:var(--indigo);text-decoration:none;}
@@ -163,6 +166,7 @@
   <h1>その年収、<br><em>あと何万円</em>上げられる？</h1>
   <p class="lede">同業種・同年代の水準からあなたの「適正年収」を推定。提携<span id="svcCount">16</span>の転職サービスの中から、いま選ぶべき3つまで一括でご提案します。</p>
   <div class="pills"><span class="pill">無料</span><span class="pill">登録不要</span><span class="pill">質問は4つ</span></div>
+  <p class="prline">［PR］本ページはアフィリエイト広告を含みます</p>
 </header>
 
 <main class="wrap">
@@ -239,10 +243,11 @@
       <dl class="rows">
         <div class="row"><dt>現在の年収</dt><dd id="curv">---</dd></div>
         <div class="row fitrow"><dt>適正年収（推定）</dt><dd><span id="fit">0</span><small>万円</small></dd></div>
-        <div class="row diffrow"><dt>昇給余地</dt><dd>+<span id="diff">0</span><small>万円</small></dd></div>
+        <div class="row diffrow" id="diffrow"><dt>昇給余地</dt><dd>+<span id="diff">0</span><small>万円</small></dd></div>
       </dl>
       <div class="gauge"><i id="gauge"></i></div>
       <p class="vmsg" id="msg"></p>
+      <p class="sheet-imprint">SALARY CHECK ── clawtech6477.github.io/nenshu-shindan</p>
       <span class="stamp" id="stamp" aria-hidden="true">診断<br>済</span>
     </div>
 
@@ -348,9 +353,12 @@ function sync(){
 
 ["age","dir"].forEach(id=>{
   document.querySelectorAll(`#${id} button`).forEach(b=>{
+    b.setAttribute("aria-pressed","false");
     b.onclick=()=>{
-      document.querySelectorAll(`#${id} button`).forEach(x=>x.classList.remove("on"));
-      b.classList.add("on");
+      document.querySelectorAll(`#${id} button`).forEach(x=>{
+        x.classList.remove("on"); x.setAttribute("aria-pressed","false");
+      });
+      b.classList.add("on"); b.setAttribute("aria-pressed","true");
       st[id]=b.dataset.v;
       firstTouch(); sync();
     };
@@ -372,15 +380,18 @@ function countUp(el,to){
 }
 
 // ===== 診断ロジック =====
-let lastFit=0, lastDiff=0;
+let lastFit=0, lastDiff=0, lastAbove=false, lastSig="";
 document.getElementById("go").onclick=()=>{
   const ageK = {20:1.0,30:1.15,40:1.2,50:1.1}[st.age];
   const dirK = st.dir==="toit"?1.2 : st.dir==="new"?1.1 : 1.0;
   const cur = +st.income;
-  let fit = Math.round(BASE[st.job] * ageK * dirK /10)*10;
-  if(fit < cur) fit = cur + 40; // 必ず伸びしろが出る調整
-  const diff = fit - cur;
-  lastFit = fit; lastDiff = diff;
+  const fit = Math.round(BASE[st.job] * ageK * dirK /10)*10;
+  // 推定値が現年収以下でも水増ししない(「必ず伸びしろが出る」加算は
+  // 注記の「統計的な参考値」と矛盾する虚偽表示になるため廃止)。
+  // 水準超えの人には正直にそう伝え、訴求を「選択肢を広げる」に切り替える。
+  const above = fit <= cur;
+  const diff = above ? 0 : fit - cur;
+  lastFit = fit; lastDiff = diff; lastAbove = above;
 
   // 診断書ヘッダ（発行日・現在年収の表示）
   const now = new Date();
@@ -390,11 +401,19 @@ document.getElementById("go").onclick=()=>{
   document.getElementById("curv").textContent = incomeSel.selectedOptions[0] ? incomeSel.selectedOptions[0].text : "---";
 
   countUp(document.getElementById("fit"), fit);
-  countUp(document.getElementById("diff"), diff);
-  document.getElementById("msg").textContent =
-    st.dir==="toit" ? "異業種チャレンジは伸びしろ大。特化型エージェントの活用が鍵です。"
-    : diff>=150 ? "現年収と適正年収の差が大きめ。行動すれば上げられる余地があります。"
-    : "着実に年収を伸ばせるタイプ。相性の良いサービスから始めましょう。";
+  const diffRow = document.getElementById("diffrow");
+  if(above){
+    diffRow.querySelector("dd").innerHTML = '<span class="okmark">水準クリア</span>';
+    document.getElementById("msg").textContent =
+      "現在の年収は同業種・同年代の推定水準を上回っています。市場価値が高い今こそ、より良い条件・働き方を選べるタイミングです。";
+  }else{
+    diffRow.querySelector("dd").innerHTML = '+<span id="diff">0</span><small>万円</small>';
+    countUp(document.getElementById("diff"), diff);
+    document.getElementById("msg").textContent =
+      st.dir==="toit" ? "異業種チャレンジは伸びしろ大。特化型エージェントの活用が鍵です。"
+      : diff>=150 ? "現年収と適正年収の差が大きめ。行動すれば上げられる余地があります。"
+      : "着実に年収を伸ばせるタイプ。相性の良いサービスから始めましょう。";
+  }
 
   // 朱印スタンプ（カウントアップ完了後に押される）
   const stamp = document.getElementById("stamp");
@@ -438,25 +457,42 @@ document.getElementById("go").onclick=()=>{
     scored.push(...fallback.slice(0, 3-scored.length));
   }
 
-  document.getElementById("sitesTitle").textContent =
-    scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
+  // アフィリエイトURL未設定(プレースホルダー)のカードは表示しない。
+  // 押しても飛ばないリンクは「壊れたサイト」に見える上、偽のクリック計測が
+  // GA4に混ざり実URL設定後の比較を汚染するため。
+  const renderable = scored.filter(s=>!String(s.affi).startsWith("#"));
+  const titleEl = document.getElementById("sitesTitle");
   const box=document.getElementById("sites"); box.innerHTML="";
-  scored.forEach((s,i)=>{
-    const a=document.createElement("a");
-    a.href=s.affi; a.className="site"+(i===0?" top":"");
-    a.innerHTML=`<div class="rank">${i+1}</div>
-      <div><div class="nm">${s.name}</div><div class="rs">${s.rs}</div></div>
-      ${i===0?'<span class="badge">最有力</span>':''}`;
-    a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1}); });
-    box.appendChild(a);
-  });
+  if(renderable.length===0){
+    titleEl.classList.add("hidden"); box.classList.add("hidden");
+  }else{
+    titleEl.classList.remove("hidden"); box.classList.remove("hidden");
+    titleEl.textContent =
+      renderable.length>=2 ? `あなたに合う転職サービス TOP${renderable.length}` : "あなたに合う転職サービス";
+    renderable.forEach((s,i)=>{
+      const a=document.createElement("a");
+      a.href=s.affi; a.className="site"+(i===0?" top":"");
+      a.target="_blank"; a.rel="noopener sponsored";
+      a.innerHTML=`<div class="rank">${i+1}</div>
+        <div><div class="nm">${s.name}</div><div class="rs">${s.rs}</div></div>
+        ${i===0?'<span class="badge">最有力</span>':''}`;
+      a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout}); });
+      box.appendChild(a);
+    });
+  }
 
   const res=document.getElementById("result");
   res.classList.remove("hidden"); res.classList.add("show");
   setTimeout(()=>{document.getElementById("gauge").style.width=Math.min(diff/300*100,100)+"%";},100);
   res.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
 
-  track("diagnosis_complete",{fit_income:fit, diff:diff});
+  // 同一入力の連打では diagnosis_complete を重複送信しない(CVR計算の汚染防止)
+  const sig = [st.age,st.income,st.job,st.dir].join("|");
+  if(sig !== lastSig){
+    lastSig = sig;
+    track("diagnosis_complete",{fit_income:fit, diff:diff, above_market:above,
+      job:st.job, age:st.age, income:st.income, dir:st.dir});
+  }
 };
 
 // ===== LINE誘導（URL未設定の間はカードごと非表示） =====
@@ -470,7 +506,9 @@ if(LINE_URL && LINE_URL !== "#line"){
 
 // ===== シェア共通 =====
 function shareText(){
-  return `私の適正年収は${lastFit}万円でした！今より+${lastDiff}万円UPの可能性🔥\n#年収診断\n`;
+  return lastAbove
+    ? `年収診断やってみたら「業界水準クリア」でした✌️ あなたは？\n#年収診断\n`
+    : `私の適正年収は${lastFit}万円でした！今より+${lastDiff}万円UPの可能性🔥\n#年収診断\n`;
 }
 function shareUrl(){ return SITE_URL || location.href; }
 
