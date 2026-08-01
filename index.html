@@ -19,6 +19,17 @@
 <meta name="twitter:description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。">
 <meta name="twitter:image" content="https://clawtech6477.github.io/nenshu-shindan/og.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23F7F4EC'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23CE3A24' stroke-width='6'/%3E%3Ctext x='50' y='66' font-size='44' font-family='serif' font-weight='800' fill='%23CE3A24' text-anchor='middle'%3E診%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"年収UPシミュレーター","url":"https://clawtech6477.github.io/nenshu-shindan/","applicationCategory":"BusinessApplication","operatingSystem":"All","inLanguage":"ja","description":"4つの質問に答えるだけで適正年収の目安と昇給余地、相性の良い転職サービスがわかる無料診断ツール。会員登録不要。","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"publisher":{"@type":"Organization","name":"ClawTech","url":"https://clawtech6477.github.io/clawtech-lp/"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"診断に会員登録やメールアドレスは必要ですか？","acceptedAnswer":{"@type":"Answer","text":"不要です。4つの質問を選ぶだけで、その場で結果が表示されます。氏名・メールアドレス・電話番号などの個人情報の入力は一切ありません。"}},
+{"@type":"Question","name":"診断は無料ですか？","acceptedAnswer":{"@type":"Answer","text":"無料です。費用が発生することはありません。なお本ページは転職サービスのアフィリエイト広告（PR）を含みます。"}},
+{"@type":"Question","name":"診断結果の年収は正確ですか？","acceptedAnswer":{"@type":"Answer","text":"統計的な参考値であり、実際に得られる年収を保証するものではありません。公的統計の全産業平均を基準に、業種・年代・志向の傾向係数を掛け合わせた推定値です。実際の年収は企業規模・地域・経験年数・保有資格などによって大きく変わります。"}},
+{"@type":"Question","name":"診断にはどれくらい時間がかかりますか？","acceptedAnswer":{"@type":"Answer","text":"4問の選択式で、およそ30秒で結果が表示されます。"}},
+{"@type":"Question","name":"紹介される転職サービスはどう選ばれていますか？","acceptedAnswer":{"@type":"Answer","text":"回答いただいた業種・年代・今後の志向にもとづいて、条件に合うサービスを提示しています。専門特化のサービスがまだ提携準備中の業種については、その旨を明記したうえで幅広い職種に対応するサービスをご案内しています。"}}
+]}]}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
@@ -167,6 +178,22 @@
   @media (min-width:480px){ .sharerow{flex-direction:row;} }
 
   .note{font-size:11.5px;color:var(--ink-soft);margin-top:22px;line-height:1.8;}
+
+  /* ---- 解説セクション ---- */
+  .doc{margin-top:48px;padding-top:28px;border-top:2px solid var(--line);}
+  .doc-h2{font-family:var(--f-min);font-size:18px;font-weight:800;letter-spacing:.04em;margin:32px 0 12px;padding-left:12px;border-left:4px solid var(--ink);}
+  .doc-h2:first-of-type{margin-top:0;}
+  .doc-h3{font-size:14.5px;font-weight:700;margin:20px 0 6px;color:var(--ink);}
+  .doc p{font-size:14px;color:var(--ink);line-height:1.95;margin-bottom:14px;}
+  .doc-list{margin:0 0 16px;padding-left:20px;}
+  .doc-list li{font-size:14px;line-height:1.9;margin-bottom:10px;}
+  .doc-tablewrap{overflow-x:auto;margin-bottom:10px;}
+  .doc-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--paper-2);}
+  .doc-table th,.doc-table td{border:1px solid var(--line);padding:9px 12px;text-align:left;}
+  .doc-table th{background:var(--paper-deep);font-weight:700;}
+  .doc-table td:last-child{font-family:var(--f-dot);text-align:right;white-space:nowrap;}
+  .doc-note{font-size:11.5px;color:var(--ink-soft);line-height:1.7;}
+  .faq h3{border-left:3px solid var(--shu);padding-left:10px;}
   .hidden{display:none;}
   .footer{text-align:center;padding:20px 16px calc(36px + env(safe-area-inset-bottom));font-size:12px;color:var(--ink-soft);}
   .footer a{color:var(--shu);text-decoration:none;}
@@ -308,6 +335,67 @@
       ※推定年収は国税庁「民間給与実態統計調査」の全産業平均を基準に、年代・業種・志向の傾向係数を掛け合わせた参考値です。業種・職種別の詳細統計は公開資料で数値が確認できなかったため係数は一般的な相対傾向による推定であり、実際の年収を保証するものではありません。
     </p>
   </section>
+
+  <!-- ===== 解説セクション(常時表示。診断の算出根拠の開示 + 検索流入の受け皿) ===== -->
+  <section class="doc" aria-label="適正年収の考え方">
+    <h2 class="doc-h2">適正年収とは？この診断の考え方</h2>
+    <p>「適正年収」とは、同じ業種・同じ年代で働く人の給与水準から見て、その人の経験や職種であれば得られる可能性が高いと考えられる年収の目安です。転職市場では、同じ仕事内容でも企業や業界によって給与水準が異なるため、現在の年収が市場の水準より低いまま据え置かれているケースは珍しくありません。</p>
+    <p>この診断では、国税庁「民間給与実態統計調査」（令和6年分）で公表されている<strong>給与所得者の平均給与478万円</strong>を出発点に、業種・年代・今後の志向という3つの観点から傾向係数を掛け合わせて目安額を算出しています。</p>
+
+    <h2 class="doc-h2">業種別の推定基準年収</h2>
+    <p>本ツールが基準として用いている業種別の水準は次のとおりです。業種・職種別の詳細な公的統計は数値の形で公開されている資料を確認できなかったため、以下は一般的な相対傾向にもとづく<strong>推定値</strong>であり、公的統計そのものではありません。</p>
+    <div class="doc-tablewrap">
+      <table class="doc-table">
+        <thead><tr><th>業種・職種</th><th>推定基準（30代目安）</th></tr></thead>
+        <tbody>
+          <tr><td>薬剤師</td><td>約640万円</td></tr>
+          <tr><td>IT・Web</td><td>約600万円</td></tr>
+          <tr><td>看護師</td><td>約550万円</td></tr>
+          <tr><td>建設・不動産</td><td>約520万円</td></tr>
+          <tr><td>営業</td><td>約520万円</td></tr>
+          <tr><td>製造</td><td>約510万円</td></tr>
+          <tr><td>事務・経理</td><td>約450万円</td></tr>
+          <tr><td>介護・福祉</td><td>約410万円</td></tr>
+          <tr><td>販売・サービス</td><td>約410万円</td></tr>
+          <tr><td>保育</td><td>約390万円</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-note">※31〜40歳の係数を適用した参考値です。実際の年収は勤務先の規模・地域・保有資格・役職によって大きく変動します。</p>
+
+    <h2 class="doc-h2">介護職・福祉職の年収を上げるには</h2>
+    <p>介護・福祉の分野は、高齢化にともなって人材需要が続いている一方、給与水準は全産業平均を下回る傾向が指摘されてきた領域です。ただし同じ介護職でも、勤務先の形態（特別養護老人ホーム、有料老人ホーム、訪問介護、グループホームなど）や運営法人の規模によって給与条件は異なり、転職によって水準が変わることがあります。</p>
+    <p>収入を上げる具体的な道筋としては、次のような選択肢があります。</p>
+    <ul class="doc-list">
+      <li><strong>資格を取得して手当を得る</strong>：介護福祉士、ケアマネジャー（介護支援専門員）などの資格は、資格手当や任される業務の幅に直結します。働きながら資格取得を支援する制度がある職場も少なくありません。</li>
+      <li><strong>役職・管理職を目指す</strong>：サービス提供責任者、生活相談員、施設長といった役職に就くことで、基本給とは別に役職手当が加わる形が一般的です。</li>
+      <li><strong>処遇改善加算の状況が良い職場を選ぶ</strong>：介護職員処遇改善加算などの制度をどう配分しているかは事業者によって差があり、同じ地域・同じ職種でも手取りが変わる要因になります。</li>
+      <li><strong>夜勤の有無や勤務形態を見直す</strong>：夜勤手当の有無で月収は大きく変わります。逆に、収入より働き方を優先して日勤のみに変える選択もあります。</li>
+    </ul>
+    <p>介護職は資格・経験がそのまま評価されやすい職種のため、「今の職場で上がらないから」と諦める前に、同じ資格・経験で他の職場の条件を確認してみる価値があります。</p>
+
+    <h2 class="doc-h2">年代によって年収水準はどう変わるか</h2>
+    <p>国税庁の同調査では、男性の場合は60歳未満まで年齢が上がるにつれて平均給与も上昇し、55〜59歳の階層（735万円）が最も高くなる一方、女性では年齢による差が比較的小さいことが示されています。本診断でも、20代を基準として30代・40代で水準が上がり、50代以降はやや緩やかになる傾向を反映しています。</p>
+    <p>年収を上げる手段は昇給だけではありません。同じ職種でも業界を変える、専門性の高い領域に移る、資格を活かせる職場に移るといった選択で、水準そのものが変わることがあります。診断結果では、あなたの業種と志向に合わせて相談先の候補を提示します。</p>
+
+    <h2 class="doc-h2">よくある質問</h2>
+    <div class="faq">
+      <h3 class="doc-h3">診断に会員登録やメールアドレスは必要ですか？</h3>
+      <p>不要です。4つの質問を選ぶだけで、その場で結果が表示されます。氏名・メールアドレス・電話番号などの個人情報の入力は一切ありません。</p>
+
+      <h3 class="doc-h3">診断は無料ですか？</h3>
+      <p>無料です。費用が発生することはありません。なお本ページは転職サービスのアフィリエイト広告（PR）を含みます。</p>
+
+      <h3 class="doc-h3">診断結果の年収は正確ですか？</h3>
+      <p>統計的な参考値であり、実際に得られる年収を保証するものではありません。公的統計の全産業平均を基準に、業種・年代・志向の傾向係数を掛け合わせた推定値です。実際の年収は企業規模・地域・経験年数・保有資格などによって大きく変わります。</p>
+
+      <h3 class="doc-h3">診断にはどれくらい時間がかかりますか？</h3>
+      <p>4問の選択式で、およそ30秒で結果が表示されます。</p>
+
+      <h3 class="doc-h3">紹介される転職サービスはどう選ばれていますか？</h3>
+      <p>回答いただいた業種・年代・今後の志向にもとづいて、条件に合うサービスを提示しています。専門特化のサービスがまだ提携準備中の業種については、その旨を明記したうえで幅広い職種に対応するサービスをご案内しています。</p>
+    </div>
+  </section>
 </main>
 
 <footer class="footer">
@@ -344,6 +432,8 @@ const AFFILIATE_URLS = {
   twinpro:     "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE", // s00000024757002 ツインプロ 提携承認済み(2026/07/31)
   nursesenka:  "#nursesenka",  // s00000001248024 ナース専科 転職(新規申込¥26,000)
   pharmastaff: "#pharmastaff", // s00000010261001 ファルマスタッフ(新規会員登録¥65,000)
+  kaigobatake: "#kaigobatake", // s00000008824002 かいご畑(新規人材サービス登録¥6,000) 申込2026/08/01
+  kaigotown:   "#kaigotown",   // s00000027480001 介護タウン(新規面談実施¥10,000) 申込2026/08/01
 };
 
 // ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
@@ -390,6 +480,10 @@ const SITES = [
   // 方向性を問わず出す(same以外も対象)。
   {name:"ツインプロ", tags:{dir:["same","toit","new","wlb","unsure"],job:["acct"],age:["20","30","40"]}, payout:52500, affi:AFFILIATE_URLS.twinpro, rs:"会計士・税理士特化。経理・財務のキャリア相談も無料"},
   {name:"ナース専科 転職", tags:{dir:["same","wlb","unsure"],job:["nurse"],age:["20","30","40","50"]}, payout:26000, affi:AFFILIATE_URLS.nursesenka, rs:"登録者100万人以上。看護師転職の定番"},
+  // 介護領域(2026-08-01申請・承認待ち)。介護タウンは未経験・ブランクOKを掲げているため
+  // 「未経験の職種」志向にも対応、かいご畑は資格取得支援が売りなので同業種UP層の軸に置く。
+  {name:"かいご畑", tags:{dir:["same","wlb","unsure"],job:["care"],age:["20","30","40","50"]}, payout:6000, affi:AFFILIATE_URLS.kaigobatake, rs:"働きながら0円で介護資格。求人7000件以上"},
+  {name:"介護タウン", tags:{dir:["same","new","unsure"],job:["care"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.kaigotown, rs:"未経験・ブランクOK。面談で徹底サポート"},
   {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
 ];
 
