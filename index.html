@@ -405,6 +405,7 @@
 <!-- アフィリエイト計測用トラッキングピクセル(提携承認済み分) -->
 <img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY" alt="" style="position:absolute;">
 <img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM" alt="" style="position:absolute;">
 
 <script>
 // ================================================================
@@ -420,7 +421,7 @@ const AFFILIATE_URLS = {
   levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
   technogo:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY", // s00000024757003 TechGo 提携承認済み(2026/08/01)
   techgate:    "#techgate",    // s00000025047005 テックゲートエキスパート(新規面談完了¥54,000)
-  meiko:       "#meiko",       // s00000026573001 明光キャリアパートナーズエンジニア転職(新規面談設定¥78,000)
+  meiko:       "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM", // s00000026573001 明光キャリアパートナーズ(strategy career) 提携承認済み(2026/08/03)
   sap:         "#sap",         // s00000026342002 SAPテンショク(新規転職相談¥15,000)
   techadapt:   "#techadapt",   // s00000024196001 techadapt(新規面談¥70,000)
   myvision:    "#myvision",    // s00000024757001 MyVision コンサル特化(新規無料面談¥50,000)
@@ -460,13 +461,16 @@ const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455
 const SITES = [
   {name:"リクルートエージェント", tags:{dir:["same","toit","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2000, affi:AFFILIATE_URLS.recruit, rs:"転職支援実績No.1。全業種・全年代に対応"},
   {name:"レバテックダイレクト", tags:{dir:["same","wlb","unsure"],job:["it"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.levtech, rs:"IT・Webのスカウト型。登録して待つだけ"},
-  // 提携承認済み(2026-08-01)。他14件が未承認の暫定期間中は、嘘にならない範囲で
+  // 提携承認済み(2026-08-01)。未承認プログラムが残る暫定期間中は、嘘にならない範囲で
   // 対象を広げている: TechGoはIT経験者のハイクラス転職が本領だが「IT・コンサルへ
   // 挑戦」志向の人にとっても妥当な入口なので、業種を問わず toit の人には出す。
   {name:"TechGo", tags:{dir:["same","toit"],job:["it"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"ITエンジニアのハイクラス転職"},
   {name:"TechGo", tags:{dir:["toit"],job:["*"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"IT業界へのキャリアチェンジも相談できるハイクラス転職"},
   {name:"テックゲートエキスパート", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:54000, affi:AFFILIATE_URLS.techgate, rs:"20代・30代のITコンサル転職"},
-  {name:"明光キャリアパートナーズ", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:78000, affi:AFFILIATE_URLS.meiko, rs:"エンジニア特化。面談から丁寧に支援"},
+  // 遷移先の実サービス名は「strategy career」(運営=明光キャリアパートナーズ)。
+  // カード名を運営会社名のままにすると着地ページと名前が合わず不信感につながるため、
+  // 表示はサービス名、運営会社は説明文側に出す。20-30代エンジニア向けの訴求。
+  {name:"strategy career", tags:{dir:["same"],job:["it"],age:["20","30"]}, payout:78000, affi:AFFILIATE_URLS.meiko, rs:"20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）"},
   {name:"SAPテンショク", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:15000, affi:AFFILIATE_URLS.sap, rs:"SAPコンサル・エンジニア経験者専門"},
   {name:"techadapt", tags:{dir:["same","wlb"],job:["it"],age:["20","30","40","50"]}, payout:70000, affi:AFFILIATE_URLS.techadapt, rs:"正社員ではなくITフリーランス案件を探すなら"},
   {name:"MyVision", tags:{dir:["toit"],job:["*"],age:["20","30"]}, payout:50000, affi:AFFILIATE_URLS.myvision, rs:"コンサル業界への転身。8割超が未経験から"},
