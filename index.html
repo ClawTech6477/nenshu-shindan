@@ -49,6 +49,8 @@
     --f-min:'Shippori Mincho B1',serif;
     --f-body:'Zen Kaku Gothic New',sans-serif;
     --f-dot:'DotGothic16',monospace;
+    /* 紙が置かれる/印が押される動きの基準イージング(終わりを静かに止める) */
+    --ease-paper:cubic-bezier(.22,.85,.28,1);
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
   html{-webkit-text-size-adjust:100%;}
@@ -61,7 +63,19 @@
   .hero{padding:52px 22px 30px;max-width:640px;margin:0 auto;}
   .eyebrow{font-family:var(--f-dot);font-size:12px;letter-spacing:.14em;color:var(--ink-soft);margin-bottom:14px;}
   .hero h1{font-family:var(--f-min);font-weight:800;font-size:clamp(27px,7.4vw,40px);line-height:1.42;letter-spacing:.01em;margin-bottom:14px;text-wrap:balance;}
-  .hero h1 em{font-style:normal;color:var(--shu);background:linear-gradient(transparent 68%, rgba(206,58,36,.16) 68%);}
+  .hero h1 em{font-style:normal;color:var(--shu);
+    background:linear-gradient(transparent 68%, rgba(206,58,36,.16) 68%);
+    background-size:0 100%;background-repeat:no-repeat;}
+  /* 見出し→朱線の順に、書き上がるように立ち上げる */
+  @keyframes riseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @keyframes markDraw{to{background-size:100% 100%;}}
+  .hero .eyebrow,.hero h1,.hero .lede,.hero .pills,.hero .prline{animation:riseIn .6s var(--ease-paper) both;}
+  .hero .eyebrow{animation-delay:.04s;}
+  .hero h1{animation-delay:.12s;}
+  .hero .lede{animation-delay:.24s;}
+  .hero .pills{animation-delay:.32s;}
+  .hero .prline{animation-delay:.40s;}
+  .hero h1 em{animation:markDraw .65s ease .58s both;}
   .hero .lede{font-size:14px;color:var(--ink-soft);max-width:33em;}
   .hero .pills{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap;}
   .hero .pill{font-size:13.5px;font-weight:800;border:1.5px solid var(--shu);background:var(--paper-2);border-radius:999px;padding:6px 15px;color:var(--shu-deep);}
@@ -83,9 +97,13 @@
   .lbl .no{font-family:var(--f-dot);font-size:12px;color:var(--shu);letter-spacing:.05em;}
   .lbl small{font-weight:500;color:var(--ink-soft);}
   .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-  .seg button{min-height:48px;padding:10px 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:14px;color:var(--ink);cursor:pointer;transition:border-color .15s,background .15s,color .15s,transform .1s;}
+  .seg button{position:relative;z-index:0;overflow:hidden;min-height:48px;padding:10px 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:14px;color:var(--ink);cursor:pointer;transition:border-color .15s,color .15s,transform .1s;}
+  /* 選ぶと墨がじわっと広がって塗りつぶされる */
+  .seg button::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);border-radius:inherit;
+    transform:scale(.25);opacity:0;transition:transform .3s var(--ease-paper),opacity .18s ease;}
   .seg button:active{transform:scale(.97);}
-  .seg button.on{background:var(--ink);border-color:var(--ink);color:var(--paper-2);font-weight:700;}
+  .seg button.on{border-color:var(--ink);color:var(--paper-2);font-weight:700;}
+  .seg button.on::before{transform:scale(1);opacity:1;}
   .seg button.wide{grid-column:1/-1;}
   .selbox{position:relative;}
   select{width:100%;min-height:50px;padding:12px 40px 12px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:16px;font-family:inherit;color:var(--ink);background:var(--paper-2);appearance:none;-webkit-appearance:none;cursor:pointer;}
@@ -93,6 +111,9 @@
   .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--shu);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;}
   .cta:active{transform:scale(.985);background:var(--shu-deep);}
   .cta:disabled{background:#DCA79C;cursor:not-allowed;}
+  /* 4項目そろった瞬間に一度だけ波紋を出して、次に押す場所を示す */
+  @keyframes readyPulse{from{box-shadow:0 0 0 0 rgba(206,58,36,.42);}to{box-shadow:0 0 0 15px rgba(206,58,36,0);}}
+  .cta.ready{animation:readyPulse .75s ease-out 2;}
 
   /* ---- 診断書（シグネチャー） ---- */
   #result{scroll-margin-top:12px;}
@@ -112,7 +133,7 @@
   .rows .diffrow dt{color:var(--shu);font-weight:700;}
   .rows .diffrow dd{color:var(--shu);font-size:38px;line-height:1.1;}
   .okmark{font-family:var(--f-min);font-size:24px;font-weight:800;letter-spacing:.08em;}
-  .sheet-imprint{font-family:var(--f-dot);font-size:10.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:.06em;}
+  .sheet-imprint{font-family:var(--f-dot);font-size:10.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:.06em;padding-right:78px;}
   .gauge{height:12px;background:var(--paper-deep);border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:18px 0 4px;position:relative;}
   .gauge::after{content:"";position:absolute;inset:0;
     background:repeating-linear-gradient(90deg,transparent 0 24px,rgba(34,37,43,.14) 24px 25px);}
@@ -123,8 +144,25 @@
     display:flex;align-items:center;justify-content:center;text-align:center;
     font-family:var(--f-min);font-weight:800;font-size:19px;line-height:1.25;color:var(--shu);
     transform:rotate(-8deg);opacity:0;}
-  .stamp.on{animation:stamp .38s cubic-bezier(.2,1.6,.4,1) forwards;}
-  @keyframes stamp{from{opacity:0;transform:rotate(-8deg) scale(1.7);}to{opacity:.92;transform:rotate(-8deg) scale(1);}}
+  .stamp.on{animation:stamp .44s var(--ease-paper) forwards;}
+  /* 印は「勢いよく降りて、紙に食い込んで、わずかに戻る」の3段で押す */
+  @keyframes stamp{
+    0%{opacity:0;transform:rotate(-8deg) scale(1.85);}
+    55%{opacity:.98;transform:rotate(-8deg) scale(.93);}
+    78%{opacity:.95;transform:rotate(-8deg) scale(1.04);}
+    100%{opacity:.92;transform:rotate(-8deg) scale(1);}}
+
+  /* 診断書そのものの発行演出：上から紙が繰り出され、記入欄が順に埋まる */
+  @keyframes sheetIssue{from{opacity:0;transform:translateY(-8px);clip-path:inset(0 0 100% 0);}
+    to{opacity:1;transform:none;clip-path:inset(0 0 0 0);}}
+  @keyframes rowIn{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:none;}}
+  @keyframes paperShake{0%,100%{transform:none;}30%{transform:translateY(1.5px);}65%{transform:translateY(-1px);}}
+  .sheet.issue{animation:sheetIssue .6s var(--ease-paper) both;}
+  .sheet.issue .rows .row{animation:rowIn .42s var(--ease-paper) both;}
+  .sheet.issue .rows .row:nth-child(1){animation-delay:.30s;}
+  .sheet.issue .rows .row:nth-child(2){animation-delay:.40s;}
+  .sheet.issue .rows .row:nth-child(3){animation-delay:.50s;}
+  .sheet.shake{animation:paperShake .26s ease-out;}
 
   /* ---- LINE誘導 ---- */
   .linecard{background:var(--paper-2);border:1.5px solid var(--line);border-radius:10px;padding:20px;text-align:center;margin-bottom:22px;}
@@ -135,34 +173,57 @@
   .linebtn svg{flex-shrink:0;}
 
   /* ---- 転職サービス推薦状 ---- */
-  .sec-t{font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 4px;padding-left:12px;border-left:4px solid var(--shu);}
+  .sec-t{position:relative;font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 4px;padding-left:12px;}
+  .sec-t::before{content:"";position:absolute;left:0;top:.16em;bottom:.16em;width:4px;background:var(--shu);transform-origin:top;}
+  @keyframes barDraw{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  .sec-t.draw::before{animation:barDraw .38s var(--ease-paper) both;}
   .sec-fit{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);margin:0 0 16px 16px;letter-spacing:.03em;line-height:1.7;}
   .sec-fit b{color:var(--shu);font-weight:400;}
 
-  .site{position:relative;display:block;padding:20px 18px 18px;border:1.5px solid var(--line);border-radius:4px;margin-bottom:14px;text-decoration:none;color:inherit;background:var(--paper-2);overflow:hidden;}
-  .site::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;
+  /* 推薦状カード。左端の縦帯が綴じの索引(其の壱/弐/参)、右上の丸印が朱の推薦印。
+     順位を表す要素を帯ひとつに集約し、順位バッジ・ラベル・適合タグの三重表示をやめた。 */
+  .site{position:relative;display:block;padding:18px 18px 16px 54px;border:1.5px solid var(--line);border-radius:4px;
+    margin-bottom:14px;text-decoration:none;color:inherit;background:var(--paper-2);overflow:hidden;
+    transition:transform .22s var(--ease-paper),box-shadow .22s var(--ease-paper),border-color .18s;}
+  .site::before{content:"";position:absolute;left:54px;right:0;top:0;height:4px;
     background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 12px);}
-  .site.top{border-color:var(--shu);border-width:2px;box-shadow:0 4px 18px rgba(206,58,36,.12);}
-  .site-head{display:flex;align-items:flex-start;gap:13px;margin-bottom:10px;}
-  .ord{width:38px;height:38px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;
-    font-family:var(--f-min);font-size:16px;font-weight:800;flex-shrink:0;background:var(--paper-2);}
-  .site.top .ord{background:var(--ink);color:var(--paper-2);}
-  .site-head .letter-no{font-family:var(--f-dot);font-size:10.5px;color:var(--ink-soft);letter-spacing:.1em;display:block;margin-bottom:2px;}
-  .site .nm{font-weight:800;font-size:16px;line-height:1.4;}
-  .site .rs{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:8px 0 14px;padding-left:2px;}
-  .fitmark{display:flex;align-items:center;gap:7px;margin-bottom:14px;}
-  .fitmark span{font-size:11px;font-weight:700;background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;color:var(--ink);}
-  .site.top .fitmark span{border-color:var(--shu);color:var(--shu-deep);}
-  .site-cta{display:flex;align-items:center;justify-content:space-between;border-top:1px dashed var(--line);padding-top:12px;}
-  .site-cta .go{font-family:var(--f-min);font-size:13.5px;font-weight:800;color:var(--shu);}
-  .site.top .site-cta .go{font-size:14.5px;}
+  .site.top{border-color:var(--shu);border-width:2px;box-shadow:0 5px 20px rgba(206,58,36,.13);}
+  .ord{position:absolute;left:0;top:0;bottom:0;width:38px;background:var(--ink);color:var(--paper-2);
+    display:flex;align-items:center;justify-content:center;
+    writing-mode:vertical-rl;text-orientation:upright;
+    font-family:var(--f-min);font-weight:800;font-size:21px;letter-spacing:.16em;}
+  .ord small{font-size:10.5px;letter-spacing:.3em;opacity:.72;font-weight:500;}
+  .site.top .ord{background:var(--shu);}
+  .site .nm{font-family:var(--f-min);font-weight:800;font-size:17.5px;line-height:1.4;letter-spacing:.01em;}
+  .site.top .nm,.site.top .rs{padding-right:58px;} /* 朱印に文字が潜り込まないよう逃がす */
+  .site .rs{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:8px 0 15px;}
+  .site-cta{display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;border-radius:6px;
+    border:1.5px solid var(--shu);color:var(--shu);
+    font-family:var(--f-min);font-size:14.5px;font-weight:800;letter-spacing:.05em;
+    transition:background .18s ease,color .18s ease;}
+  .site.top .site-cta{background:var(--shu);color:#fff;box-shadow:0 2px 0 var(--shu-deep);}
+  .site-cta .arrow{transition:transform .26s var(--ease-paper);}
+  .site:active{transform:translateY(1px);}
+  .site:active .site-cta .arrow{transform:translateX(4px);}
+  @media (hover:hover){
+    .site:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(34,37,43,.11);}
+    .site.top:hover{box-shadow:0 12px 30px rgba(206,58,36,.2);}
+    .site:hover .site-cta{background:var(--shu);color:#fff;}
+    .site:hover .site-cta .arrow{transform:translateX(4px);}
+  }
   .seal{position:absolute;top:14px;right:16px;width:52px;height:52px;border:2.5px solid var(--shu);border-radius:50%;
     display:flex;align-items:center;justify-content:center;color:var(--shu);font-family:var(--f-min);font-weight:800;font-size:13px;
     transform:rotate(-10deg);line-height:1.15;text-align:center;}
-
-  .site.pending{opacity:.5;}
-  .site.pending .ord{border-style:dashed;}
-  .site.pending .site-cta .go{color:var(--ink-soft);}
+  /* 推薦状が1枚ずつ机に置かれ、置き終わってから印が押される */
+  @keyframes letterDrop{from{opacity:0;transform:translateY(20px) rotate(-.8deg);}to{opacity:1;transform:none;}}
+  @keyframes sealPress{
+    0%{opacity:0;transform:rotate(-10deg) scale(1.8);}
+    58%{opacity:1;transform:rotate(-10deg) scale(.92);}
+    80%{transform:rotate(-10deg) scale(1.05);}
+    100%{opacity:1;transform:rotate(-10deg) scale(1);}}
+  .site.drop{animation:letterDrop .52s var(--ease-paper) both;animation-delay:var(--d,0ms);}
+  .site.drop .seal{opacity:0;} /* 紙が着地してから押すので、それまでは伏せておく */
+  .seal.press{animation:sealPress .42s var(--ease-paper) both;}
 
   /* ---- シェア ---- */
   .sharerow{display:flex;flex-direction:column;gap:10px;margin-top:22px;}
@@ -181,7 +242,10 @@
 
   /* ---- 解説セクション ---- */
   .doc{margin-top:48px;padding-top:28px;border-top:2px solid var(--line);}
-  .doc-h2{font-family:var(--f-min);font-size:18px;font-weight:800;letter-spacing:.04em;margin:32px 0 12px;padding-left:12px;border-left:4px solid var(--ink);}
+  .doc-h2{position:relative;font-family:var(--f-min);font-size:18px;font-weight:800;letter-spacing:.04em;margin:32px 0 12px;padding-left:12px;}
+  .doc-h2::before{content:"";position:absolute;left:0;top:.16em;bottom:.16em;width:4px;background:var(--ink);transform-origin:top;}
+  .doc-h2.pre::before{transform:scaleY(0);} /* JSが付けた時だけ伏せる(JS無効なら常時表示) */
+  .doc-h2.draw::before{animation:barDraw .38s var(--ease-paper) both;}
   .doc-h2:first-of-type{margin-top:0;}
   .doc-h3{font-size:14.5px;font-weight:700;margin:20px 0 6px;color:var(--ink);}
   .doc p{font-size:14px;color:var(--ink);line-height:1.95;margin-bottom:14px;}
@@ -201,10 +265,22 @@
 
   @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
   #result.show{animation:rise .4s ease;}
+
+  /* スクロール連動の読み込み。JSがクラスを付けるまで .reveal は付かないので、
+     JS無効・IntersectionObserver非対応でも本文は必ず表示される。 */
+  .reveal{opacity:0;transform:translateY(12px);}
+  .reveal.in{opacity:1;transform:none;transition:opacity .55s ease,transform .55s var(--ease-paper);}
+
   @media (prefers-reduced-motion: reduce){
-    #result.show{animation:none;}
+    #result.show,.sheet.issue,.sheet.issue .rows .row,.sheet.shake,
+    .site.drop,.sec-t.draw::before,.cta.ready,
+    .hero .eyebrow,.hero h1,.hero .lede,.hero .pills,.hero .prline{animation:none;}
+    .hero h1 em{animation:none;background-size:100% 100%;}
     .gauge>i{transition:none;}
     .stamp.on{animation:none;opacity:.92;}
+    .seal.press{animation:none;}
+    .reveal{opacity:1;transform:none;}
+    .site,.site-cta,.site-cta .arrow,.seg button::before{transition:none;}
   }
   @media (min-width:560px){
     .seg.cols4{grid-template-columns:repeat(4,1fr);}
@@ -217,7 +293,7 @@
 <header class="hero">
   <p class="eyebrow">SALARY CHECK ── 診断書発行まで 30秒</p>
   <h1>その年収、<br><em>あと何万円</em>上げられる？</h1>
-  <p class="lede">同業種・同年代の水準からあなたの「適正年収」を推定。提携<span id="svcCount">16</span>の転職サービスの中から、いま選ぶべき3つまで一括でご提案します。</p>
+  <p class="lede">同業種・同年代の水準からあなたの「適正年収」を推定。提携する転職サービスの中から、いま選ぶべき3つまで一括でご提案します。</p>
   <div class="pills"><span class="pill">無料</span><span class="pill">登録不要</span><span class="pill">質問は4つ</span></div>
   <p class="prline">［PR］本ページはアフィリエイト広告を含みます</p>
 </header>
@@ -229,7 +305,7 @@
   <section class="card sheet-form" aria-label="診断フォーム">
     <div class="sheet-head form-head">
       <span class="sheet-title">診断申込書</span>
-      <span class="sheet-date">記入欄 4項目</span>
+      <span class="sheet-date" id="formProgress" aria-live="polite">記入 0/4</span>
     </div>
     <div class="field">
       <span class="lbl"><span class="no">Q1</span>年代</span>
@@ -492,8 +568,8 @@ const SITES = [
 ];
 
 // ===== 提携サービス数をヒーローに反映 =====
-const svcCountEl = document.getElementById("svcCount");
-if(svcCountEl) svcCountEl.textContent = SITES.length;
+// 掲載件数の明示はやめた。SITES.length は訴求違いの重複エントリを含むうえ、
+// リンクが有効なのは提携承認済みの数社だけで、実際に見える件数と食い違うため。
 
 // ===== 状態管理（4項目） =====
 const st = {age:"",income:"",job:"",dir:""};
@@ -501,8 +577,19 @@ let started = false;
 
 function firstTouch(){ if(!started){ track("diagnosis_start"); started=true; } }
 
+// 動きを止める設定の人には、演出をすべて即時完了として扱う
+const NO_MOTION = ()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 function sync(){
-  document.getElementById("go").disabled = !(st.age && st.income && st.job && st.dir);
+  const go = document.getElementById("go");
+  const filled = ["age","income","job","dir"].filter(k=>st[k]).length;
+  document.getElementById("formProgress").textContent = `記入 ${filled}/4`;
+  const wasDisabled = go.disabled;
+  go.disabled = filled < 4;
+  // 4項目そろった瞬間だけ、押す場所を一度示す(以後の再選択では鳴らさない)
+  if(wasDisabled && !go.disabled && !NO_MOTION()){
+    go.classList.remove("ready"); void go.offsetWidth; go.classList.add("ready");
+  }
 }
 
 ["age","dir"].forEach(id=>{
@@ -556,6 +643,8 @@ document.getElementById("go").onclick=()=>{
 
   countUp(document.getElementById("fit"), fit);
   const diffRow = document.getElementById("diffrow");
+  // 昇給余地0のときに空のゲージが残ると「計測できていない」ように見えるので隠す
+  document.getElementById("gauge").parentElement.style.display = above ? "none" : "";
   if(above){
     diffRow.querySelector("dd").innerHTML = '<span class="okmark">水準クリア</span>';
     document.getElementById("msg").textContent =
@@ -675,20 +764,27 @@ document.getElementById("go").onclick=()=>{
         `あなたの適性: <b>${JOB_LABEL[st.job]||st.job}</b> × <b>${DIR_LABEL[st.dir]||st.dir}</b> を軸に選定`;
     }
 
-    const TIER = ["最有力","注目","候補"];
+    const motion = !NO_MOTION();
     scored.forEach((s,i)=>{
       const a=document.createElement("a");
       a.href=s.affi; a.target="_blank"; a.rel="noopener sponsored";
-      a.className="site"+(i===0&&!isGeneralFallback?" top":"");
+      const isTop = i===0 && !isGeneralFallback;
+      a.className="site"+(isTop?" top":"");
       a.innerHTML=`
-        <div class="site-head">
-          <div class="ord">${ORDINAL[i]||i+1}</div>
-          <div><span class="letter-no">${isGeneralFallback?"ご案内 其の":"推薦状 其の"}${ORDINAL[i]||i+1}</span><div class="nm">${s.name}</div></div>
-        </div>
+        <div class="ord"><small>其の</small>${ORDINAL[i]||i+1}</div>
+        <div class="nm">${s.name}</div>
         <p class="rs">${s.rs}</p>
-        ${isGeneralFallback?"":`<div class="fitmark"><span>${TIER[i]||"候補"}</span></div>`}
-        <div class="site-cta"><span class="go">無料相談へ進む →</span></div>
-        ${i===0&&!isGeneralFallback?'<div class="seal">推薦</div>':''}`;
+        <div class="site-cta">無料相談へ進む<span class="arrow" aria-hidden="true">→</span></div>
+        ${isTop?'<div class="seal" aria-hidden="true">推薦</div>':''}`;
+      if(motion){
+        // 推薦状を1枚ずつ置き、置き終わってから朱印を押す
+        a.style.setProperty("--d", (560 + i*130) + "ms");
+        a.classList.add("drop");
+        if(isTop){
+          const seal = a.querySelector(".seal");
+          setTimeout(()=>{ seal.classList.add("press"); }, 560+520+140);
+        }
+      }
       a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout, general_fallback:isGeneralFallback}); });
       box.appendChild(a);
     });
@@ -696,6 +792,23 @@ document.getElementById("go").onclick=()=>{
 
   const res=document.getElementById("result");
   res.classList.remove("hidden"); res.classList.add("show");
+
+  // ===== 発行シーケンス =====
+  // 紙が繰り出される→記入欄が順に埋まる→数字が上がる→朱印が押されて紙が揺れる、の一連。
+  // バラバラの効果を散らすより、1つの筋の通った所作にまとめる。
+  if(!NO_MOTION()){
+    const sheet = res.querySelector(".sheet");
+    sheet.classList.remove("issue","shake"); void sheet.offsetWidth;
+    sheet.classList.add("issue");
+    // 発行アニメの fill と、朱印の衝撃で紙が揺れる演出がぶつからないよう先に外す
+    setTimeout(()=>sheet.classList.remove("issue"), 1000);
+    setTimeout(()=>{
+      sheet.classList.add("shake");
+      setTimeout(()=>sheet.classList.remove("shake"), 300);
+    }, 1010);
+    const t = document.getElementById("sitesTitle");
+    t.classList.remove("draw"); void t.offsetWidth; t.classList.add("draw");
+  }
   setTimeout(()=>{document.getElementById("gauge").style.width=Math.min(diff/300*100,100)+"%";},100);
   res.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
 
@@ -757,6 +870,21 @@ document.getElementById("copyshare").onclick=async(e)=>{
   btn.classList.add("copied");
   setTimeout(()=>{ btn.textContent=original; btn.classList.remove("copied"); }, 2000);
 };
+
+// ===== 解説セクションのスクロール演出 =====
+// 見出しの罫を引く+表をふわっと出す、の2種類だけに絞る(効果を撒くと安っぽくなる)。
+// .reveal は必ずJSから付ける。JS無効・IO非対応なら本文はそのまま表示される。
+if(!NO_MOTION() && "IntersectionObserver" in window){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(!en.isIntersecting) return;
+      en.target.classList.add(en.target.classList.contains("doc-h2") ? "draw" : "in");
+      io.unobserve(en.target);
+    });
+  }, {rootMargin:"0px 0px -12% 0px", threshold:0.15});
+  document.querySelectorAll(".doc-h2").forEach(el=>{ el.classList.add("pre"); io.observe(el); });
+  document.querySelectorAll(".doc-tablewrap").forEach(el=>{ el.classList.add("reveal"); io.observe(el); });
+}
 </script>
 </body>
 </html>
