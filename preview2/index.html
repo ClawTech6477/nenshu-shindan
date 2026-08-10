@@ -71,6 +71,45 @@
   .lede{font-size:14.5px;color:var(--ink-2);margin:0 0 26px;max-width:30em}
   .pr{font-size:11.5px;color:var(--ink-2);opacity:.75;margin-top:20px}
 
+  /* ── 開始画面 ───────────────────────────────
+     競合(doda/ビズリーチ/パソナ)は全社がヒーローに絵とスタートボタンを置いている。
+     こちらは文字だけで引きが弱く、しかも何が始まるのか分からないまま
+     いきなりQ1が出ていた。導入を1枚挟む。
+     写真は使わない。この題材の主役は人物ではなく数字と分布なので、
+     「診断するとこれが出る」を結果画面のミニプレビューで見せる。 */
+  #intro{min-height:calc(100dvh - 40px);display:flex;flex-direction:column;padding:26px 0 24px}
+  .h-lead{font-size:12.5px;font-weight:700;letter-spacing:.14em;color:var(--green);margin-bottom:14px}
+  .h-ttl{font-size:clamp(27px,7.6vw,36px);font-weight:900;line-height:1.34;letter-spacing:-.015em;
+         margin:0 0 12px;text-wrap:balance}
+  .h-ttl em{font-style:normal;color:var(--green)}
+  .h-sub{font-size:14.5px;color:var(--ink-2);margin:0 0 16px;max-width:29em}
+  .facts{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+  .fact{font-size:13px;font-weight:800;color:var(--green);background:#EAF2EF;
+        border-radius:7px;padding:6px 12px;letter-spacing:.01em}
+  /* 結果のミニプレビュー: 何が得られるかを先に見せる */
+  .peek{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+        padding:16px 16px 14px;margin-bottom:20px;overflow:hidden}
+  .peek::after{content:"診断すると、こう出ます";position:absolute;right:12px;top:12px;
+        font-size:10.5px;font-weight:700;color:var(--ink-2);background:var(--bg);
+        border:1px solid var(--line);border-radius:5px;padding:3px 7px}
+  .peek .pk-amt{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-bottom:12px}
+  .peek .pk-amt em{font-style:normal;color:var(--green)}
+  .peek .pk-bars{display:flex;align-items:flex-end;gap:4px;height:52px;margin-bottom:5px}
+  .peek .pk-bars i{flex:1;background:#E7EDEA;border-radius:3px 3px 0 0}
+  .peek .pk-bars i.me{background:var(--green);position:relative}
+  .peek .pk-bars i.me::after{content:"あなた";position:absolute;left:50%;top:-17px;transform:translateX(-50%);
+        font-size:9.5px;font-weight:900;color:var(--green);white-space:nowrap}
+  .peek .pk-ax{font-size:9.5px;color:var(--ink-2);text-align:center}
+  .vs{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+      border-radius:9px;padding:13px 15px;margin-bottom:22px;font-size:13.5px;color:var(--ink-2);line-height:1.72}
+  .vs b{color:var(--ink)}
+  .start{width:100%;min-height:58px;background:var(--green);color:#fff;border:none;border-radius:11px;
+         font:inherit;font-size:17.5px;font-weight:900;letter-spacing:.02em;cursor:pointer;
+         box-shadow:0 6px 18px rgba(11,93,81,.22);transition:transform .14s var(--ease),background .18s}
+  .start:hover{background:#08483F}
+  .start:active{transform:scale(.988)}
+  .start:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
   /* ── 結果 ───────────────────────────────── */
   #result{display:none;padding:26px 0 0}
   #result.on{display:block;animation:up .5s var(--ease) both}
@@ -139,13 +178,41 @@
 <div class="pvbar">刷新案のプレビューです（現行は <a href="https://clawtech6477.github.io/nenshu-shindan/">こちら</a>）</div>
 <div class="wrap">
 
+  <!-- 開始画面 -->
+  <section id="intro">
+    <div class="h-lead">SALARY CHECK</div>
+    <h1 class="h-ttl">その年収、<em>あと何万円</em><br>上げられる？</h1>
+    <p class="h-sub">同業種・同年代の水準と比べて、あなたがいまどの位置にいるかを出します。</p>
+    <div class="facts">
+      <span class="fact">質問は4つ</span>
+      <span class="fact">30秒</span>
+      <span class="fact">登録なし</span>
+      <span class="fact">無料</span>
+    </div>
+
+    <div class="peek" aria-hidden="true">
+      <div class="pk-amt">あと <em>60</em> 万円</div>
+      <div class="pk-bars"><i style="height:22%"></i><i style="height:58%"></i>
+        <i class="me" style="height:88%"></i><i style="height:64%"></i>
+        <i style="height:30%"></i><i style="height:12%"></i></div>
+      <div class="pk-ax">同業種・同年代の分布の中の、あなたの位置</div>
+    </div>
+
+    <div class="vs">
+      大手の年収診断は、たいてい<b>その会社のサービスへの入口</b>です。<br>
+      ここはどこにも属していないので、<b>あなたの業種と希望に合うところを選んで</b>お出しします。
+    </div>
+
+    <button class="start" id="start">診断をはじめる</button>
+    <p class="pr" style="margin-top:auto;padding-top:22px">[PR] 本ページはアフィリエイト広告を含みます</p>
+  </section>
+
   <!-- ステップ -->
-  <section class="stage" id="stage">
+  <section class="stage" id="stage" style="display:none">
     <div class="brand">SALARY CHECK</div>
     <div id="qbox"></div>
     <div class="prog" id="prog"></div>
     <button class="back" id="back" style="display:none">← ひとつ戻る</button>
-    <p class="pr" id="prline">[PR] 本ページはアフィリエイト広告を含みます</p>
   </section>
 
   <!-- 結果 -->
@@ -245,7 +312,6 @@ function renderStep(){
   $("qbox").querySelectorAll(".opt").forEach(b=>{
     b.onclick=()=>{
       st[Q.key]=b.dataset.v;
-      if(step===0) track("diagnosis_start",{});
       step++;
       if(step<QS.length){ renderStep(); window.scrollTo({top:0,behavior:"smooth"}); }
       else show();
@@ -333,7 +399,8 @@ function show(){
   $("sx").onclick=()=>open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt+" #年収診断")}&url=${encodeURIComponent(url)}`,"_blank");
   $("sl").onclick=()=>open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`,"_blank");
   $("sc").onclick=async()=>{ try{ await navigator.clipboard.writeText(url); $("sc").textContent="コピーしました"; }catch(e){} };
-  $("again").onclick=()=>{ step=0; $("result").classList.remove("on"); $("stage").style.display="";
+  $("again").onclick=()=>{ step=0; $("result").classList.remove("on");
+                           $("stage").style.display="none"; $("intro").style.display="";
                            renderStep(); window.scrollTo({top:0,behavior:"smooth"}); };
   track("diagnosis_complete",{job:st.job,dir:st.dir,age:st.age,diff});
 }
@@ -360,6 +427,13 @@ function pick(cur){
   }
   return out;
 }
+document.getElementById("start").onclick=()=>{
+  document.getElementById("intro").style.display="none";
+  document.getElementById("stage").style.display="";
+  renderStep();
+  window.scrollTo({top:0,behavior:"smooth"});
+  track("diagnosis_start",{});
+};
 renderStep();
 </script>
 </body>
