@@ -30,27 +30,6 @@
 {"@type":"Question","name":"診断にはどれくらい時間がかかりますか？","acceptedAnswer":{"@type":"Answer","text":"4問の選択式で、およそ30秒で結果が表示されます。"}},
 {"@type":"Question","name":"紹介される転職サービスはどう選ばれていますか？","acceptedAnswer":{"@type":"Answer","text":"回答いただいた業種・年代・今後の志向にもとづいて、条件に合うサービスを提示しています。専門特化のサービスがまだ提携準備中の業種については、その旨を明記したうえで幅広い職種に対応するサービスをご案内しています。"}}
 ]}]}
-/* 申込書の折りたたみ。結果が出たあとは入力内容を1行にまとめ、
-   「条件を変える」で元に戻せるようにする(2026-08-10 デザイン刷新)。 */
-function collapseForm(st){
-  const form = document.querySelector(".sheet-form");
-  if(!form || form.dataset.collapsed==="1") return;
-  const AGE={"20":"20〜30歳","30":"31〜40歳","40":"41〜50歳","50":"51歳以上"};
-  const DIR={same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種",wlb:"働き方を変えたい",unsure:"まだ迷っている"};
-  const jobSel=document.getElementById("job"), incSel=document.getElementById("income");
-  const jobTxt=jobSel.options[jobSel.selectedIndex].text;
-  const incTxt=incSel.options[incSel.selectedIndex].text;
-  const bar=document.createElement("div");
-  bar.className="formbar";
-  bar.innerHTML='<span class="formbar-txt">'+[AGE[st.age]||"",incTxt,jobTxt,DIR[st.dir]||""].filter(Boolean).join("　/　")
-              +'</span><button type="button" class="formbar-btn">条件を変える</button>';
-  bar.querySelector(".formbar-btn").onclick=()=>{
-    form.style.display=""; bar.remove(); form.dataset.collapsed="";
-    form.scrollIntoView({behavior:"smooth",block:"start"});
-  };
-  form.parentNode.insertBefore(bar, form);
-  form.style.display="none"; form.dataset.collapsed="1";
-}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -944,6 +923,28 @@ if(!NO_MOTION() && "IntersectionObserver" in window){
   }, {rootMargin:"0px 0px -12% 0px", threshold:0.15});
   document.querySelectorAll(".doc-h2").forEach(el=>{ el.classList.add("pre"); io.observe(el); });
   document.querySelectorAll(".doc-tablewrap").forEach(el=>{ el.classList.add("reveal"); io.observe(el); });
+}
+
+/* 申込書の折りたたみ。結果が出たあとは入力内容を1行にまとめ、
+   「条件を変える」で元に戻せるようにする(2026-08-10 デザイン刷新)。 */
+function collapseForm(st){
+  const form = document.querySelector(".sheet-form");
+  if(!form || form.dataset.collapsed==="1") return;
+  const AGE={"20":"20〜30歳","30":"31〜40歳","40":"41〜50歳","50":"51歳以上"};
+  const DIR={same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種",wlb:"働き方を変えたい",unsure:"まだ迷っている"};
+  const jobSel=document.getElementById("job"), incSel=document.getElementById("income");
+  const jobTxt=jobSel.options[jobSel.selectedIndex].text;
+  const incTxt=incSel.options[incSel.selectedIndex].text;
+  const bar=document.createElement("div");
+  bar.className="formbar";
+  bar.innerHTML='<span class="formbar-txt">'+[AGE[st.age]||"",incTxt,jobTxt,DIR[st.dir]||""].filter(Boolean).join("　/　")
+              +'</span><button type="button" class="formbar-btn">条件を変える</button>';
+  bar.querySelector(".formbar-btn").onclick=()=>{
+    form.style.display=""; bar.remove(); form.dataset.collapsed="";
+    form.scrollIntoView({behavior:"smooth",block:"start"});
+  };
+  form.parentNode.insertBefore(bar, form);
+  form.style.display="none"; form.dataset.collapsed="1";
 }
 </script>
 </body>
