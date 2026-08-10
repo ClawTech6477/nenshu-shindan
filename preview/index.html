@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F7F4EC">
+<title>[プレビュー] 年収UPシミュレーター｜30秒で適正年収を診断</title>
+<meta name="description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。無料・30秒・登録不要。">
+<link rel="canonical" href="https://clawtech6477.github.io/nenshu-shindan/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="年収UPシミュレーター｜30秒で適正年収を診断">
+<meta property="og:description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。無料・30秒・登録不要。">
+<meta property="og:url" content="https://clawtech6477.github.io/nenshu-shindan/">
+<meta property="og:image" content="https://clawtech6477.github.io/nenshu-shindan/og.png">
+<meta property="og:site_name" content="年収UPシミュレーター">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="年収UPシミュレーター｜30秒で適正年収を診断">
+<meta name="twitter:description" content="4つの質問に答えるだけで、あなたの適正年収と上げられる金額の目安、相性の良い転職サービスTOP3がわかります。">
+<meta name="twitter:image" content="https://clawtech6477.github.io/nenshu-shindan/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23F7F4EC'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23CE3A24' stroke-width='6'/%3E%3Ctext x='50' y='66' font-size='44' font-family='serif' font-weight='800' fill='%23CE3A24' text-anchor='middle'%3E診%3C/text%3E%3C/svg%3E">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"年収UPシミュレーター","url":"https://clawtech6477.github.io/nenshu-shindan/","applicationCategory":"BusinessApplication","operatingSystem":"All","inLanguage":"ja","description":"4つの質問に答えるだけで適正年収の目安と昇給余地、相性の良い転職サービスがわかる無料診断ツール。会員登録不要。","offers":{"@type":"Offer","price":"0","priceCurrency":"JPY"},"publisher":{"@type":"Organization","name":"ClawTech","url":"https://clawtech6477.github.io/clawtech-lp/"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"診断に会員登録やメールアドレスは必要ですか？","acceptedAnswer":{"@type":"Answer","text":"不要です。4つの質問を選ぶだけで、その場で結果が表示されます。氏名・メールアドレス・電話番号などの個人情報の入力は一切ありません。"}},
+{"@type":"Question","name":"診断は無料ですか？","acceptedAnswer":{"@type":"Answer","text":"無料です。費用が発生することはありません。なお本ページは転職サービスのアフィリエイト広告（PR）を含みます。"}},
+{"@type":"Question","name":"診断結果の年収は正確ですか？","acceptedAnswer":{"@type":"Answer","text":"統計的な参考値であり、実際に得られる年収を保証するものではありません。公的統計の全産業平均を基準に、業種・年代・志向の傾向係数を掛け合わせた推定値です。実際の年収は企業規模・地域・経験年数・保有資格などによって大きく変わります。"}},
+{"@type":"Question","name":"診断にはどれくらい時間がかかりますか？","acceptedAnswer":{"@type":"Answer","text":"4問の選択式で、およそ30秒で結果が表示されます。"}},
+{"@type":"Question","name":"紹介される転職サービスはどう選ばれていますか？","acceptedAnswer":{"@type":"Answer","text":"回答いただいた業種・年代・今後の志向にもとづいて、条件に合うサービスを提示しています。専門特化のサービスがまだ提携準備中の業種については、その旨を明記したうえで幅広い職種に対応するサービスをご案内しています。"}}
+]}]}
+/* 申込書の折りたたみ。結果が出たあとは入力内容を1行にまとめ、
+   「条件を変える」で元に戻せるようにする(2026-08-10 デザイン刷新)。 */
+function collapseForm(st){
+  const form = document.querySelector(".sheet-form");
+  if(!form || form.dataset.collapsed==="1") return;
+  const AGE={"20":"20〜30歳","30":"31〜40歳","40":"41〜50歳","50":"51歳以上"};
+  const DIR={same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種",wlb:"働き方を変えたい",unsure:"まだ迷っている"};
+  const jobSel=document.getElementById("job"), incSel=document.getElementById("income");
+  const jobTxt=jobSel.options[jobSel.selectedIndex].text;
+  const incTxt=incSel.options[incSel.selectedIndex].text;
+  const bar=document.createElement("div");
+  bar.className="formbar";
+  bar.innerHTML='<span class="formbar-txt">'+[AGE[st.age]||"",incTxt,jobTxt,DIR[st.dir]||""].filter(Boolean).join("　/　")
+              +'</span><button type="button" class="formbar-btn">条件を変える</button>';
+  bar.querySelector(".formbar-btn").onclick=()=>{
+    form.style.display=""; bar.remove(); form.dataset.collapsed="";
+    form.scrollIntoView({behavior:"smooth",block:"start"});
+  };
+  form.parentNode.insertBefore(bar, form);
+  form.style.display="none"; form.dataset.collapsed="1";
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RZ1TP2K3N0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RZ1TP2K3N0');
+</script>
+<style>
+  :root{
+    /* 2026-08-10 デザイン刷新:
+       旧= クリーム#F7F4EC + 明朝 + テラコッタ#CE3A24。これはAIが最も作りがちな
+       組み合わせそのもので、量産型に見える最大の原因だった。
+       新= 給与明細・源泉徴収票の淡い緑がかった「安全紙」を地に、構造色を藍にする。
+       題材(給与)に由来があり、かつ既定のAI配色から外れる。
+       朱は判子と昇給余地の数字だけに残し、強さを一点に集中させる。 */
+    --paper:#EDF1EC; --paper-2:#FAFCFA; --paper-deep:#DFE7E0;
+    --ink:#161A18; --ink-soft:#5D6862; --line:#C6D2C8;
+    --ai:#1C4E63; --ai-deep:#143A4A;
+    --shu:#B8402C; --shu-deep:#9A3423;
+    --green:#06C755; --green-deep:#05A94A;
+    --f-min:'Shippori Mincho B1',serif;
+    --f-body:'Zen Kaku Gothic New',sans-serif;
+    --f-dot:'DotGothic16',monospace;
+    /* 紙が置かれる/印が押される動きの基準イージング(終わりを静かに止める) */
+    --ease-paper:cubic-bezier(.22,.85,.28,1);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html{-webkit-text-size-adjust:100%;}
+  body{font-family:var(--f-body);background:var(--paper);color:var(--ink);line-height:1.75;
+    padding-bottom:env(safe-area-inset-bottom);}
+  button{font-family:inherit;}
+  button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--ai);outline-offset:2px;}
+
+  /* ---- ヒーロー：紙×墨×朱 ---- */
+  .hero{padding:52px 22px 30px;max-width:640px;margin:0 auto;}
+  .eyebrow{font-family:var(--f-dot);font-size:12px;letter-spacing:.14em;color:var(--ink-soft);margin-bottom:14px;}
+  .hero h1{font-family:var(--f-min);font-weight:800;font-size:clamp(27px,7.4vw,40px);line-height:1.42;letter-spacing:.01em;margin-bottom:14px;text-wrap:balance;}
+  .hero h1 em{font-style:normal;color:var(--shu);
+    background:linear-gradient(transparent 68%, rgba(206,58,36,.16) 68%);
+    background-size:0 100%;background-repeat:no-repeat;}
+  /* 見出し→朱線の順に、書き上がるように立ち上げる */
+  @keyframes riseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+  @keyframes markDraw{to{background-size:100% 100%;}}
+  .hero .eyebrow,.hero h1,.hero .lede,.hero .pills,.hero .prline{animation:riseIn .6s var(--ease-paper) both;}
+  .hero .eyebrow{animation-delay:.04s;}
+  .hero h1{animation-delay:.12s;}
+  .hero .lede{animation-delay:.24s;}
+  .hero .pills{animation-delay:.32s;}
+  .hero .prline{animation-delay:.40s;}
+  .hero h1 em{animation:markDraw .65s ease .58s both;}
+  .hero .lede{font-size:14px;color:var(--ink-soft);max-width:33em;}
+  .hero .pills{display:flex;gap:9px;margin-top:18px;flex-wrap:wrap;}
+  .hero .pill{font-size:13px;font-weight:700;border:1px solid var(--line);background:var(--paper-2);border-radius:3px;padding:6px 13px;color:var(--ink-soft);letter-spacing:.02em;}
+  .hero .pill::before{content:"✓ ";}
+  .ctanote{text-align:center;font-size:12px;color:var(--ink-soft);margin-top:10px;}
+  .prline{font-size:12px;color:var(--ink-soft);margin-top:14px;}
+
+  .wrap{max-width:640px;margin:0 auto;padding:0 16px 64px;}
+
+  /* ---- フォーム(診断申込書) ---- */
+  .card{background:var(--paper-2);border:1.5px solid var(--line);border-radius:10px;padding:24px 20px;margin-bottom:20px;}
+  .sheet-form{position:relative;border-radius:4px;overflow:hidden;padding-top:30px;}
+  .sheet-form::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 7px,transparent 7px 14px);}
+  .form-head{margin-bottom:20px;}
+  .field{margin-bottom:22px;}
+  .field:last-of-type{margin-bottom:8px;}
+  .lbl{display:flex;align-items:baseline;gap:8px;font-size:13.5px;font-weight:700;margin-bottom:9px;}
+  .lbl .no{font-family:var(--f-dot);font-size:12px;color:var(--ai);letter-spacing:.05em;}
+  .lbl small{font-weight:500;color:var(--ink-soft);}
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .seg button{position:relative;z-index:0;overflow:hidden;min-height:48px;padding:10px 6px;border:1.5px solid var(--line);border-radius:8px;background:var(--paper-2);font-size:14px;color:var(--ink);cursor:pointer;transition:border-color .15s,color .15s,transform .1s;}
+  /* 選ぶと墨がじわっと広がって塗りつぶされる */
+  .seg button::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink);border-radius:inherit;
+    transform:scale(.25);opacity:0;transition:transform .3s var(--ease-paper),opacity .18s ease;}
+  .seg button:active{transform:scale(.97);}
+  .seg button.on{border-color:var(--ink);color:var(--paper-2);font-weight:700;}
+  .seg button.on::before{transform:scale(1);opacity:1;}
+  .seg button.wide{grid-column:1/-1;}
+  .selbox{position:relative;}
+  select{width:100%;min-height:50px;padding:12px 40px 12px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:16px;font-family:inherit;color:var(--ink);background:var(--paper-2);appearance:none;-webkit-appearance:none;cursor:pointer;}
+  .selbox::after{content:"";position:absolute;right:16px;top:50%;width:9px;height:9px;border-right:2px solid var(--ink-soft);border-bottom:2px solid var(--ink-soft);transform:translateY(-70%) rotate(45deg);pointer-events:none;}
+  .cta{display:block;width:100%;min-height:54px;padding:15px;background:var(--ai);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;}
+  .cta:active{transform:scale(.985);background:var(--ai-deep);}
+  .cta:disabled{background:#DCA79C;cursor:not-allowed;}
+  /* 4項目そろった瞬間に一度だけ波紋を出して、次に押す場所を示す */
+  @keyframes readyPulse{from{box-shadow:0 0 0 0 rgba(206,58,36,.42);}to{box-shadow:0 0 0 15px rgba(206,58,36,0);}}
+  .cta.ready{animation:readyPulse .75s ease-out 2;}
+
+  /* ---- 診断書（シグネチャー） ---- */
+  #result{scroll-margin-top:12px;}
+  .formbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+           background:var(--paper-2);border:1px solid var(--line);border-left:4px solid var(--ai);
+           border-radius:3px;padding:12px 14px;margin-bottom:16px;}
+  .formbar-txt{flex:1;min-width:180px;font-size:13.5px;color:var(--ink);letter-spacing:.01em;}
+  .formbar-btn{flex:0 0 auto;font-size:13px;font-weight:700;color:var(--ai);
+               background:transparent;border:1px solid var(--ai);border-radius:3px;
+               padding:6px 12px;cursor:pointer;transition:background .2s ease,color .2s ease;}
+  .formbar-btn:hover{background:var(--ai);color:#fff;}
+  .sheet{position:relative;background:var(--paper-2);border:1.5px solid var(--line);border-radius:4px;padding:26px 22px 22px;margin-bottom:16px;overflow:hidden;}
+  .sheet::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 7px,transparent 7px 14px);}
+  .sheet-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:4px;}
+  .sheet-title{font-family:var(--f-min);font-weight:800;font-size:17px;letter-spacing:.22em;}
+  .sheet-date{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);}
+  .rows{width:100%;}
+  .rows .row{display:flex;justify-content:space-between;align-items:baseline;padding:13px 2px;border-bottom:1px dashed var(--line);}
+  .rows .row dt{font-size:13px;color:var(--ink-soft);font-weight:500;}
+  .rows .row dd{font-family:var(--f-dot);font-size:19px;letter-spacing:.02em;}
+  .rows .row dd small{font-size:12px;margin-left:2px;font-family:var(--f-body);color:var(--ink-soft);}
+  .rows .fitrow dd{font-size:26px;line-height:1.1;}
+  .rows .diffrow{border-bottom:2px solid var(--ink);}
+  .rows .diffrow dt{color:var(--shu);font-weight:700;}
+  .rows .diffrow dd{color:var(--shu);font-size:38px;line-height:1.1;}
+  .okmark{font-family:var(--f-min);font-size:24px;font-weight:800;letter-spacing:.08em;}
+  .sheet-imprint{font-family:var(--f-dot);font-size:10.5px;color:var(--ink-soft);margin-top:14px;letter-spacing:.06em;padding-right:78px;}
+  .gauge{height:12px;background:var(--paper-deep);border:1px solid var(--line);border-radius:2px;overflow:hidden;margin:18px 0 4px;position:relative;}
+  .gauge::after{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(90deg,transparent 0 24px,rgba(34,37,43,.14) 24px 25px);}
+  .gauge>i{display:block;height:100%;background:var(--ai);width:0;transition:width 1.2s ease;}
+  .vmsg{font-size:13px;color:var(--ink-soft);margin-top:12px;padding-right:78px;}
+  .basis{font-size:11px;color:var(--ink-soft);margin-top:10px;padding-right:78px;line-height:1.6;}
+  .stamp{position:absolute;right:18px;bottom:16px;width:76px;height:76px;border:3px solid var(--shu);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:var(--f-min);font-weight:800;font-size:19px;line-height:1.25;color:var(--shu);
+    transform:rotate(-8deg);opacity:0;}
+  .stamp.on{animation:stamp .44s var(--ease-paper) forwards;}
+  /* 印は「勢いよく降りて、紙に食い込んで、わずかに戻る」の3段で押す */
+  @keyframes stamp{
+    0%{opacity:0;transform:rotate(-8deg) scale(1.85);}
+    55%{opacity:.98;transform:rotate(-8deg) scale(.93);}
+    78%{opacity:.95;transform:rotate(-8deg) scale(1.04);}
+    100%{opacity:.92;transform:rotate(-8deg) scale(1);}}
+
+  /* 診断書そのものの発行演出：上から紙が繰り出され、記入欄が順に埋まる */
+  @keyframes sheetIssue{from{opacity:0;transform:translateY(-8px);clip-path:inset(0 0 100% 0);}
+    to{opacity:1;transform:none;clip-path:inset(0 0 0 0);}}
+  @keyframes rowIn{from{opacity:0;transform:translateY(7px);}to{opacity:1;transform:none;}}
+  @keyframes paperShake{0%,100%{transform:none;}30%{transform:translateY(1.5px);}65%{transform:translateY(-1px);}}
+  .sheet.issue{animation:sheetIssue .6s var(--ease-paper) both;}
+  .sheet.issue .rows .row{animation:rowIn .42s var(--ease-paper) both;}
+  .sheet.issue .rows .row:nth-child(1){animation-delay:.30s;}
+  .sheet.issue .rows .row:nth-child(2){animation-delay:.40s;}
+  .sheet.issue .rows .row:nth-child(3){animation-delay:.50s;}
+  .sheet.shake{animation:paperShake .26s ease-out;}
+
+  /* ---- LINE誘導 ---- */
+  .linecard{background:var(--paper-2);border:1.5px solid var(--line);border-radius:10px;padding:20px;text-align:center;margin-bottom:22px;}
+  .linecard h3{font-size:15px;font-weight:700;margin-bottom:4px;}
+  .linecard p{font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;}
+  .linebtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;min-height:52px;background:var(--green);color:#fff;border-radius:8px;text-decoration:none;font-size:15px;font-weight:700;transition:background .15s,transform .1s;}
+  .linebtn:active{transform:scale(.985);background:var(--green-deep);}
+  .linebtn svg{flex-shrink:0;}
+
+  /* ---- 転職サービス推薦状 ---- */
+  .sec-t{position:relative;font-family:var(--f-min);font-size:17px;font-weight:800;letter-spacing:.06em;margin:28px 0 4px;padding-left:12px;}
+  .sec-t::before{content:"";position:absolute;left:0;top:.16em;bottom:.16em;width:4px;background:var(--ai);transform-origin:top;}
+  @keyframes barDraw{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  .sec-t.draw::before{animation:barDraw .38s var(--ease-paper) both;}
+  .sec-fit{font-family:var(--f-dot);font-size:11.5px;color:var(--ink-soft);margin:0 0 16px 16px;letter-spacing:.03em;line-height:1.7;}
+  .sec-fit b{color:var(--ai);font-weight:700;}
+
+  /* 推薦状カード。左端の縦帯が綴じの索引(其の壱/弐/参)、右上の丸印が朱の推薦印。
+     順位を表す要素を帯ひとつに集約し、順位バッジ・ラベル・適合タグの三重表示をやめた。 */
+  .site{position:relative;display:block;padding:18px 18px 16px 54px;border:1.5px solid var(--line);border-radius:4px;
+    margin-bottom:14px;text-decoration:none;color:inherit;background:var(--paper-2);overflow:hidden;
+    transition:transform .22s var(--ease-paper),box-shadow .22s var(--ease-paper),border-color .18s;}
+  .site::before{content:"";position:absolute;left:54px;right:0;top:0;height:4px;
+    background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 12px);}
+  .site.top{border-color:var(--ai);border-width:2px;box-shadow:0 6px 22px rgba(28,78,99,.14);}
+  .ord{position:absolute;left:0;top:0;bottom:0;width:38px;background:var(--ink);color:var(--paper-2);
+    display:flex;align-items:center;justify-content:center;
+    writing-mode:vertical-rl;text-orientation:upright;
+    font-family:var(--f-min);font-weight:800;font-size:21px;letter-spacing:.16em;}
+  .ord small{font-size:10.5px;letter-spacing:.3em;opacity:.72;font-weight:500;}
+  .site.top .ord{background:var(--ai);}
+  .site .nm{font-family:var(--f-min);font-weight:800;font-size:17.5px;line-height:1.4;letter-spacing:.01em;}
+  .site.top .nm,.site.top .rs{padding-right:58px;} /* 朱印に文字が潜り込まないよう逃がす */
+  .site .rs{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin:8px 0 15px;}
+  .site-cta{display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;border-radius:6px;
+    border:1.5px solid var(--ai);color:var(--ai);
+    font-family:var(--f-min);font-size:14.5px;font-weight:800;letter-spacing:.05em;
+    transition:background .18s ease,color .18s ease;}
+  .site.top .site-cta{background:var(--ai);color:#fff;box-shadow:0 2px 0 var(--ai-deep);}
+  .site-cta .arrow{transition:transform .26s var(--ease-paper);}
+  .site:active{transform:translateY(1px);}
+  .site:active .site-cta .arrow{transform:translateX(4px);}
+  @media (hover:hover){
+    .site:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(34,37,43,.11);}
+    .site.top:hover{box-shadow:0 12px 30px rgba(206,58,36,.2);}
+    .site:hover .site-cta{background:var(--ai);color:#fff;}
+    .site:hover .site-cta .arrow{transform:translateX(4px);}
+  }
+  .seal{position:absolute;top:14px;right:16px;width:52px;height:52px;border:2.5px solid var(--shu);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:var(--shu);font-family:var(--f-min);font-weight:800;font-size:13px;
+    transform:rotate(-10deg);line-height:1.15;text-align:center;}
+  /* 推薦状が1枚ずつ机に置かれ、置き終わってから印が押される */
+  @keyframes letterDrop{from{opacity:0;transform:translateY(20px) rotate(-.8deg);}to{opacity:1;transform:none;}}
+  @keyframes sealPress{
+    0%{opacity:0;transform:rotate(-10deg) scale(1.8);}
+    58%{opacity:1;transform:rotate(-10deg) scale(.92);}
+    80%{transform:rotate(-10deg) scale(1.05);}
+    100%{opacity:1;transform:rotate(-10deg) scale(1);}}
+  .site.drop{animation:letterDrop .52s var(--ease-paper) both;animation-delay:var(--d,0ms);}
+  .site.drop .seal{opacity:0;} /* 紙が着地してから押すので、それまでは伏せておく */
+  .seal.press{animation:sealPress .42s var(--ease-paper) both;}
+
+  /* ---- シェア ---- */
+  /* シェアは主役ではない。結果直後を全幅3段のブランド色ボタンが占拠していて、
+     本来見てほしいサービスカードより目立っていたため、控えめな一行に格下げした。 */
+  .sharerow{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;margin-top:20px;
+            padding-top:16px;border-top:1px solid var(--line);align-items:center;}
+  .sharerow::before{content:"この結果を共有";font-size:12px;color:var(--ink-soft);margin-right:2px;}
+  .sharerow .cta{margin-top:0;width:auto;min-height:0;flex:0 0 auto;
+                 padding:7px 13px;font-size:13px;font-weight:700;border-radius:3px;
+                 background:var(--paper-2);color:var(--ink-soft);border:1px solid var(--line);
+                 box-shadow:none;letter-spacing:0;}
+  .sharerow .cta:hover{border-color:var(--ai);color:var(--ai);}
+  .xshare{display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+  .xshare .xmark{font-size:14px;font-weight:900;}
+  .lineshare{display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+  .copyshare{font-weight:700;}
+  .copyshare.copied{border-color:var(--ai);color:var(--ai);}
+
+  .note{font-size:11.5px;color:var(--ink-soft);margin-top:22px;line-height:1.8;}
+
+  /* ---- 解説セクション ---- */
+  .doc{margin-top:48px;padding-top:28px;border-top:2px solid var(--line);}
+  .doc-h2{position:relative;font-family:var(--f-min);font-size:18px;font-weight:800;letter-spacing:.04em;margin:32px 0 12px;padding-left:12px;}
+  .doc-h2::before{content:"";position:absolute;left:0;top:.16em;bottom:.16em;width:4px;background:var(--ink);transform-origin:top;}
+  .doc-h2.pre::before{transform:scaleY(0);} /* JSが付けた時だけ伏せる(JS無効なら常時表示) */
+  .doc-h2.draw::before{animation:barDraw .38s var(--ease-paper) both;}
+  .doc-h2:first-of-type{margin-top:0;}
+  .doc-h3{font-size:14.5px;font-weight:700;margin:20px 0 6px;color:var(--ink);}
+  .doc p{font-size:14px;color:var(--ink);line-height:1.95;margin-bottom:14px;}
+  .doc-list{margin:0 0 16px;padding-left:20px;}
+  .doc-list li{font-size:14px;line-height:1.9;margin-bottom:10px;}
+  .doc-tablewrap{overflow-x:auto;margin-bottom:10px;}
+  .doc-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--paper-2);}
+  .doc-table th,.doc-table td{border:1px solid var(--line);padding:9px 12px;text-align:left;}
+  .doc-table th{background:var(--paper-deep);font-weight:700;}
+  .doc-table td:last-child{font-family:var(--f-dot);text-align:right;white-space:nowrap;}
+  .doc-note{font-size:11.5px;color:var(--ink-soft);line-height:1.7;}
+  .faq h3{border-left:3px solid var(--ai);padding-left:10px;}
+  /* 解説が平文のベタ置きで奥行きが無かった。安全紙の細い罫と余白で紙面らしくする。 */
+  .sec{position:relative;}
+  .sec + .sec{margin-top:6px;}
+  .sec-body{background:
+      repeating-linear-gradient(to bottom, transparent 0 30px, rgba(28,78,99,.045) 30px 31px),
+      var(--paper-2);
+    border:1px solid var(--line);border-radius:3px;padding:20px 18px;}
+  .sec-body p{margin-bottom:1em;}
+  .sec-body p:last-child{margin-bottom:0;}
+  .hidden{display:none;}
+  .footer{text-align:center;padding:20px 16px calc(36px + env(safe-area-inset-bottom));font-size:12px;color:var(--ink-soft);}
+  .footer a{color:var(--ai);text-decoration:none;}
+  .footer a:hover{text-decoration:underline;}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+  #result.show{animation:rise .4s ease;}
+
+  /* スクロール連動の読み込み。JSがクラスを付けるまで .reveal は付かないので、
+     JS無効・IntersectionObserver非対応でも本文は必ず表示される。 */
+  .reveal{opacity:0;transform:translateY(12px);}
+  .reveal.in{opacity:1;transform:none;transition:opacity .55s ease,transform .55s var(--ease-paper);}
+
+  @media (prefers-reduced-motion: reduce){
+    #result.show,.sheet.issue,.sheet.issue .rows .row,.sheet.shake,
+    .site.drop,.sec-t.draw::before,.cta.ready,
+    .hero .eyebrow,.hero h1,.hero .lede,.hero .pills,.hero .prline{animation:none;}
+    .hero h1 em{animation:none;background-size:100% 100%;}
+    .gauge>i{transition:none;}
+    .stamp.on{animation:none;opacity:.92;}
+    .seal.press{animation:none;}
+    .reveal{opacity:1;transform:none;}
+    .site,.site-cta,.site-cta .arrow,.seg button::before{transition:none;}
+  }
+  @media (min-width:560px){
+    .seg.cols4{grid-template-columns:repeat(4,1fr);}
+    .seg.cols4 button.wide{grid-column:auto;}
+  }
+</style>
+</head>
+<body>
+<div style="background:#161A18;color:#EDF1EC;font-size:12.5px;padding:8px 14px;text-align:center;letter-spacing:.02em">
+  デザイン刷新のプレビューです（本番は
+  <a href="https://clawtech6477.github.io/nenshu-shindan/" style="color:#9EC7D6">こちら</a>）
+</div>
+
+<header class="hero">
+  <p class="eyebrow">SALARY CHECK ── 診断書発行まで 30秒</p>
+  <h1>その年収、<br><em>あと何万円</em>上げられる？</h1>
+  <p class="lede">同業種・同年代の水準からあなたの「適正年収」を推定。提携する転職サービスの中から、いま選ぶべき3つまで一括でご提案します。</p>
+  <div class="pills"><span class="pill">無料</span><span class="pill">登録不要</span><span class="pill">質問は4つ</span></div>
+  <p class="prline">［PR］本ページはアフィリエイト広告を含みます</p>
+</header>
+
+<main class="wrap">
+
+  <noscript><div class="card">診断の実行にはJavaScriptが必要です。Safari や Chrome などのブラウザで開いてください。</div></noscript>
+
+  <section class="card sheet-form" aria-label="診断フォーム">
+    <div class="sheet-head form-head">
+      <span class="sheet-title">診断申込書</span>
+      <span class="sheet-date" id="formProgress" aria-live="polite">記入 0/4</span>
+    </div>
+    <div class="field">
+      <span class="lbl"><span class="no">Q1</span>年代</span>
+      <div class="seg cols4" id="age">
+        <button data-v="20">20〜30歳</button>
+        <button data-v="30">31〜40歳</button>
+        <button data-v="40">41〜50歳</button>
+        <button data-v="50">51歳以上</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" for="income"><span class="no">Q2</span>現在の年収</label>
+      <div class="selbox">
+        <select id="income">
+          <option value="">選択してください</option>
+          <option value="250">〜300万円</option>
+          <option value="350">300〜400万円</option>
+          <option value="450">400〜500万円</option>
+          <option value="600">500〜700万円</option>
+          <option value="850">700〜1000万円</option>
+          <option value="1100">1000万円〜</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="lbl" for="job"><span class="no">Q3</span>現在の業種</label>
+      <div class="selbox">
+        <select id="job">
+          <option value="">選択してください</option>
+          <option value="it">IT・Web</option>
+          <option value="sales">営業</option>
+          <option value="acct">事務・経理</option>
+          <option value="nurse">看護師</option>
+          <option value="pharma">薬剤師</option>
+          <option value="care">介護・福祉</option>
+          <option value="constr">建設・不動産</option>
+          <option value="maker">製造</option>
+          <option value="service">販売・サービス</option>
+          <option value="childcare">保育</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="lbl"><span class="no">Q4</span>これからどうしたい？<small>いちばん近いもの</small></span>
+      <div class="seg" id="dir">
+        <button data-v="same">今の業種で年収UP</button>
+        <button data-v="toit">IT・コンサルへ挑戦</button>
+        <button data-v="new">未経験の職種</button>
+        <button data-v="wlb">働き方を変えたい</button>
+        <button data-v="unsure" class="wide">まだ迷っている</button>
+      </div>
+    </div>
+
+    <button class="cta" id="go" disabled>診断書を発行する</button>
+    <p class="ctanote">✓ 無料　✓ 会員登録なし　✓ 4問・30秒で結果表示</p>
+  </section>
+
+  <!-- ================= 結果：診断書 ================= -->
+  <section id="result" class="hidden" aria-live="polite">
+    <div class="sheet">
+      <div class="sheet-head">
+        <span class="sheet-title">適正年収診断書</span>
+        <span class="sheet-date" id="issued"></span>
+      </div>
+      <dl class="rows">
+        <div class="row"><dt>現在の年収</dt><dd id="curv">---</dd></div>
+        <div class="row fitrow"><dt>適正年収（推定）</dt><dd><span id="fit">0</span><small>万円</small></dd></div>
+        <div class="row diffrow" id="diffrow"><dt>昇給余地</dt><dd>+<span id="diff">0</span><small>万円</small></dd></div>
+      </dl>
+      <div class="gauge"><i id="gauge"></i></div>
+      <p class="vmsg" id="msg"></p>
+      <p class="basis" id="basis"></p>
+      <p class="sheet-imprint">SALARY CHECK ── clawtech6477.github.io/nenshu-shindan</p>
+      <span class="stamp" id="stamp" aria-hidden="true">診断<br>済</span>
+    </div>
+
+    <!-- LINE集客動線（LINE_URL設定時のみ表示） -->
+    <div class="linecard" id="linecard">
+      <h3>診断結果をもとに、次の一手を無料サポート</h3>
+      <p>友だち追加で「適正年収の上げ方ガイド」と非公開求人情報をLINEでお届けします。</p>
+      <a class="linebtn" id="linebtn" href="#line" target="_blank" rel="noopener">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3C6.9 3 2.8 6.4 2.8 10.6c0 3.7 3.3 6.9 7.7 7.5.3.1.7.2.8.5.1.2.1.6 0 .8l-.1.8c0 .2-.2 1 .8.5s5.6-3.3 7.6-5.6c1.4-1.5 2.1-3 2.1-4.5C21.7 6.4 17.1 3 12 3z" fill="#fff"/></svg>
+        LINEで無料相談する
+      </a>
+    </div>
+
+    <h2 class="sec-t" id="sitesTitle">あなたに合う転職サービス TOP3</h2>
+    <p class="sec-fit" id="sitesFit"></p>
+    <div id="sites"></div>
+
+    <div class="sharerow">
+      <button class="cta xshare" id="xshare"><span class="xmark">𝕏</span>Xでシェア</button>
+      <button class="cta lineshare" id="lineshare"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3C6.9 3 2.8 6.4 2.8 10.6c0 3.7 3.3 6.9 7.7 7.5.3.1.7.2.8.5.1.2.1.6 0 .8l-.1.8c0 .2-.2 1 .8.5s5.6-3.3 7.6-5.6c1.4-1.5 2.1-3 2.1-4.5C21.7 6.4 17.1 3 12 3z" fill="#fff"/></svg>LINEでシェア</button>
+      <button class="cta copyshare" id="copyshare">リンクをコピー</button>
+    </div>
+
+    <p class="note">
+      ※本ページはアフィリエイト広告(PR)を含みます。<br>
+      ※推定年収は国税庁「民間給与実態統計調査」の全産業平均を基準に、年代・業種・志向の傾向係数を掛け合わせた参考値です。業種・職種別の詳細統計は公開資料で数値が確認できなかったため係数は一般的な相対傾向による推定であり、実際の年収を保証するものではありません。
+    </p>
+  </section>
+
+  <!-- ===== 解説セクション(常時表示。診断の算出根拠の開示 + 検索流入の受け皿) ===== -->
+  <section class="doc" aria-label="適正年収の考え方">
+    <h2 class="doc-h2">適正年収とは？この診断の考え方</h2>
+    <p>「適正年収」とは、同じ業種・同じ年代で働く人の給与水準から見て、その人の経験や職種であれば得られる可能性が高いと考えられる年収の目安です。転職市場では、同じ仕事内容でも企業や業界によって給与水準が異なるため、現在の年収が市場の水準より低いまま据え置かれているケースは珍しくありません。</p>
+    <p>この診断では、国税庁「民間給与実態統計調査」（令和6年分）で公表されている<strong>給与所得者の平均給与478万円</strong>を出発点に、業種・年代・今後の志向という3つの観点から傾向係数を掛け合わせて目安額を算出しています。</p>
+
+    <h2 class="doc-h2">業種別の推定基準年収</h2>
+    <p>本ツールが基準として用いている業種別の水準は次のとおりです。業種・職種別の詳細な公的統計は数値の形で公開されている資料を確認できなかったため、以下は一般的な相対傾向にもとづく<strong>推定値</strong>であり、公的統計そのものではありません。</p>
+    <div class="doc-tablewrap">
+      <table class="doc-table">
+        <thead><tr><th>業種・職種</th><th>推定基準（30代目安）</th></tr></thead>
+        <tbody>
+          <tr><td>薬剤師</td><td>約640万円</td></tr>
+          <tr><td>IT・Web</td><td>約600万円</td></tr>
+          <tr><td>看護師</td><td>約550万円</td></tr>
+          <tr><td>建設・不動産</td><td>約520万円</td></tr>
+          <tr><td>営業</td><td>約520万円</td></tr>
+          <tr><td>製造</td><td>約510万円</td></tr>
+          <tr><td>事務・経理</td><td>約450万円</td></tr>
+          <tr><td>介護・福祉</td><td>約410万円</td></tr>
+          <tr><td>販売・サービス</td><td>約410万円</td></tr>
+          <tr><td>保育</td><td>約390万円</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="doc-note">※31〜40歳の係数を適用した参考値です。実際の年収は勤務先の規模・地域・保有資格・役職によって大きく変動します。</p>
+
+    <h2 class="doc-h2">介護職・福祉職の年収を上げるには</h2>
+    <p>介護・福祉の分野は、高齢化にともなって人材需要が続いている一方、給与水準は全産業平均を下回る傾向が指摘されてきた領域です。ただし同じ介護職でも、勤務先の形態（特別養護老人ホーム、有料老人ホーム、訪問介護、グループホームなど）や運営法人の規模によって給与条件は異なり、転職によって水準が変わることがあります。</p>
+    <p>収入を上げる具体的な道筋としては、次のような選択肢があります。</p>
+    <ul class="doc-list">
+      <li><strong>資格を取得して手当を得る</strong>：介護福祉士、ケアマネジャー（介護支援専門員）などの資格は、資格手当や任される業務の幅に直結します。働きながら資格取得を支援する制度がある職場も少なくありません。</li>
+      <li><strong>役職・管理職を目指す</strong>：サービス提供責任者、生活相談員、施設長といった役職に就くことで、基本給とは別に役職手当が加わる形が一般的です。</li>
+      <li><strong>処遇改善加算の状況が良い職場を選ぶ</strong>：介護職員処遇改善加算などの制度をどう配分しているかは事業者によって差があり、同じ地域・同じ職種でも手取りが変わる要因になります。</li>
+      <li><strong>夜勤の有無や勤務形態を見直す</strong>：夜勤手当の有無で月収は大きく変わります。逆に、収入より働き方を優先して日勤のみに変える選択もあります。</li>
+    </ul>
+    <p>介護職は資格・経験がそのまま評価されやすい職種のため、「今の職場で上がらないから」と諦める前に、同じ資格・経験で他の職場の条件を確認してみる価値があります。</p>
+
+    <h2 class="doc-h2">年代によって年収水準はどう変わるか</h2>
+    <p>国税庁の同調査では、男性の場合は60歳未満まで年齢が上がるにつれて平均給与も上昇し、55〜59歳の階層（735万円）が最も高くなる一方、女性では年齢による差が比較的小さいことが示されています。本診断でも、20代を基準として30代・40代で水準が上がり、50代以降はやや緩やかになる傾向を反映しています。</p>
+    <p>年収を上げる手段は昇給だけではありません。同じ職種でも業界を変える、専門性の高い領域に移る、資格を活かせる職場に移るといった選択で、水準そのものが変わることがあります。診断結果では、あなたの業種と志向に合わせて相談先の候補を提示します。</p>
+
+    <h2 class="doc-h2">よくある質問</h2>
+    <div class="faq">
+      <h3 class="doc-h3">診断に会員登録やメールアドレスは必要ですか？</h3>
+      <p>不要です。4つの質問を選ぶだけで、その場で結果が表示されます。氏名・メールアドレス・電話番号などの個人情報の入力は一切ありません。</p>
+
+      <h3 class="doc-h3">診断は無料ですか？</h3>
+      <p>無料です。費用が発生することはありません。なお本ページは転職サービスのアフィリエイト広告（PR）を含みます。</p>
+
+      <h3 class="doc-h3">診断結果の年収は正確ですか？</h3>
+      <p>統計的な参考値であり、実際に得られる年収を保証するものではありません。公的統計の全産業平均を基準に、業種・年代・志向の傾向係数を掛け合わせた推定値です。実際の年収は企業規模・地域・経験年数・保有資格などによって大きく変わります。</p>
+
+      <h3 class="doc-h3">診断にはどれくらい時間がかかりますか？</h3>
+      <p>4問の選択式で、およそ30秒で結果が表示されます。</p>
+
+      <h3 class="doc-h3">紹介される転職サービスはどう選ばれていますか？</h3>
+      <p>回答いただいた業種・年代・今後の志向にもとづいて、条件に合うサービスを提示しています。専門特化のサービスがまだ提携準備中の業種については、その旨を明記したうえで幅広い職種に対応するサービスをご案内しています。</p>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>運営: <a href="https://clawtech6477.github.io/clawtech-lp/" target="_blank" rel="noopener">ClawTech（クロウテック）</a></p>
+</footer>
+
+<!-- アフィリエイト計測用トラッキングピクセル(提携承認済み分) -->
+<img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www11.a8.net/0.gif?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www18.a8.net/0.gif?a8mat=4B8DGQ+C506SY+5B0Y+5YJRM" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www13.a8.net/0.gif?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY" alt="" style="position:absolute;">
+<img border="0" width="1" height="1" src="https://www15.a8.net/0.gif?a8mat=4B9VHD+8GTYIA+1W34+C0B9U" alt="" style="position:absolute;">
+
+<script>
+// ================================================================
+// 【URL設定】ここを実URLに差し替えてください
+// ================================================================
+const SITE_URL = "https://clawtech6477.github.io/nenshu-shindan/"; // ← このLPの公開URL
+const LINE_URL = "#line"; // ← LINE公式アカウントの友だち追加URL（例: https://lin.ee/XXXXXXX）
+// --- アフィリエイトURL（例: recruit: "https://px.a8.net/svt/ejp?a8mat=XXXXX"）---
+// 2026-07-31全面刷新: A8.netで実際に提携申請済み(申込日2026/07/31)のプログラムのみ掲載。
+// コメントのs番号はA8のプログラムID。承認後、広告リンク作成画面で照合して実URLに差し替える。
+const AFFILIATE_URLS = {
+  recruit:     "#recruit",     // s00000011454002 リクルートエージェント(新規WEBエントリー後初回受付¥2,000)
+  levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
+  technogo:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY", // s00000024757003 TechGo 提携承認済み(2026/08/01)
+  techgate:    "#techgate",    // s00000025047005 テックゲートエキスパート(新規面談完了¥54,000)
+  meiko:       "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM", // s00000026573001 明光キャリアパートナーズ(strategy career) 提携承認済み(2026/08/03)
+  sap:         "#sap",         // s00000026342002 SAPテンショク(新規転職相談¥15,000)
+  techadapt:   "#techadapt",   // s00000024196001 techadapt(新規面談¥70,000)
+  myvision:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C506SY+5B0Y+5YJRM", // s00000024757001 MyVision コンサル特化 提携承認済み(2026/08/07)
+  zeroichi:    "#zeroichi",    // s00000023866002 ゼロイチ転職(新規面談¥15,000)
+  gks:         "#gks",         // s00000022176005 GKSキャリア(新規面談実施¥25,000)
+  buildjob:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY", // s00000024757004 ビルドジョブ 提携承認済み(2026/08/07)
+  rsg:         "#rsg",         // s00000021947004 RSG不動産転職(新規カウンセリング¥3,000)
+  keirijobs:   "#keirijobs",   // s00000026359002 経理Jobs(新規転職支援申込¥10,000)
+  twinpro:     "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE", // s00000024757002 ツインプロ 提携承認済み(2026/07/31)
+  nursesenka:  "#nursesenka",  // s00000001248024 ナース専科 転職(新規申込¥26,000)
+  pharmastaff: "#pharmastaff", // s00000010261001 ファルマスタッフ(新規会員登録¥65,000)
+  kaigobatake: "https://px.a8.net/svt/ejp?a8mat=4B9VHD+8GTYIA+1W34+C0B9U", // s00000008824002 かいご畑 提携承認済み(2026/08/07)
+  kaigotown:   "#kaigotown",   // s00000027480001 介護タウン(新規面談実施¥10,000) 申込2026/08/01
+};
+
+// ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
+function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
+
+// ===== 表示用ラベル(推薦状の「あなたの適性」表示・位番号に使用) =====
+const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
+const DIR_LABEL = {same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種へ",wlb:"働き方重視",unsure:"方向性を模索中"};
+const ORDINAL = ["壱","弐","参"];
+
+// ===== 基準年収 =====
+// 全産業平均478万円は国税庁「民間給与実態統計調査」令和6年分を直接確認して採用
+// (該当箇所: 「１年を通じて勤務した給与所得者の平均給与は478万円」)。
+// 業種別・職種別の内訳は同調査・賃金構造基本統計調査ともに図(グラフ画像)のみで
+// 数値を含む表が確認できなかったため、業種ごとの係数は一般的な相対傾向による
+// 推定値であることを診断書に明記する(競合監査で「根拠データの薄さ」を
+// 指摘されたため、無根拠に見せない=不確かな精度を装わないことを優先)。
+const ALL_INDUSTRY_AVG = 478; // 国税庁 民間給与実態統計調査 令和6年分・全産業平均
+const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455,maker:440,service:360,childcare:340,other:478};
+// ===== 転職サイトDB(タグ+単価。affiはAFFILIATE_URLS参照) =====
+// 全件、A8.netで提携申請済みの実在プログラム。payoutは実際の成果報酬額。
+// R4CAREER(東海3県限定・地域を質問していないため出せない)と
+// doda新卒エージェント(就活生向けで転職診断の利用者とズレる)は申請済みだが意図的に非掲載。
+const SITES = [
+  {name:"リクルートエージェント", tags:{dir:["same","toit","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2000, affi:AFFILIATE_URLS.recruit, rs:"転職支援実績No.1。全業種・全年代に対応"},
+  {name:"レバテックダイレクト", tags:{dir:["same","wlb","unsure"],job:["it"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.levtech, rs:"IT・Webのスカウト型。登録して待つだけ"},
+  // 提携承認済み(2026-08-01)。未承認プログラムが残る暫定期間中は、嘘にならない範囲で
+  // 対象を広げている: TechGoはIT経験者のハイクラス転職が本領だが「IT・コンサルへ
+  // 挑戦」志向の人にとっても妥当な入口なので、業種を問わず toit の人には出す。
+  {name:"TechGo", tags:{dir:["same","toit"],job:["it"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"ITエンジニアのハイクラス転職"},
+  {name:"TechGo", tags:{dir:["toit"],job:["*"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"IT業界へのキャリアチェンジも相談できるハイクラス転職"},
+  {name:"テックゲートエキスパート", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:54000, affi:AFFILIATE_URLS.techgate, rs:"20代・30代のITコンサル転職"},
+  // 遷移先の実サービス名は「strategy career」(運営=明光キャリアパートナーズ)。
+  // カード名を運営会社名のままにすると着地ページと名前が合わず不信感につながるため、
+  // 表示はサービス名、運営会社は説明文側に出す。20-30代エンジニア向けの訴求。
+  {name:"strategy career", tags:{dir:["same"],job:["it"],age:["20","30"]}, payout:78000, affi:AFFILIATE_URLS.meiko, rs:"20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）"},
+  {name:"SAPテンショク", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:15000, affi:AFFILIATE_URLS.sap, rs:"SAPコンサル・エンジニア経験者専門"},
+  {name:"techadapt", tags:{dir:["same","wlb"],job:["it"],age:["20","30","40","50"]}, payout:70000, affi:AFFILIATE_URLS.techadapt, rs:"正社員ではなくITフリーランス案件を探すなら"},
+  {name:"MyVision", tags:{dir:["toit"],job:["*"],age:["20","30"]}, payout:50000, affi:AFFILIATE_URLS.myvision, rs:"コンサル業界への転身。8割超が未経験から"},
+  {name:"ゼロイチ転職", tags:{dir:["new","unsure"],job:["*"],age:["20"]}, payout:15000, affi:AFFILIATE_URLS.zeroichi, rs:"第二新卒・既卒の完全オーダーメイド就職"},
+  {name:"GKSキャリア", tags:{dir:["new"],job:["*"],age:["20","30"]}, payout:25000, affi:AFFILIATE_URLS.gks, rs:"未経験から施工管理へ。資格取得も支援"},
+  {name:"ビルドジョブ", tags:{dir:["same","new"],job:["constr"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.buildjob, rs:"建設業界特化のキャリア面談"},
+  {name:"RSG不動産転職", tags:{dir:["same"],job:["constr"],age:["20","30","40"]}, payout:3000, affi:AFFILIATE_URLS.rsg, rs:"不動産業界専門。経験を活かして年収UP"},
+  {name:"経理Jobs", tags:{dir:["same"],job:["acct"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.keirijobs, rs:"経理特化の転職エージェント"},
+  // 提携承認済み(2026-07-31)。会計士・税理士向けだが、経理・財務の実務者が
+  // 士業キャリアを含めて相談する先としても妥当なので、事務・経理層には
+  // 方向性を問わず出す(same以外も対象)。
+  {name:"ツインプロ", tags:{dir:["same","toit","new","wlb","unsure"],job:["acct"],age:["20","30","40"]}, payout:52500, affi:AFFILIATE_URLS.twinpro, rs:"会計士・税理士特化。経理・財務のキャリア相談も無料"},
+  {name:"ナース専科 転職", tags:{dir:["same","wlb","unsure"],job:["nurse"],age:["20","30","40","50"]}, payout:26000, affi:AFFILIATE_URLS.nursesenka, rs:"登録者100万人以上。看護師転職の定番"},
+  // 介護領域(2026-08-01申請・承認待ち)。介護タウンは未経験・ブランクOKを掲げているため
+  // 「未経験の職種」志向にも対応、かいご畑は資格取得支援が売りなので同業種UP層の軸に置く。
+  {name:"かいご畑", tags:{dir:["same","wlb","unsure"],job:["care"],age:["20","30","40","50"]}, payout:6000, affi:AFFILIATE_URLS.kaigobatake, rs:"働きながら0円で介護資格。求人7000件以上"},
+  {name:"介護タウン", tags:{dir:["same","new","unsure"],job:["care"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.kaigotown, rs:"未経験・ブランクOK。面談で徹底サポート"},
+  {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
+];
+
+// ===== 提携サービス数をヒーローに反映 =====
+// 掲載件数の明示はやめた。SITES.length は訴求違いの重複エントリを含むうえ、
+// リンクが有効なのは提携承認済みの数社だけで、実際に見える件数と食い違うため。
+
+// ===== 状態管理（4項目） =====
+const st = {age:"",income:"",job:"",dir:""};
+let started = false;
+
+function firstTouch(){ if(!started){ track("diagnosis_start"); started=true; } }
+
+// 動きを止める設定の人には、演出をすべて即時完了として扱う
+const NO_MOTION = ()=>window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function sync(){
+  const go = document.getElementById("go");
+  const filled = ["age","income","job","dir"].filter(k=>st[k]).length;
+  document.getElementById("formProgress").textContent = `記入 ${filled}/4`;
+  const wasDisabled = go.disabled;
+  go.disabled = filled < 4;
+  // 4項目そろった瞬間だけ、押す場所を一度示す(以後の再選択では鳴らさない)
+  if(wasDisabled && !go.disabled && !NO_MOTION()){
+    go.classList.remove("ready"); void go.offsetWidth; go.classList.add("ready");
+  }
+}
+
+["age","dir"].forEach(id=>{
+  document.querySelectorAll(`#${id} button`).forEach(b=>{
+    b.setAttribute("aria-pressed","false");
+    b.onclick=()=>{
+      document.querySelectorAll(`#${id} button`).forEach(x=>{
+        x.classList.remove("on"); x.setAttribute("aria-pressed","false");
+      });
+      b.classList.add("on"); b.setAttribute("aria-pressed","true");
+      st[id]=b.dataset.v;
+      firstTouch(); sync();
+    };
+  });
+});
+["income","job"].forEach(id=>{
+  document.getElementById(id).onchange=e=>{ st[id]=e.target.value; firstTouch(); sync(); };
+});
+
+// ===== 金額カウントアップ演出 =====
+function countUp(el,to){
+  if(window.matchMedia("(prefers-reduced-motion: reduce)").matches){ el.textContent=to; return; }
+  const t0=performance.now();
+  (function f(t){
+    const p=Math.min((t-t0)/900,1);
+    el.textContent=Math.round(to*(1-Math.pow(1-p,3)));
+    if(p<1) requestAnimationFrame(f);
+  })(t0);
+}
+
+// ===== 診断ロジック =====
+let lastFit=0, lastDiff=0, lastAbove=false, lastSig="";
+document.getElementById("go").onclick=()=>{
+  const ageK = {20:1.0,30:1.15,40:1.2,50:1.1}[st.age];
+  const dirK = st.dir==="toit"?1.2 : st.dir==="new"?1.1 : 1.0;
+  const cur = +st.income;
+  const fit = Math.round(BASE[st.job] * ageK * dirK /10)*10;
+  // 推定値が現年収以下でも水増ししない(「必ず伸びしろが出る」加算は
+  // 注記の「統計的な参考値」と矛盾する虚偽表示になるため廃止)。
+  // 水準超えの人には正直にそう伝え、訴求を「選択肢を広げる」に切り替える。
+  const above = fit <= cur;
+  const diff = above ? 0 : fit - cur;
+  lastFit = fit; lastDiff = diff; lastAbove = above;
+
+  // 診断書ヘッダ（発行日・現在年収の表示）
+  const now = new Date();
+  document.getElementById("issued").textContent =
+    `発行日 ${now.getFullYear()}.${String(now.getMonth()+1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")}`;
+  const incomeSel = document.getElementById("income");
+  document.getElementById("curv").textContent = incomeSel.selectedOptions[0] ? incomeSel.selectedOptions[0].text : "---";
+
+  countUp(document.getElementById("fit"), fit);
+  const diffRow = document.getElementById("diffrow");
+  // 昇給余地0のときに空のゲージが残ると「計測できていない」ように見えるので隠す
+  document.getElementById("gauge").parentElement.style.display = above ? "none" : "";
+  if(above){
+    diffRow.querySelector("dd").innerHTML = '<span class="okmark">水準クリア</span>';
+    document.getElementById("msg").textContent =
+      "現在の年収は同業種・同年代の推定水準を上回っています。市場価値が高い今こそ、より良い条件・働き方を選べるタイミングです。";
+  }else{
+    diffRow.querySelector("dd").innerHTML = '+<span id="diff">0</span><small>万円</small>';
+    countUp(document.getElementById("diff"), diff);
+    document.getElementById("msg").textContent =
+      st.dir==="toit" ? "異業種チャレンジは伸びしろ大。特化型エージェントの活用が鍵です。"
+      : diff>=150 ? "現年収と適正年収の差が大きめ。行動すれば上げられる余地があります。"
+      : "着実に年収を伸ばせるタイプ。相性の良いサービスから始めましょう。";
+  }
+
+  document.getElementById("basis").textContent =
+    `算出根拠: 全産業平均${ALL_INDUSTRY_AVG}万円(国税庁「民間給与実態統計調査」令和6年分)を基準に、業種・年代・志向の傾向係数を掛けた推定値`;
+
+  // 朱印スタンプ（カウントアップ完了後に押される）
+  const stamp = document.getElementById("stamp");
+  stamp.classList.remove("on");
+  setTimeout(()=>{ stamp.classList.add("on"); },
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 1000);
+
+  // ===== 出し分けスコアリング =====
+  // 1. まず「対象外」を確定する(方向性が合わない・ハイクラス限定を低年収層に出さない等)。
+  //    dir/jobは単なる加点ではなく必須条件にする。ここを単価加点より前に判定し、
+  //    除外が単価の強さで覆らないようにする(高単価だが方向性が違う案件が
+  //    1位に出てしまうミスマッチを防ぐため)。
+  const isHigh = cur>=600;
+  const isReady = s=>!String(s.affi).startsWith("#");
+  const fitsCore = s=>
+    s.tags.dir.includes(st.dir) &&
+    (s.tags.job.includes("*")||s.tags.job.includes(st.job)) &&
+    s.tags.age.includes(st.age) &&
+    !(s.tags.income && s.tags.income.includes("high") && !isHigh);
+  // 実際のアフィリエイトURLが設定済み(=審査承認済み)の候補だけを対象にする。
+  // 「準備中」の案件を並べて見せると、まだ大半が未承認の現時点では
+  // 訪問者に「未完成のサイト」という印象を与え信用を損なうため、
+  // リンクが有効な候補が無ければ欄ごと「近日公開」メッセージに切り替える。
+  const eligible = SITES.filter(s=>fitsCore(s) && isReady(s));
+  // 2. 方向性・業種・年代が合う候補の中で、高収入ボーナスを加点
+  // 3. 単価は sqrt で圧縮したうえで重めに加点(同程度の適合度なら高単価が勝ちやすい)
+  // 4. 毎回同じ並びにならないよう小さな乱数も加える
+  // 同一サービスが条件違いで複数エントリを持つ場合があるため(例: TechGoは
+  // 「IT経験者向け」と「IT業界へ挑戦したい人向け」で訴求文を出し分けている)、
+  // 名前で重複排除してから上位3件を採る。同名なら高スコア側を残す。
+  const dedupe = list=>{
+    const best = new Map();
+    for(const s of list){
+      const prev = best.get(s.name);
+      if(!prev || s.sc > prev.sc) best.set(s.name, s);
+    }
+    return [...best.values()];
+  };
+  const scored = dedupe(eligible.map(s=>{
+    let sc=0;
+    if(s.tags.income && s.tags.income.includes("high") && isHigh) sc+=35;
+    sc += Math.sqrt(s.payout)*0.35 + Math.random()*12;
+    return {...s,sc};
+  })).sort((a,b)=>b.sc-a.sc).slice(0,3);
+  // 万一、dir/job/age全部一致する候補が2件未満だった場合のフォールバック。
+  // 年代の条件だけ緩和する(方向性・業種・収入条件はミスマッチ防止のため維持。
+  // こちらもリンク有効な候補のみが対象)。
+  if(scored.length < 2){
+    const fallback = SITES.filter(s=>
+      isReady(s) &&
+      s.tags.dir.includes(st.dir) &&
+      (s.tags.job.includes("*")||s.tags.job.includes(st.job)) &&
+      !(s.tags.income && s.tags.income.includes("high") && !isHigh) &&
+      !scored.some(x=>x.name===s.name)
+    ).map(s=>{
+      let sc = Math.sqrt(s.payout)*0.35 + Math.random()*12;
+      return {...s,sc};
+    }).sort((a,b)=>b.sc-a.sc);
+    scored.push(...dedupe(fallback).slice(0, 3-scored.length));
+  }
+
+  // 業種特化の提携先がまだ揃っていない暫定期間の措置。
+  // 該当0件のとき、専門特化サービスの代わりに「幅広く相談できる先」として
+  // 提携済みサービスを提示する。ただし専門特化であるかのように見せると
+  // ミスマッチ(看護師にITエージェントを"最適"として出す等)になるため、
+  // GENERAL フラグを立てて見出し・訴求文を一般向けの文言に差し替える。
+  let isGeneralFallback = false;
+  if(scored.length === 0){
+    const general = SITES.filter(isReady).map(s=>{
+      // 志向(dir)が合うものを優先。業種が合わなくても「幅広く相談できる先」
+      // として出すが、スコアは志向一致を最重視する。
+      let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(s.payout)*0.2 + Math.random()*8;
+      return {...s, sc};
+    }).sort((a,b)=>b.sc-a.sc);
+    const picked = dedupe(general).sort((a,b)=>b.sc-a.sc).slice(0,2);
+    if(picked.length){
+      isGeneralFallback = true;
+      scored.push(...picked);
+    }
+  }
+
+  const titleEl = document.getElementById("sitesTitle");
+  const fitEl = document.getElementById("sitesFit");
+  const box=document.getElementById("sites"); box.innerHTML="";
+
+  if(scored.length===0){
+    // 該当する提携済みサービスがまだ無い場合は、未完成に見える空のランキングでは
+    // なく「近日公開」の一文だけを見せる(信用を損なう「準備中」の列挙をしない)。
+    titleEl.textContent = "あなたに合う転職サービス";
+    fitEl.innerHTML = `<b>${JOB_LABEL[st.job]||st.job}</b>×<b>${DIR_LABEL[st.dir]||st.dir}</b>に合うサービスを提携準備中です。近日公開しますので、しばらくお待ちください。`;
+  }else{
+    if(isGeneralFallback){
+      // 一般向けフォールバック。専門特化のランキングと誤解されないよう、
+      // 見出しも訴求文も「幅広く相談できる先」であることを明示する。
+      titleEl.textContent = "まずは相談できる転職サービス";
+      fitEl.innerHTML =
+        `<b>${JOB_LABEL[st.job]||st.job}</b>の専門サービスは提携準備中です。まずは幅広い職種に対応する下記から相談できます。`;
+    }else{
+      titleEl.textContent =
+        scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
+      fitEl.innerHTML =
+        `あなたの適性: <b>${JOB_LABEL[st.job]||st.job}</b> × <b>${DIR_LABEL[st.dir]||st.dir}</b> を軸に選定`;
+    }
+
+    const motion = !NO_MOTION();
+    scored.forEach((s,i)=>{
+      const a=document.createElement("a");
+      a.href=s.affi; a.target="_blank"; a.rel="noopener sponsored";
+      const isTop = i===0 && !isGeneralFallback;
+      a.className="site"+(isTop?" top":"");
+      a.innerHTML=`
+        <div class="ord"><small>其の</small>${ORDINAL[i]||i+1}</div>
+        <div class="nm">${s.name}</div>
+        <p class="rs">${s.rs}</p>
+        <div class="site-cta">無料相談へ進む<span class="arrow" aria-hidden="true">→</span></div>
+        ${isTop?'<div class="seal" aria-hidden="true">推薦</div>':''}`;
+      if(motion){
+        // 推薦状を1枚ずつ置き、置き終わってから朱印を押す
+        a.style.setProperty("--d", (560 + i*130) + "ms");
+        a.classList.add("drop");
+        if(isTop){
+          const seal = a.querySelector(".seal");
+          setTimeout(()=>{ seal.classList.add("press"); }, 560+520+140);
+        }
+      }
+      a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout, general_fallback:isGeneralFallback}); });
+      box.appendChild(a);
+    });
+  }
+
+  const res=document.getElementById("result");
+  res.classList.remove("hidden"); res.classList.add("show");
+
+  // ===== 発行シーケンス =====
+  // 紙が繰り出される→記入欄が順に埋まる→数字が上がる→朱印が押されて紙が揺れる、の一連。
+  // バラバラの効果を散らすより、1つの筋の通った所作にまとめる。
+  if(!NO_MOTION()){
+    const sheet = res.querySelector(".sheet");
+    sheet.classList.remove("issue","shake"); void sheet.offsetWidth;
+    sheet.classList.add("issue");
+    // 発行アニメの fill と、朱印の衝撃で紙が揺れる演出がぶつからないよう先に外す
+    setTimeout(()=>sheet.classList.remove("issue"), 1000);
+    setTimeout(()=>{
+      sheet.classList.add("shake");
+      setTimeout(()=>sheet.classList.remove("shake"), 300);
+    }, 1010);
+    const t = document.getElementById("sitesTitle");
+    t.classList.remove("draw"); void t.offsetWidth; t.classList.add("draw");
+  }
+  setTimeout(()=>{document.getElementById("gauge").style.width=Math.min(diff/300*100,100)+"%";},100);
+  // 結果が出たあとも申込書が全部開いたままだと、戻ったときに自分の結果を探すことになる。
+  // 入力内容を1行に畳んで、押せば開き直せるようにする。
+  collapseForm(st);
+  res.scrollIntoView({behavior:window.matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+
+  // 同一入力の連打では diagnosis_complete を重複送信しない(CVR計算の汚染防止)
+  const sig = [st.age,st.income,st.job,st.dir].join("|");
+  if(sig !== lastSig){
+    lastSig = sig;
+    track("diagnosis_complete",{fit_income:fit, diff:diff, above_market:above,
+      job:st.job, age:st.age, income:st.income, dir:st.dir});
+  }
+};
+
+// ===== LINE誘導（URL未設定の間はカードごと非表示） =====
+const lb=document.getElementById("linebtn");
+if(LINE_URL && LINE_URL !== "#line"){
+  lb.href = LINE_URL;
+  lb.addEventListener("click",()=>{ track("line_click"); });
+}else{
+  document.getElementById("linecard").classList.add("hidden");
+}
+
+// ===== シェア共通 =====
+function shareText(){
+  return lastAbove
+    ? `年収診断やってみたら「業界水準クリア」でした✌️ あなたは？\n#年収診断\n`
+    : `私の適正年収は${lastFit}万円でした！今より+${lastDiff}万円UPの可能性🔥\n#年収診断\n`;
+}
+function shareUrl(){ return SITE_URL || location.href; }
+
+// ===== Xシェア =====
+document.getElementById("xshare").onclick=()=>{
+  track("share_click",{channel:"x"});
+  window.open(`https://x.com/intent/post?text=${encodeURIComponent(shareText()+shareUrl())}`, "_blank");
+};
+
+// ===== LINEシェア =====
+document.getElementById("lineshare").onclick=()=>{
+  track("share_click",{channel:"line"});
+  window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl())}&text=${encodeURIComponent(shareText())}`, "_blank");
+};
+
+// ===== リンクコピー =====
+document.getElementById("copyshare").onclick=async(e)=>{
+  track("share_click",{channel:"copy"});
+  const btn=e.currentTarget;
+  const original=btn.textContent;
+  try{
+    await navigator.clipboard.writeText(shareUrl());
+    btn.textContent="コピーしました ✓";
+  }catch(err){
+    // クリップボードAPI非対応環境向けフォールバック
+    const ta=document.createElement("textarea");
+    ta.value=shareUrl(); ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); btn.textContent="コピーしました ✓"; }
+    catch(e2){ btn.textContent="コピーに失敗しました"; }
+    document.body.removeChild(ta);
+  }
+  btn.classList.add("copied");
+  setTimeout(()=>{ btn.textContent=original; btn.classList.remove("copied"); }, 2000);
+};
+
+// ===== 解説セクションのスクロール演出 =====
+// 見出しの罫を引く+表をふわっと出す、の2種類だけに絞る(効果を撒くと安っぽくなる)。
+// .reveal は必ずJSから付ける。JS無効・IO非対応なら本文はそのまま表示される。
+if(!NO_MOTION() && "IntersectionObserver" in window){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(!en.isIntersecting) return;
+      en.target.classList.add(en.target.classList.contains("doc-h2") ? "draw" : "in");
+      io.unobserve(en.target);
+    });
+  }, {rootMargin:"0px 0px -12% 0px", threshold:0.15});
+  document.querySelectorAll(".doc-h2").forEach(el=>{ el.classList.add("pre"); io.observe(el); });
+  document.querySelectorAll(".doc-tablewrap").forEach(el=>{ el.classList.add("reveal"); io.observe(el); });
+}
+</script>
+</body>
+</html>
