@@ -31,12 +31,16 @@
     --gold:#D9922B;
     --gold-d:#B4761C;
     --danger:#B3402C;
-    --r:14px;
+    --r:16px;      /* 外側の器は大きく */
+    --r-in:8px;    /* 内側の部品は小さく。丸みを揃えないことで階層を出す */
     --ease:cubic-bezier(.2,.8,.2,1);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{background:var(--bg);color:var(--ink);
+  body{background:
+    radial-gradient(120% 60% at 50% 0%, #F2F7F4 0%, rgba(242,247,244,0) 60%),
+    var(--bg);
+    color:var(--ink);
        font-family:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;
        line-height:1.7;-webkit-font-smoothing:antialiased;
        font-feature-settings:"palt";}
@@ -53,10 +57,11 @@
   .qsub{font-size:14px;color:var(--ink-2);margin:0 0 22px}
   .opts{display:grid;gap:10px}
   .opt{appearance:none;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);
-       border-radius:var(--r);padding:17px 18px;font:inherit;font-weight:700;font-size:16.5px;color:var(--ink);
+       border-radius:var(--r-in);border-left:4px solid transparent;padding:17px 18px;font:inherit;font-weight:700;font-size:16.5px;color:var(--ink);
        cursor:pointer;transition:transform .16s var(--ease),border-color .16s,box-shadow .16s;
        display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .opt:hover{border-color:var(--green);transform:translateY(-1px);box-shadow:0 6px 18px rgba(11,93,81,.10)}
+  .opt:hover{border-color:var(--line);border-left-color:var(--green);transform:translateY(-1px);
+            box-shadow:0 6px 18px rgba(11,93,81,.10)}
   .opt:active{transform:scale(.988)}
   .opt::after{content:"→";color:var(--green);font-weight:900;opacity:.35;transition:opacity .16s,transform .16s}
   .opt:hover::after{opacity:1;transform:translateX(2px)}
@@ -70,6 +75,12 @@
   .back:hover{color:var(--green)}
   .lede{font-size:14.5px;color:var(--ink-2);margin:0 0 26px;max-width:30em}
   .pr{font-size:11.5px;color:var(--ink-2);opacity:.75;margin-top:20px}
+
+  /* イラスト。この題材の主役は人物ではなく分布なので、
+     ストック写真ではなく「棒グラフの上に人が並び、自分の位置が分かる」絵を描いた。
+     題材そのものを絵にしているので、他所から持ってきた写真より説明力がある。 */
+  .hero-art{display:block;width:100%;height:auto;margin:0 0 20px;
+            filter:drop-shadow(0 10px 24px rgba(11,93,81,.13))}
 
   /* ── 開始画面 ───────────────────────────────
      競合(doda/ビズリーチ/パソナ)は全社がヒーローに絵とスタートボタンを置いている。
@@ -132,7 +143,7 @@
   .dnote{font-size:12.5px;color:var(--ink-2);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
 
   .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 15px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r-in);padding:14px 15px}
   .kpi dt{font-size:11.5px;color:var(--ink-2);margin-bottom:2px}
   .kpi dd{margin:0;font-size:23px;font-weight:900;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
   .kpi.up dd{color:var(--gold-d)}
@@ -150,9 +161,9 @@
   .svc.first .svc-rank{background:var(--green)}
   .svc h3{margin:0;font-size:17.5px;font-weight:900;letter-spacing:-.01em}
   .svc p{margin:0 0 14px;font-size:13.5px;color:var(--ink-2)}
-  .svc a{display:flex;align-items:center;justify-content:center;gap:6px;min-height:50px;
+  .svc a{display:flex;align-items:center;justify-content:center;gap:6px;min-height:52px;
          background:var(--gold);color:#231a09;font-weight:900;font-size:15.5px;text-decoration:none;
-         border-radius:9px;transition:background .18s,transform .12s}
+         border-radius:var(--r-in);transition:background .18s,transform .12s}
   .svc a:hover{background:var(--gold-d);color:#fff}
   .svc a:active{transform:scale(.99)}
   .svc.first a{background:var(--green);color:#fff}
@@ -190,13 +201,59 @@
       <span class="fact">無料</span>
     </div>
 
-    <div class="peek" aria-hidden="true">
-      <div class="pk-amt">あと <em>60</em> 万円</div>
-      <div class="pk-bars"><i style="height:22%"></i><i style="height:58%"></i>
-        <i class="me" style="height:88%"></i><i style="height:64%"></i>
-        <i style="height:30%"></i><i style="height:12%"></i></div>
-      <div class="pk-ax">同業種・同年代の分布の中の、あなたの位置</div>
-    </div>
+    <svg class="hero-art" viewBox="0 0 340 176" role="img"
+         aria-label="同業種・同年代の年収分布を表す棒グラフの上に人が並び、自分の位置が示されているイラスト">
+      <defs>
+        <linearGradient id="gBar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#DCE7E2"/><stop offset="1" stop-color="#EDF2EF"/>
+        </linearGradient>
+        <linearGradient id="gMe" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0F6C5E"/><stop offset="1" stop-color="#0B5D51"/>
+        </linearGradient>
+        <linearGradient id="gSky" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#F3F7F5"/><stop offset="1" stop-color="#FBFAF6"/>
+        </linearGradient>
+        <!-- 平坦さを消すための微細なノイズ。ベタ塗りのままだと画面が死ぬ -->
+        <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/>
+          <feColorMatrix type="saturate" values="0"/>
+          <feComponentTransfer><feFuncA type="linear" slope="0.055"/></feComponentTransfer></filter>
+      </defs>
+    
+      <rect width="340" height="176" rx="14" fill="url(#gSky)"/>
+      <rect width="340" height="176" rx="14" filter="url(#grain)" opacity=".7"/>
+    
+      <!-- 分布の棒。左右に裾があり中央が高い -->
+      <g>
+        <rect x="18"  y="128" width="42" height="30" rx="5" fill="url(#gBar)"/>
+        <rect x="68"  y="104" width="42" height="54" rx="5" fill="url(#gBar)"/>
+        <rect x="118" y="76"  width="42" height="82" rx="5" fill="url(#gMe)"/>
+        <rect x="168" y="92"  width="42" height="66" rx="5" fill="url(#gBar)"/>
+        <rect x="218" y="116" width="42" height="42" rx="5" fill="url(#gBar)"/>
+        <rect x="268" y="136" width="42" height="22" rx="5" fill="url(#gBar)"/>
+      </g>
+      <rect x="10" y="158" width="320" height="2.5" rx="1.25" fill="#CFDAD5"/>
+    
+      <!-- 人。棒の上に立っていて、真ん中が「あなた」 -->
+      <g fill="#B9C7C1">
+        <g><circle cx="39" cy="112" r="7"/><path d="M31 128a8 8 0 0 1 16 0z"/></g>
+        <g><circle cx="89" cy="88" r="7"/><path d="M81 104a8 8 0 0 1 16 0z"/></g>
+        <g><circle cx="189" cy="76" r="7"/><path d="M181 92a8 8 0 0 1 16 0z"/></g>
+        <g><circle cx="239" cy="100" r="7"/><path d="M231 116a8 8 0 0 1 16 0z"/></g>
+        <g><circle cx="289" cy="120" r="7"/><path d="M281 136a8 8 0 0 1 16 0z"/></g>
+      </g>
+    
+      <!-- あなた -->
+      <g>
+        <circle cx="139" cy="57" r="8.5" fill="#0B5D51"/>
+        <path d="M129.5 76a9.5 9.5 0 0 1 19 0z" fill="#0B5D51"/>
+        <g transform="translate(139,34)">
+          <rect x="-25" y="-13" width="50" height="21" rx="10.5" fill="#D9922B"/>
+          <path d="M-4 8 L0 13 L4 8 Z" fill="#D9922B"/>
+          <text x="0" y="2.5" text-anchor="middle" font-size="11" font-weight="900"
+                font-family="'Zen Kaku Gothic New',sans-serif" fill="#2A1B04">あなた</text>
+        </g>
+      </g>
+    </svg>
 
     <div class="vs">
       大手の年収診断は、たいてい<b>その会社のサービスへの入口</b>です。<br>
