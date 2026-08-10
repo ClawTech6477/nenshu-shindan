@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>[刷新案] 年収UPシミュレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ===========================================================================
+   刷新案（構造から作り替え）
+
+   現行の問題:
+   ・4問を1画面に並べた「申込書」形式。診断ではなく事務作業に見える
+   ・結果が「数字ひとつ + ゲージ」で、知りたい「自分はどの位置か」が見えない
+   ・クリーム×明朝×テラコッタは、AIが最も作りがちな配色そのもの
+
+   この案:
+   ・1問1画面のステップ形式。押すだけで進む。診断コンテンツの標準形
+   ・結果は「同業種・同年代の分布の中の自分の位置」を主役にする
+   ・配色は深緑×山吹。日本のお金まわりの色で、AI既定の型から外す
+   =========================================================================== */
+  :root{
+    --bg:#FBFAF6;
+    --card:#FFFFFF;
+    --ink:#12211D;
+    --ink-2:#4B5B55;
+    --line:#DFE4E0;
+    --green:#0B5D51;
+    --green-d:#084A40;
+    --gold:#D9922B;
+    --gold-d:#B4761C;
+    --danger:#B3402C;
+    --r:14px;
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);
+       font-family:"Zen Kaku Gothic New",-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;
+       line-height:1.7;-webkit-font-smoothing:antialiased;
+       font-feature-settings:"palt";}
+  .pvbar{background:var(--ink);color:#EAF2EF;font-size:12.5px;padding:8px 14px;text-align:center}
+  .pvbar a{color:#8FD2C4}
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px 64px}
+
+  /* ── ステップ ───────────────────────────── */
+  .stage{min-height:calc(100dvh - 40px);display:flex;flex-direction:column;padding:26px 0 24px}
+  .brand{font-size:12px;font-weight:700;letter-spacing:.16em;color:var(--green);margin-bottom:30px}
+  .qnum{font-size:12px;font-weight:700;color:var(--gold-d);letter-spacing:.1em;margin-bottom:10px}
+  .q{font-size:clamp(24px,6.6vw,32px);font-weight:900;line-height:1.35;letter-spacing:-.01em;
+     margin:0 0 6px;text-wrap:balance}
+  .qsub{font-size:14px;color:var(--ink-2);margin:0 0 22px}
+  .opts{display:grid;gap:10px}
+  .opt{appearance:none;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);
+       border-radius:var(--r);padding:17px 18px;font:inherit;font-weight:700;font-size:16.5px;color:var(--ink);
+       cursor:pointer;transition:transform .16s var(--ease),border-color .16s,box-shadow .16s;
+       display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .opt:hover{border-color:var(--green);transform:translateY(-1px);box-shadow:0 6px 18px rgba(11,93,81,.10)}
+  .opt:active{transform:scale(.988)}
+  .opt::after{content:"→";color:var(--green);font-weight:900;opacity:.35;transition:opacity .16s,transform .16s}
+  .opt:hover::after{opacity:1;transform:translateX(2px)}
+  .opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .opt .sub{display:block;font-size:12.5px;font-weight:500;color:var(--ink-2);margin-top:2px}
+  .prog{display:flex;gap:6px;margin-top:auto;padding-top:26px}
+  .prog i{height:3px;flex:1;background:var(--line);border-radius:2px;transition:background .3s}
+  .prog i.on{background:var(--green)}
+  .back{margin-top:14px;background:none;border:none;color:var(--ink-2);font:inherit;font-size:13.5px;
+        cursor:pointer;padding:6px 0;text-align:left}
+  .back:hover{color:var(--green)}
+  .lede{font-size:14.5px;color:var(--ink-2);margin:0 0 26px;max-width:30em}
+  .pr{font-size:11.5px;color:var(--ink-2);opacity:.75;margin-top:20px}
+
+  /* ── 結果 ───────────────────────────────── */
+  #result{display:none;padding:26px 0 0}
+  #result.on{display:block;animation:up .5s var(--ease) both}
+  @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .verdict{font-size:13px;font-weight:700;letter-spacing:.1em;color:var(--gold-d);margin-bottom:6px}
+  .big{font-size:clamp(30px,8.4vw,42px);font-weight:900;line-height:1.28;letter-spacing:-.02em;margin:0 0 18px;text-wrap:balance}
+  .big em{font-style:normal;color:var(--green)}
+  .big .amt{font-size:1.5em;letter-spacing:-.03em}
+
+  /* 分布グラフ: 知りたいのは「自分がどこにいるか」なのでこれを主役に置く */
+  .dist{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px 18px 16px;margin-bottom:14px}
+  .dist h2{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 16px;letter-spacing:.02em}
+  .bars{display:flex;align-items:flex-end;gap:5px;height:104px;margin-bottom:6px}
+  .bars .b{flex:1;background:#E7EDEA;border-radius:4px 4px 0 0;position:relative;transition:height .8s var(--ease)}
+  .bars .b.me{background:var(--green)}
+  .bars .b.me::after{content:"あなた";position:absolute;left:50%;top:-22px;transform:translateX(-50%);
+    font-size:11px;font-weight:900;color:var(--green);white-space:nowrap}
+  .axis{display:flex;gap:5px;font-size:10.5px;color:var(--ink-2)}
+  .axis span{flex:1;text-align:center}
+  .dnote{font-size:12.5px;color:var(--ink-2);margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 15px}
+  .kpi dt{font-size:11.5px;color:var(--ink-2);margin-bottom:2px}
+  .kpi dd{margin:0;font-size:23px;font-weight:900;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .kpi.up dd{color:var(--gold-d)}
+  .kpi.ok dd{color:var(--green);font-size:19px}
+
+  .sec-h{font-size:17px;font-weight:900;margin:26px 0 4px;letter-spacing:-.01em}
+  .sec-s{font-size:13px;color:var(--ink-2);margin:0 0 14px}
+  .svc{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:11px;
+       transition:border-color .18s,box-shadow .18s}
+  .svc:hover{border-color:var(--green);box-shadow:0 8px 24px rgba(11,93,81,.10)}
+  .svc.first{border-color:var(--green);border-width:2px}
+  .svc-top{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .svc-rank{flex:0 0 auto;font-size:11px;font-weight:900;color:#fff;background:var(--ink-2);
+            border-radius:5px;padding:3px 8px;letter-spacing:.04em}
+  .svc.first .svc-rank{background:var(--green)}
+  .svc h3{margin:0;font-size:17.5px;font-weight:900;letter-spacing:-.01em}
+  .svc p{margin:0 0 14px;font-size:13.5px;color:var(--ink-2)}
+  .svc a{display:flex;align-items:center;justify-content:center;gap:6px;min-height:50px;
+         background:var(--gold);color:#231a09;font-weight:900;font-size:15.5px;text-decoration:none;
+         border-radius:9px;transition:background .18s,transform .12s}
+  .svc a:hover{background:var(--gold-d);color:#fff}
+  .svc a:active{transform:scale(.99)}
+  .svc.first a{background:var(--green);color:#fff}
+  .svc.first a:hover{background:#08483F}
+  .empty{background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:18px;
+         font-size:13.5px;color:var(--ink-2)}
+
+  .share{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+  .share span{font-size:12.5px;color:var(--ink-2)}
+  .share button{font:inherit;font-size:13px;font-weight:700;color:var(--ink-2);background:var(--card);
+                border:1px solid var(--line);border-radius:7px;padding:7px 13px;cursor:pointer;transition:.16s}
+  .share button:hover{border-color:var(--green);color:var(--green)}
+  .again{margin-top:18px;width:100%;min-height:46px;background:none;border:1.5px solid var(--line);
+         border-radius:9px;font:inherit;font-weight:700;color:var(--ink-2);cursor:pointer;transition:.16s}
+  .again:hover{border-color:var(--green);color:var(--green)}
+  .fine{font-size:11.5px;color:var(--ink-2);opacity:.8;margin-top:22px;line-height:1.75}
+  .foot{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-2)}
+  .foot a{color:var(--green)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="pvbar">刷新案のプレビューです（現行は <a href="https://clawtech6477.github.io/nenshu-shindan/">こちら</a>）</div>
+<div class="wrap">
+
+  <!-- ステップ -->
+  <section class="stage" id="stage">
+    <div class="brand">SALARY CHECK</div>
+    <div id="qbox"></div>
+    <div class="prog" id="prog"></div>
+    <button class="back" id="back" style="display:none">← ひとつ戻る</button>
+    <p class="pr" id="prline">[PR] 本ページはアフィリエイト広告を含みます</p>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result"></section>
+</div>
+<script>
+const AFFILIATE_URLS = {
+  recruit:     "#recruit",     // s00000011454002 リクルートエージェント(新規WEBエントリー後初回受付¥2,000)
+  levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
+  technogo:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY", // s00000024757003 TechGo 提携承認済み(2026/08/01)
+  techgate:    "#techgate",    // s00000025047005 テックゲートエキスパート(新規面談完了¥54,000)
+  meiko:       "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM", // s00000026573001 明光キャリアパートナーズ(strategy career) 提携承認済み(2026/08/03)
+  sap:         "#sap",         // s00000026342002 SAPテンショク(新規転職相談¥15,000)
+  techadapt:   "#techadapt",   // s00000024196001 techadapt(新規面談¥70,000)
+  myvision:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C506SY+5B0Y+5YJRM", // s00000024757001 MyVision コンサル特化 提携承認済み(2026/08/07)
+  zeroichi:    "#zeroichi",    // s00000023866002 ゼロイチ転職(新規面談¥15,000)
+  gks:         "#gks",         // s00000022176005 GKSキャリア(新規面談実施¥25,000)
+  buildjob:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY", // s00000024757004 ビルドジョブ 提携承認済み(2026/08/07)
+  rsg:         "#rsg",         // s00000021947004 RSG不動産転職(新規カウンセリング¥3,000)
+  keirijobs:   "#keirijobs",   // s00000026359002 経理Jobs(新規転職支援申込¥10,000)
+  twinpro:     "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE", // s00000024757002 ツインプロ 提携承認済み(2026/07/31)
+  nursesenka:  "#nursesenka",  // s00000001248024 ナース専科 転職(新規申込¥26,000)
+  pharmastaff: "#pharmastaff", // s00000010261001 ファルマスタッフ(新規会員登録¥65,000)
+  kaigobatake: "https://px.a8.net/svt/ejp?a8mat=4B9VHD+8GTYIA+1W34+C0B9U", // s00000008824002 かいご畑 提携承認済み(2026/08/07)
+  kaigotown:   "#kaigotown",   // s00000027480001 介護タウン(新規面談実施¥10,000) 申込2026/08/01
+};
+
+const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
+
+const DIR_LABEL = {same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種へ",wlb:"働き方重視",unsure:"方向性を模索中"};
+
+const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455,maker:440,service:360,childcare:340,other:478};
+
+const ALL_INDUSTRY_AVG = 478;
+
+const SITES = [
+  {name:"リクルートエージェント", tags:{dir:["same","toit","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2000, affi:AFFILIATE_URLS.recruit, rs:"転職支援実績No.1。全業種・全年代に対応"},
+  {name:"レバテックダイレクト", tags:{dir:["same","wlb","unsure"],job:["it"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.levtech, rs:"IT・Webのスカウト型。登録して待つだけ"},
+  // 提携承認済み(2026-08-01)。未承認プログラムが残る暫定期間中は、嘘にならない範囲で
+  // 対象を広げている: TechGoはIT経験者のハイクラス転職が本領だが「IT・コンサルへ
+  // 挑戦」志向の人にとっても妥当な入口なので、業種を問わず toit の人には出す。
+  {name:"TechGo", tags:{dir:["same","toit"],job:["it"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"ITエンジニアのハイクラス転職"},
+  {name:"TechGo", tags:{dir:["toit"],job:["*"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"IT業界へのキャリアチェンジも相談できるハイクラス転職"},
+  {name:"テックゲートエキスパート", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:54000, affi:AFFILIATE_URLS.techgate, rs:"20代・30代のITコンサル転職"},
+  // 遷移先の実サービス名は「strategy career」(運営=明光キャリアパートナーズ)。
+  // カード名を運営会社名のままにすると着地ページと名前が合わず不信感につながるため、
+  // 表示はサービス名、運営会社は説明文側に出す。20-30代エンジニア向けの訴求。
+  {name:"strategy career", tags:{dir:["same"],job:["it"],age:["20","30"]}, payout:78000, affi:AFFILIATE_URLS.meiko, rs:"20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）"},
+  {name:"SAPテンショク", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:15000, affi:AFFILIATE_URLS.sap, rs:"SAPコンサル・エンジニア経験者専門"},
+  {name:"techadapt", tags:{dir:["same","wlb"],job:["it"],age:["20","30","40","50"]}, payout:70000, affi:AFFILIATE_URLS.techadapt, rs:"正社員ではなくITフリーランス案件を探すなら"},
+  {name:"MyVision", tags:{dir:["toit"],job:["*"],age:["20","30"]}, payout:50000, affi:AFFILIATE_URLS.myvision, rs:"コンサル業界への転身。8割超が未経験から"},
+  {name:"ゼロイチ転職", tags:{dir:["new","unsure"],job:["*"],age:["20"]}, payout:15000, affi:AFFILIATE_URLS.zeroichi, rs:"第二新卒・既卒の完全オーダーメイド就職"},
+  {name:"GKSキャリア", tags:{dir:["new"],job:["*"],age:["20","30"]}, payout:25000, affi:AFFILIATE_URLS.gks, rs:"未経験から施工管理へ。資格取得も支援"},
+  {name:"ビルドジョブ", tags:{dir:["same","new"],job:["constr"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.buildjob, rs:"建設業界特化のキャリア面談"},
+  {name:"RSG不動産転職", tags:{dir:["same"],job:["constr"],age:["20","30","40"]}, payout:3000, affi:AFFILIATE_URLS.rsg, rs:"不動産業界専門。経験を活かして年収UP"},
+  {name:"経理Jobs", tags:{dir:["same"],job:["acct"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.keirijobs, rs:"経理特化の転職エージェント"},
+  // 提携承認済み(2026-07-31)。会計士・税理士向けだが、経理・財務の実務者が
+  // 士業キャリアを含めて相談する先としても妥当なので、事務・経理層には
+  // 方向性を問わず出す(same以外も対象)。
+  {name:"ツインプロ", tags:{dir:["same","toit","new","wlb","unsure"],job:["acct"],age:["20","30","40"]}, payout:52500, affi:AFFILIATE_URLS.twinpro, rs:"会計士・税理士特化。経理・財務のキャリア相談も無料"},
+  {name:"ナース専科 転職", tags:{dir:["same","wlb","unsure"],job:["nurse"],age:["20","30","40","50"]}, payout:26000, affi:AFFILIATE_URLS.nursesenka, rs:"登録者100万人以上。看護師転職の定番"},
+  // 介護領域(2026-08-01申請・承認待ち)。介護タウンは未経験・ブランクOKを掲げているため
+  // 「未経験の職種」志向にも対応、かいご畑は資格取得支援が売りなので同業種UP層の軸に置く。
+  {name:"かいご畑", tags:{dir:["same","wlb","unsure"],job:["care"],age:["20","30","40","50"]}, payout:6000, affi:AFFILIATE_URLS.kaigobatake, rs:"働きながら0円で介護資格。求人7000件以上"},
+  {name:"介護タウン", tags:{dir:["same","new","unsure"],job:["care"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.kaigotown, rs:"未経験・ブランクOK。面談で徹底サポート"},
+  {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
+];
+
+/* ── 質問（1問1画面） ───────────────────────── */
+const QS = [
+  {key:"age", q:"あなたの年代は？", sub:"同じ年代の人と比べます",
+   opts:[["20","20〜30歳"],["30","31〜40歳"],["40","41〜50歳"],["50","51歳以上"]]},
+  {key:"income", q:"いまの年収は？", sub:"だいたいで大丈夫です",
+   opts:[["250","〜300万円"],["350","300〜400万円"],["450","400〜500万円"],
+         ["600","500〜700万円"],["850","700〜1000万円"],["1100","1000万円〜"]]},
+  {key:"job", q:"いまの業種は？", sub:"いちばん近いものを選んでください",
+   opts:[["it","IT・Web"],["sales","営業"],["acct","事務・経理"],["nurse","看護師"],
+         ["pharma","薬剤師"],["care","介護・福祉"],["constr","建設・不動産"],["maker","製造"],
+         ["service","販売・サービス"],["childcare","保育"],["other","その他"]]},
+  {key:"dir", q:"これから、どうしたい？", sub:"いちばん近い気持ちで構いません",
+   opts:[["same","いまの業種で年収を上げたい"],["toit","IT・コンサルに挑戦したい"],
+         ["new","未経験の職種に移りたい"],["wlb","働き方を変えたい"],["unsure","まだ迷っている"]]},
+];
+const st={}; let step=0;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function track(ev,p){ if(typeof gtag==="function") gtag("event",ev,p||{}); }
+
+function renderStep(){
+  const Q=QS[step];
+  $("qbox").innerHTML =
+    `<div class="qnum">Q${step+1} / ${QS.length}</div>
+     <h1 class="q">${esc(Q.q)}</h1>
+     <p class="qsub">${esc(Q.sub)}</p>
+     <div class="opts">${Q.opts.map(([v,l])=>
+       `<button class="opt" data-v="${esc(v)}">${esc(l)}</button>`).join("")}</div>`;
+  $("qbox").querySelectorAll(".opt").forEach(b=>{
+    b.onclick=()=>{
+      st[Q.key]=b.dataset.v;
+      if(step===0) track("diagnosis_start",{});
+      step++;
+      if(step<QS.length){ renderStep(); window.scrollTo({top:0,behavior:"smooth"}); }
+      else show();
+    };
+  });
+  $("prog").innerHTML = QS.map((_,i)=>`<i class="${i<=step?'on':''}"></i>`).join("");
+  $("back").style.display = step>0 ? "" : "none";
+}
+$("back").onclick=()=>{ if(step>0){ step--; renderStep(); } };
+
+/* ── 結果 ───────────────────────────────── */
+function show(){
+  const ageK={20:1.0,30:1.15,40:1.2,50:1.1}[st.age];
+  const dirK=st.dir==="toit"?1.2:st.dir==="new"?1.1:1.0;
+  const cur=+st.income;
+  const fit=Math.round(BASE[st.job]*ageK*dirK/10)*10;
+  const above=fit<=cur, diff=above?0:fit-cur;
+
+  // 同業種・同年代の分布を作り、その中の自分の位置を示す。
+  // 知りたいのは「いくら」より「自分はどのあたりか」なので、これを結果の主役にする。
+  const bands=[[0,300,"〜300"],[300,400,"300〜400"],[400,500,"400〜500"],
+               [500,700,"500〜700"],[700,1000,"700〜1000"],[1000,9999,"1000〜"]];
+  const center=fit;
+  const heights=bands.map(([lo,hi])=>{
+    const mid=(lo+Math.min(hi,1300))/2;
+    return Math.exp(-Math.pow((mid-center)/230,2))*100+6;   // 中心=適正年収の正規分布
+  });
+  const myIdx=bands.findIndex(([lo,hi])=>cur>=lo&&cur<hi);
+  const pct=Math.round(heights.slice(0,Math.max(myIdx,0)).reduce((a,b)=>a+b,0)/heights.reduce((a,b)=>a+b,0)*100);
+
+  const sites=pick(cur);
+  $("result").innerHTML=`
+    <div class="verdict">${above?"診断結果":"診断結果"}</div>
+    <h1 class="big">${above
+      ? `いまの年収は<em>水準を上回っています</em>`
+      : `あと <em class="amt">${diff}</em><em>万円</em>、上げられます`}</h1>
+
+    <div class="dist">
+      <h2>${esc(JOB_LABEL[st.job])}・${esc({20:"20代",30:"30代",40:"40代",50:"50代〜"}[st.age])}の年収分布と、あなたの位置</h2>
+      <div class="bars">${bands.map(([lo,hi,l],i)=>
+        `<div class="b ${i===myIdx?'me':''}" style="height:${Math.round(heights[i])}%"></div>`).join("")}</div>
+      <div class="axis">${bands.map(([,,l])=>`<span>${l}</span>`).join("")}</div>
+      <p class="dnote">${above
+        ? `同じ業種・年代の中では上位に入ります。いまは条件を選べる立場です。`
+        : `同じ業種・年代の推定水準は <b>${fit}万円</b>。あなたはおよそ下位${Math.max(pct,5)}%の位置にいます。`}</p>
+    </div>
+
+    <dl class="kpis">
+      <div class="kpi"><dt>いまの年収</dt><dd>${bands[myIdx]?bands[myIdx][2]:"—"}<span style="font-size:13px">万円</span></dd></div>
+      <div class="kpi ${above?'ok':'up'}"><dt>${above?"評価":"適正年収（推定）"}</dt>
+        <dd>${above?"水準クリア":fit+'<span style="font-size:13px">万円</span>'}</dd></div>
+    </dl>
+
+    <h2 class="sec-h">いま相談できる転職サービス</h2>
+    <p class="sec-s">${esc(JOB_LABEL[st.job])} × ${esc(DIR_LABEL[st.dir])} を軸に選びました</p>
+    ${sites.length ? sites.map((s,i)=>`
+      <article class="svc ${i===0?'first':''}">
+        <div class="svc-top"><span class="svc-rank">${i===0?"いちばん近い":"候補"+(i+1)}</span>
+          <h3>${esc(s.name)}</h3></div>
+        <p>${esc(s.rs)}</p>
+        <a href="${esc(s.affi)}" target="_blank" rel="nofollow noopener"
+           data-n="${esc(s.name)}">無料で相談してみる</a>
+      </article>`).join("")
+      : `<div class="empty">この条件に合う提携サービスは提携準備中です。
+           条件を変えると別の候補が出ることがあります。</div>`}
+
+    <div class="share"><span>この結果を共有</span>
+      <button id="sx">Xでシェア</button><button id="sl">LINEでシェア</button><button id="sc">リンクをコピー</button></div>
+    <button class="again" id="again">条件を変えてもう一度</button>
+
+    <p class="fine">※本ページはアフィリエイト広告(PR)を含みます。<br>
+      ※推定年収は国税庁「民間給与実態統計調査」の全産業平均${ALL_INDUSTRY_AVG}万円を基準に、年代・業種・志向の傾向係数を掛け合わせた参考値です。
+      業種・職種別の詳細統計は公開資料で数値が確認できなかったため、係数は一般的な相対傾向による推定であり、実際の年収を保証するものではありません。
+      分布のグラフは推定水準を中心に置いた目安であり、実測データではありません。</p>
+    <div class="foot">運営: <a href="https://clawtech6477.github.io/clawtech-lp/">ClawTech</a></div>`;
+
+  $("stage").style.display="none";
+  $("result").classList.add("on");
+  window.scrollTo({top:0,behavior:"smooth"});
+  $("result").querySelectorAll(".svc a").forEach((a,i)=>{
+    a.addEventListener("click",()=>track("site_click",{site_name:a.dataset.n,rank:i+1}));
+  });
+  const url=location.href.split("#")[0];
+  const txt=above?`同業種・同年代の水準を上回っていました。`:`あと${diff}万円上げられるという結果でした。`;
+  $("sx").onclick=()=>open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(txt+" #年収診断")}&url=${encodeURIComponent(url)}`,"_blank");
+  $("sl").onclick=()=>open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`,"_blank");
+  $("sc").onclick=async()=>{ try{ await navigator.clipboard.writeText(url); $("sc").textContent="コピーしました"; }catch(e){} };
+  $("again").onclick=()=>{ step=0; $("result").classList.remove("on"); $("stage").style.display="";
+                           renderStep(); window.scrollTo({top:0,behavior:"smooth"}); };
+  track("diagnosis_complete",{job:st.job,dir:st.dir,age:st.age,diff});
+}
+
+/* 候補の選定は現行のロジックをそのまま使う（dir/job/ageを必須条件にしたうえで単価を加点） */
+function pick(cur){
+  const isHigh=cur>=600;
+  const ready=s=>!String(s.affi).startsWith("#");
+  const core=s=>s.tags.dir.includes(st.dir)
+    && (s.tags.job.includes("*")||s.tags.job.includes(st.job))
+    && s.tags.age.includes(st.age)
+    && !(s.tags.income && s.tags.income.includes("high") && !isHigh);
+  const dedupe=list=>{const m=new Map();
+    for(const s of list){const p=m.get(s.name); if(!p||s.sc>p.sc) m.set(s.name,s);} return [...m.values()];};
+  let out=dedupe(SITES.filter(s=>core(s)&&ready(s)).map(s=>({...s,sc:Math.sqrt(s.payout)*0.35+Math.random()*12})))
+            .sort((a,b)=>b.sc-a.sc).slice(0,3);
+  if(out.length<2){
+    const fb=SITES.filter(s=>ready(s)&&s.tags.dir.includes(st.dir)
+      &&(s.tags.job.includes("*")||s.tags.job.includes(st.job))
+      &&!(s.tags.income&&s.tags.income.includes("high")&&!isHigh)
+      &&!out.some(x=>x.name===s.name))
+      .map(s=>({...s,sc:Math.sqrt(s.payout)*0.3}));
+    out=out.concat(dedupe(fb).sort((a,b)=>b.sc-a.sc).slice(0,3-out.length));
+  }
+  return out;
+}
+renderStep();
+</script>
+</body>
+</html>
