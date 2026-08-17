@@ -747,7 +747,13 @@ document.getElementById("go").onclick=()=>{
     const v = key ? EFFECTIVE_EPC[key] : undefined;
     return (typeof v === "number" && v > 0) ? v : epcMedian;
   };
-  const scoreOf = s=>Math.sqrt(effEpcOf(s))*2.2 + Math.random()*12;
+  // 係数6は「実効EPCの差が乱数に埋もれない」ように決めた値。
+  // 旧スコア(sqrt(payout)*0.35)はスコア幅約70に対し乱数12(≒17%)だったが、
+  // 実効EPCは値域が小さいため同じ係数だと乱数が支配してしまう。
+  // sqrt(実効EPC)*6 で幅を約39に広げ、乱数10(≒26%)に収めている。
+  // 乱数を残すのは、実績データの無いプログラムにも露出を与えて
+  // EPCが付くまでのデータを取るため(全部を最上位1件に固定しない)。
+  const scoreOf = s=>Math.sqrt(effEpcOf(s))*6 + Math.random()*10;
   const scored = dedupe(eligible.map(s=>{
     let sc=0;
     if(s.tags.income && s.tags.income.includes("high") && isHigh) sc+=35;
@@ -781,7 +787,7 @@ document.getElementById("go").onclick=()=>{
     const general = SITES.filter(isReady).map(s=>{
       // 志向(dir)が合うものを優先。業種が合わなくても「幅広く相談できる先」
       // として出すが、スコアは志向一致を最重視する。
-      let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(effEpcOf(s))*1.3 + Math.random()*8;
+      let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(effEpcOf(s))*3.5 + Math.random()*8;
       return {...s, sc};
     }).sort((a,b)=>b.sc-a.sc);
     const picked = dedupe(general).sort((a,b)=>b.sc-a.sc).slice(0,2);
