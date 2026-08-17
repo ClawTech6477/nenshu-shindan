@@ -343,6 +343,8 @@
           <option value="nurse">看護師</option>
           <option value="pharma">薬剤師</option>
           <option value="care">介護・福祉</option>
+          <option value="rehab">リハビリ職（PT・OT・ST）</option>
+          <option value="therapist">治療家・整体（柔整・鍼灸）</option>
           <option value="constr">建設・不動産</option>
           <option value="maker">製造</option>
           <option value="service">販売・サービス</option>
@@ -548,14 +550,24 @@ const AFFILIATE_URLS = {
   nursesenka:  "#nursesenka",  // s00000001248024 ナース専科 転職(新規申込¥26,000)
   pharmastaff: "#pharmastaff", // s00000010261001 ファルマスタッフ(新規会員登録¥65,000)
   kaigobatake: "https://px.a8.net/svt/ejp?a8mat=4B9VHD+8GTYIA+1W34+C0B9U", // s00000008824002 かいご畑 提携承認済み(2026/08/07)
-  kaigotown:   "#kaigotown",   // s00000027480001 介護タウン(新規面談実施¥10,000) 申込2026/08/01
+  kaigotown:   "#kaigotown",
+  // 2026-08-17追加: A8全17カテゴリ横断スキャン(a8_genre_survey.py)で
+  // 「発生難易度が低く実効EPCが高い」層として抽出したもの。全て掲載サイト002で申請済み。
+  hoikubank:   "#hoikubank",   // s00000001248025 保育士人材バンク(初回登録¥5,000/実効EPC5,722円)
+  lebhoiku:    "#lebhoiku",    // s00000011866026 レバウェル保育士(無料会員登録¥5,600)
+  miraiba:     "#miraiba",     // s00000027503001 ミライバ保育(求人紹介申込¥5,000)
+  ptotst:      "#ptotst",      // s00000026401001 PT・OT・ST WORKER(会員登録¥3,790/実効EPC2,532円)
+  kokushi:     "#kokushi",     // s00000001248026 国試黒本 治療家エージェント(初回登録¥26,000)
+  lebchiryo:   "#lebchiryo",   // s00000011866037 レバウェル治療家(会員登録¥11,000)
+  massagenavi: "#massagenavi", // s00000026070001 マッサージキャリアナビ(¥9,000)
+  oshigoto:    "#oshigoto",    // s00000027473001 おしごとカルテ(地域特化・会員登録¥10,000/実効EPC2,947円)   // s00000027480001 介護タウン(新規面談実施¥10,000) 申込2026/08/01
 };
 
 // ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
 function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
 
 // ===== 表示用ラベル(推薦状の「あなたの適性」表示・位番号に使用) =====
-const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
+const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",rehab:"リハビリ職",therapist:"治療家・整体",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
 const DIR_LABEL = {same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種へ",wlb:"働き方重視",unsure:"方向性を模索中"};
 const ORDINAL = ["壱","弐","参"];
 
@@ -567,7 +579,10 @@ const ORDINAL = ["壱","弐","参"];
 // 推定値であることを診断書に明記する(競合監査で「根拠データの薄さ」を
 // 指摘されたため、無根拠に見せない=不確かな精度を装わないことを優先)。
 const ALL_INDUSTRY_AVG = 478; // 国税庁 民間給与実態統計調査 令和6年分・全産業平均
-const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,constr:455,maker:440,service:360,childcare:340,other:478};
+// rehab/therapist は2026-08-17追加。既存の業種と同じく「一般的な相対傾向による推定値」で、
+// 診断書にその旨を明記する方針を踏襲する(独自に精度を装わない)。
+// リハビリ職は医療職だが看護師より低い水準、治療家は勤務形態の幅が大きく低めに置いた。
+const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,rehab:410,therapist:350,constr:455,maker:440,service:360,childcare:340,other:478};
 // ===== 転職サイトDB(タグ+単価。affiはAFFILIATE_URLS参照) =====
 // 全件、A8.netで提携申請済みの実在プログラム。payoutは実際の成果報酬額。
 // R4CAREER(東海3県限定・地域を質問していないため出せない)と
@@ -602,6 +617,17 @@ const SITES = [
   // 「未経験の職種」志向にも対応、かいご畑は資格取得支援が売りなので同業種UP層の軸に置く。
   {name:"かいご畑", tags:{dir:["same","wlb","unsure"],job:["care"],age:["20","30","40","50"]}, payout:6000, affi:AFFILIATE_URLS.kaigobatake, rs:"働きながら0円で介護資格。求人7000件以上"},
   {name:"介護タウン", tags:{dir:["same","new","unsure"],job:["care"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.kaigotown, rs:"未経験・ブランクOK。面談で徹底サポート"},
+  // ---- 2026-08-17追加: 保育・リハビリ職・治療家 ----
+  // 保育は診断の選択肢にあるのに候補ゼロだった(A8横断スキャンで実効EPC最高値の空白地帯)
+  {name:"保育士人材バンク", tags:{dir:["same","wlb","unsure"],job:["childcare"],age:["20","30","40","50"]}, payout:5000, affi:AFFILIATE_URLS.hoikubank, rs:"保育士専門。登録者数が多く求人量で選べる"},
+  {name:"レバウェル保育士", tags:{dir:["same","wlb","new"],job:["childcare"],age:["20","30","40"]}, payout:5600, affi:AFFILIATE_URLS.lebhoiku, rs:"園の内情まで踏み込んで教えてくれる保育士向け"},
+  {name:"ミライバ保育", tags:{dir:["same","wlb"],job:["childcare"],age:["20","30","40","50"]}, payout:5000, affi:AFFILIATE_URLS.miraiba, rs:"保育士・幼稚園教諭向け。職場の雰囲気重視の人に"},
+  {name:"PT・OT・ST WORKER", tags:{dir:["same","wlb","unsure"],job:["rehab"],age:["20","30","40","50"]}, payout:3790, affi:AFFILIATE_URLS.ptotst, rs:"理学療法士・作業療法士・言語聴覚士の専門エージェント"},
+  {name:"国試黒本 治療家エージェント", tags:{dir:["same","wlb","unsure"],job:["therapist"],age:["20","30","40"]}, payout:26000, affi:AFFILIATE_URLS.kokushi, rs:"柔道整復師・鍼灸師に20年の実績。開業相談も"},
+  {name:"レバウェル治療家", tags:{dir:["same","new","wlb"],job:["therapist"],age:["20","30","40"]}, payout:11000, affi:AFFILIATE_URLS.lebchiryo, rs:"治療家の転職を専門家が無料でサポート"},
+  {name:"マッサージキャリアナビ", tags:{dir:["same","wlb"],job:["therapist"],age:["20","30","40","50"]}, payout:9000, affi:AFFILIATE_URLS.massagenavi, rs:"あん摩マッサージ指圧師に特化した人材紹介"},
+  // 地域密着型。業種を問わないため "*"。実効EPC2,947円と汎用枠では最上位
+  {name:"おしごとカルテ", tags:{dir:["same","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.oshigoto, rs:"住んでいる地域に詳しいアドバイザーが担当。地元で探したい人向け"},
   {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
 ];
 
