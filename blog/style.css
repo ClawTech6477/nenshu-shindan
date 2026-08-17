@@ -108,3 +108,17 @@ tbody tr:last-child th,tbody tr:last-child td{border-bottom:none;}
   *{animation:none!important;transition:none!important;}
   html{scroll-behavior:auto;}
 }
+
+/* ---- 関連記事(2026-08-18追加): 記事間の回遊と内部リンクのため ---- */
+.related{margin:46px 0 0;border-top:1px solid var(--line);padding-top:26px;}
+.related > strong{font-family:var(--f-min);font-size:16px;display:block;margin-bottom:6px;}
+.related ul{list-style:none;margin:10px 0 0;padding:0;}
+.related li{border-bottom:1px solid var(--line);}
+.related li:last-child{border-bottom:none;}
+.related a{display:block;padding:16px 4px;text-decoration:none;color:var(--ink);}
+.related a:hover .rt{color:var(--shu-deep);}
+.related .tag{font-family:var(--f-dot);font-size:11px;letter-spacing:.1em;
+  color:var(--shu-deep);display:block;margin-bottom:6px;}
+.related .rt{font-family:var(--f-min);font-weight:800;font-size:16px;line-height:1.55;
+  display:block;margin-bottom:5px;}
+.related .rd{font-size:13.5px;color:var(--ink-soft);display:block;line-height:1.7;}
