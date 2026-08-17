@@ -497,6 +497,39 @@ const LINE_URL = "#line"; // ← LINE公式アカウントの友だち追加URL�
 // --- アフィリエイトURL（例: recruit: "https://px.a8.net/svt/ejp?a8mat=XXXXX"）---
 // 2026-07-31全面刷新: A8.netで実際に提携申請済み(申込日2026/07/31)のプログラムのみ掲載。
 // コメントのs番号はA8のプログラムID。承認後、広告リンク作成画面で照合して実URLに差し替える。
+// ===== 実効EPC(円/クリック) = A8実測のEPC × 確定率 =====
+// 2026-08-17 UU方針:「大事なのは確定率。対象のアクションがユーザーからあっても
+// 確定率が低ければ稼げない。収益(単価)だけで目をくらませないこと」
+// 従来この診断は Math.sqrt(payout) で並べており、報酬単価だけを見ていた。
+// 実測するとその判断は誤りだった:
+//   明光    報酬78,000円 / 確定率17.7% → 実効 35円
+//   かいご畑 報酬 6,000円 / 確定率41.0% → 実効 22円   ← 単価13倍差でも実効は1.6倍差
+//   ビルドジョブ 報酬50,000円 / 確定率42.4% → 実効126円 ← 単価は明光より低いが実効は3.6倍
+//   freee会計 確定率2.6% → 実効ほぼ0円(枠を食っているだけ)
+// この表は a8_link_sync.py が毎日A8から取得して自動更新する。
+// null = A8にEPCの実績データが無いプログラム(新しい/露出が少ない)。
+// nullは「悪い」ではないので罰点にせず、データのある中央値として中立に扱う。
+const EFFECTIVE_EPC = {
+  buildjob: 125.8,          // s00000024757004 EPC296.8x確定率42.37%
+  gks: null,                // s00000022176005 A8に実績データなし
+  kaigobatake: 22.4,        // s00000008824002 EPC54.46x確定率41.04%
+  kaigotown: null,          // s00000027480001 A8に実績データなし
+  keirijobs: null,          // s00000026359002 A8に実績データなし
+  levtech: null,            // s00000011866029 A8に実績データなし
+  meiko: 35.2,              // s00000026573001 EPC198.91x確定率17.72%
+  myvision: null,           // s00000024757001 A8に実績データなし
+  nursesenka: null,         // s00000001248024 A8に実績データなし
+  pharmastaff: null,        // s00000010261001 A8に実績データなし
+  recruit: null,            // s00000011454002 A8に実績データなし
+  rsg: null,                // s00000021947004 A8に実績データなし
+  sap: null,                // s00000026342002 A8に実績データなし
+  techadapt: null,          // s00000024196001 A8に実績データなし
+  techgate: null,           // s00000025047005 A8に実績データなし
+  technogo: null,           // s00000024757003 A8に実績データなし
+  twinpro: null,            // s00000024757002 A8に実績データなし
+  zeroichi: null,           // s00000023866002 A8に実績データなし
+};
+
 const AFFILIATE_URLS = {
   recruit:     "#recruit",     // s00000011454002 リクルートエージェント(新規WEBエントリー後初回受付¥2,000)
   levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
@@ -703,10 +736,22 @@ document.getElementById("go").onclick=()=>{
     }
     return [...best.values()];
   };
+  // 実効EPCでスコアリングする。報酬単価(payout)は使わない。
+  // 単価が高くても確定率が低ければ実際には受け取れないため(上のEFFECTIVE_EPC参照)。
+  // A8に実績データが無いものは、データのあるものの中央値を当てて中立に扱う
+  // (新しいプログラムを不当に沈めない / 根拠なく持ち上げもしない)。
+  const epcValues = Object.values(EFFECTIVE_EPC).filter(v=>typeof v === "number" && v > 0).sort((a,b)=>a-b);
+  const epcMedian = epcValues.length ? epcValues[Math.floor(epcValues.length/2)] : 50;
+  const effEpcOf = s=>{
+    const key = Object.keys(AFFILIATE_URLS).find(k=>AFFILIATE_URLS[k] === s.affi);
+    const v = key ? EFFECTIVE_EPC[key] : undefined;
+    return (typeof v === "number" && v > 0) ? v : epcMedian;
+  };
+  const scoreOf = s=>Math.sqrt(effEpcOf(s))*2.2 + Math.random()*12;
   const scored = dedupe(eligible.map(s=>{
     let sc=0;
     if(s.tags.income && s.tags.income.includes("high") && isHigh) sc+=35;
-    sc += Math.sqrt(s.payout)*0.35 + Math.random()*12;
+    sc += scoreOf(s);
     return {...s,sc};
   })).sort((a,b)=>b.sc-a.sc).slice(0,3);
   // 万一、dir/job/age全部一致する候補が2件未満だった場合のフォールバック。
@@ -720,7 +765,7 @@ document.getElementById("go").onclick=()=>{
       !(s.tags.income && s.tags.income.includes("high") && !isHigh) &&
       !scored.some(x=>x.name===s.name)
     ).map(s=>{
-      let sc = Math.sqrt(s.payout)*0.35 + Math.random()*12;
+      let sc = scoreOf(s);   // フォールバックも実効EPCで揃える(単価順に戻さない)
       return {...s,sc};
     }).sort((a,b)=>b.sc-a.sc);
     scored.push(...dedupe(fallback).slice(0, 3-scored.length));
@@ -736,7 +781,7 @@ document.getElementById("go").onclick=()=>{
     const general = SITES.filter(isReady).map(s=>{
       // 志向(dir)が合うものを優先。業種が合わなくても「幅広く相談できる先」
       // として出すが、スコアは志向一致を最重視する。
-      let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(s.payout)*0.2 + Math.random()*8;
+      let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(effEpcOf(s))*1.3 + Math.random()*8;
       return {...s, sc};
     }).sort((a,b)=>b.sc-a.sc);
     const picked = dedupe(general).sort((a,b)=>b.sc-a.sc).slice(0,2);
