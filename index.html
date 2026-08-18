@@ -286,6 +286,12 @@
     .seg.cols4{grid-template-columns:repeat(4,1fr);}
     .seg.cols4 button.wide{grid-column:auto;}
   }
+
+  /* 提携準備中のときに出す記事リンク(2026-08-19) */
+  .empty-article{display:inline-block;margin-top:10px;font-weight:800;
+    color:var(--shu-deep,#a8321f);text-decoration:none;border-bottom:2px solid currentColor;
+    padding-bottom:2px;}
+  .empty-article:hover{opacity:.75;}
 </style>
 </head>
 <body>
@@ -567,6 +573,18 @@ const AFFILIATE_URLS = {
 function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
 
 // ===== 表示用ラベル(推薦状の「あなたの適性」表示・位番号に使用) =====
+// 職種別の解説記事(2026-08-19追加)。提携が準備中で紹介できるサービスが無いとき、
+// 「近日公開」で終わらせず一次統計にもとづく解説へ送る。記事側には承認済みの
+// アフィリンクが自動で出る仕組み(blog/affiliate.js)があるため導線としても繋がる。
+const JOB_ARTICLE = {
+  nurse:     ["看護師の年収を上げる転職とは", "blog/nurse-tenshoku-nenshu.html"],
+  childcare: ["保育士の給料は「どこで働くか」で決まる", "blog/hoikushi-tenshoku-kyuyo.html"],
+  care:      ["介護職の給料は「サービスの種類」で決まる", "blog/kaigo-tenshoku-kyuyo.html"],
+  rehab:     ["リハビリ職の年収は年齢とともに上がり続ける", "blog/rehabili-tenshoku-kyuyo.html"],
+  it:        ["ITエンジニアの年収は「作る側」か「決める側」か", "blog/it-engineer-tenshoku-nenshu.html"],
+  pharma:    ["薬剤師の年収は「業態」で決まる", "blog/yakuzaishi-tenshoku-nenshu.html"],
+  acct:      ["経理の年収は「担当できる範囲」で決まる", "blog/keiri-tenshoku-nenshu.html"],
+};
 const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",rehab:"リハビリ職",therapist:"治療家・整体",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
 const DIR_LABEL = {same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種へ",wlb:"働き方重視",unsure:"方向性を模索中"};
 const ORDINAL = ["壱","弐","参"];
@@ -588,7 +606,7 @@ const BASE = {it:520,sales:450,acct:390,nurse:480,pharma:560,care:360,rehab:410,
 // R4CAREER(東海3県限定・地域を質問していないため出せない)と
 // doda新卒エージェント(就活生向けで転職診断の利用者とズレる)は申請済みだが意図的に非掲載。
 const SITES = [
-  {name:"リクルートエージェント", tags:{dir:["same","toit","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2000, affi:AFFILIATE_URLS.recruit, rs:"転職支援実績No.1。全業種・全年代に対応"},
+  {name:"リクルートエージェント", general:true, tags:{dir:["same","toit","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:2000, affi:AFFILIATE_URLS.recruit, rs:"転職支援実績No.1。全業種・全年代に対応"},
   {name:"レバテックダイレクト", tags:{dir:["same","wlb","unsure"],job:["it"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.levtech, rs:"IT・Webのスカウト型。登録して待つだけ"},
   // 提携承認済み(2026-08-01)。未承認プログラムが残る暫定期間中は、嘘にならない範囲で
   // 対象を広げている: TechGoはIT経験者のハイクラス転職が本領だが「IT・コンサルへ
@@ -627,7 +645,7 @@ const SITES = [
   {name:"レバウェル治療家", tags:{dir:["same","new","wlb"],job:["therapist"],age:["20","30","40"]}, payout:11000, affi:AFFILIATE_URLS.lebchiryo, rs:"治療家の転職を専門家が無料でサポート"},
   {name:"マッサージキャリアナビ", tags:{dir:["same","wlb"],job:["therapist"],age:["20","30","40","50"]}, payout:9000, affi:AFFILIATE_URLS.massagenavi, rs:"あん摩マッサージ指圧師に特化した人材紹介"},
   // 地域密着型。業種を問わないため "*"。実効EPC2,947円と汎用枠では最上位
-  {name:"おしごとカルテ", tags:{dir:["same","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.oshigoto, rs:"住んでいる地域に詳しいアドバイザーが担当。地元で探したい人向け"},
+  {name:"おしごとカルテ", general:true, tags:{dir:["same","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.oshigoto, rs:"住んでいる地域に詳しいアドバイザーが担当。地元で探したい人向け"},
   {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
 ];
 
@@ -810,7 +828,11 @@ document.getElementById("go").onclick=()=>{
   // GENERAL フラグを立てて見出し・訴求文を一般向けの文言に差し替える。
   let isGeneralFallback = false;
   if(scored.length === 0){
-    const general = SITES.filter(isReady).map(s=>{
+    // 2026-08-19修正: 以前は isReady な全サービスから実効EPC順に選んでいたため、
+    // 看護師で診断すると「ビルドジョブ(建設特化)」「ツインプロ(会計士特化)」が
+    // 「幅広い職種に対応する」という文言つきで出ていた。文言と実態が食い違う。
+    // フォールバックに使えるのは general:true(全職種対応)のサービスだけに限定する。
+    const general = SITES.filter(s=>isReady(s) && s.general).map(s=>{
       // 志向(dir)が合うものを優先。業種が合わなくても「幅広く相談できる先」
       // として出すが、スコアは志向一致を最重視する。
       let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(effEpcOf(s))*3.5 + Math.random()*8;
@@ -831,7 +853,15 @@ document.getElementById("go").onclick=()=>{
     // 該当する提携済みサービスがまだ無い場合は、未完成に見える空のランキングでは
     // なく「近日公開」の一文だけを見せる(信用を損なう「準備中」の列挙をしない)。
     titleEl.textContent = "あなたに合う転職サービス";
-    fitEl.innerHTML = `<b>${JOB_LABEL[st.job]||st.job}</b>×<b>${DIR_LABEL[st.dir]||st.dir}</b>に合うサービスを提携準備中です。近日公開しますので、しばらくお待ちください。`;
+    const art = JOB_ARTICLE[st.job];
+    fitEl.innerHTML =
+      `<b>${JOB_LABEL[st.job]||st.job}</b>×<b>${DIR_LABEL[st.dir]||st.dir}</b>に合うサービスを提携準備中です。`
+      + (art
+         ? `<br>いま出せる情報として、${JOB_LABEL[st.job]}の給与が何で決まるのかを公的統計から整理した解説があります。<br>`
+           + `<a class="empty-article" href="${art[1]}" data-job="${st.job}">${art[0]} →</a>`
+         : "近日公開しますので、しばらくお待ちください。");
+    const ea = fitEl.querySelector(".empty-article");
+    if(ea) ea.addEventListener("click", ()=>track("empty_state_article_click",{job:st.job}));
   }else{
     if(isGeneralFallback){
       // 一般向けフォールバック。専門特化のランキングと誤解されないよう、
