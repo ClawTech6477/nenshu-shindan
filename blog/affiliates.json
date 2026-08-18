@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-08-18T22:44:19",
+  "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
+  "jobs": {
+    "it": [
+      {
+        "name": "TechGo",
+        "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY",
+        "desc": "ITエンジニアのハイクラス転職",
+        "key": "technogo",
+        "effective_epc": 55.6
+      },
+      {
+        "name": "strategy career",
+        "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM",
+        "desc": "20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）",
+        "key": "meiko",
+        "effective_epc": 35.2
+      }
+    ],
+    "constr": [
+      {
+        "name": "ビルドジョブ",
+        "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY",
+        "desc": "建設業界特化のキャリア面談",
+        "key": "buildjob",
+        "effective_epc": 125.8
+      }
+    ],
+    "acct": [
+      {
+        "name": "ツインプロ",
+        "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE",
+        "desc": "会計士・税理士特化。経理・財務のキャリア相談も無料",
+        "key": "twinpro",
+        "effective_epc": 58.4
+      }
+    ],
+    "care": [
+      {
+        "name": "かいご畑",
+        "url": "https://px.a8.net/svt/ejp?a8mat=4B9VHD+8GTYIA+1W34+C0B9U",
+        "desc": "働きながら0円で介護資格。求人7000件以上",
+        "key": "kaigobatake",
+        "effective_epc": 22.4
+      }
+    ]
+  }
+}
