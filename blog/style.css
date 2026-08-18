@@ -138,3 +138,14 @@ tbody tr:last-child th,tbody tr:last-child td{border-bottom:none;}
 .ja-desc{display:block;font-size:13.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:8px;}
 .ja-go{display:inline-block;font-size:13px;font-weight:700;color:var(--shu-deep);}
 .ja-note{font-size:12px;color:var(--ink-soft);margin:12px 0 0;line-height:1.7;}
+
+/* 本文中のアフィリエイトテキストリンク(2026-08-19)
+   実測でカード枠(CTR1.0%)より本文中リンク(CTR80%)が桁違いに効くため導入。
+   本文の流れを切らない見た目にしつつ、リンクだと分かる下線と色は残す。
+   広告であることは本文末尾の注記と rel="sponsored" で担保する。 */
+.affi-inline-a{color:var(--shu-deep);font-weight:700;text-decoration:underline;
+  text-decoration-thickness:2px;text-underline-offset:3px;
+  text-decoration-color:rgba(206,58,36,.35);}
+.affi-inline-a:hover{text-decoration-color:var(--shu);}
+.affi-note{font-size:12px;color:var(--ink-soft);margin:26px 0 0;line-height:1.7;
+  padding-top:12px;border-top:1px dashed var(--line);}
