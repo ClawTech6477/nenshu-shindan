@@ -122,3 +122,19 @@ tbody tr:last-child th,tbody tr:last-child td{border-bottom:none;}
 .related .rt{font-family:var(--f-min);font-weight:800;font-size:16px;line-height:1.55;
   display:block;margin-bottom:5px;}
 .related .rd{font-size:13.5px;color:var(--ink-soft);display:block;line-height:1.7;}
+
+/* ---- 記事内アフィリンク(2026-08-18追加) ---- */
+.job-affiliates{display:none;}
+.job-affiliates.is-ready{display:block;margin:46px 0 0;}
+.job-affiliates h2{margin-top:0;}
+.ja-lead{font-size:14.5px;color:var(--ink-soft);margin:0 0 18px;}
+.ja-list{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;}
+.ja-list li{border-bottom:1px solid var(--line);}
+.ja-list li:last-child{border-bottom:none;}
+.ja-list a{display:block;padding:18px 16px;text-decoration:none;color:var(--ink);
+  transition:background .15s ease;}
+.ja-list a:hover{background:var(--paper-2);}
+.ja-name{display:block;font-family:var(--f-min);font-weight:800;font-size:17px;margin-bottom:5px;}
+.ja-desc{display:block;font-size:13.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:8px;}
+.ja-go{display:inline-block;font-size:13px;font-weight:700;color:var(--shu-deep);}
+.ja-note{font-size:12px;color:var(--ink-soft);margin:12px 0 0;line-height:1.7;}
