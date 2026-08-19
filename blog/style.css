@@ -149,3 +149,18 @@ tbody tr:last-child th,tbody tr:last-child td{border-bottom:none;}
 .affi-inline-a:hover{text-decoration-color:var(--shu);}
 .affi-note{font-size:12px;color:var(--ink-soft);margin:26px 0 0;line-height:1.7;
   padding-top:12px;border-top:1px dashed var(--line);}
+
+/* 扉写真(2026-08-19)
+   文字だけの記事は読み進められないため導入。ただし本文の主役は文章なので、
+   写真は情報の補助として置き、罫と余白でサイトの紙面に馴染ませる。
+   素材側で彩度を落として暖色へ寄せてあるので、ここでは色を触らない。 */
+.hero-photo{margin:26px 0 6px;}
+.hero-photo img{display:block;width:100%;border-radius:14px;
+  border:1px solid var(--line);background:var(--paper-deep);}
+.hero-photo figcaption{margin-top:8px;font-size:12.5px;color:var(--ink-soft);
+  display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;line-height:1.7;}
+.hero-photo .credit{color:var(--line);font-size:11.5px;}
+@media(max-width:520px){
+  .hero-photo{margin:20px 0 4px;}
+  .hero-photo img{border-radius:10px;}
+}
