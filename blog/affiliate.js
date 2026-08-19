@@ -56,8 +56,7 @@ function renderInline(data) {
     if (art && !document.querySelector(".affi-note")) {
       var note = document.createElement("p");
       note.className = "affi-note";
-      note.textContent = "本文中の一部リンクは広告（アフィリエイト）です。"
-        + "リンク先の各社は求職者側の費用が無料で、掲載順は当サイトの計測データに基づきます。";
+      note.textContent = "本文中の一部リンクは広告（アフィリエイト）です。";
       var faq = document.getElementById("faq");
       if (faq) { art.insertBefore(note, faq); } else { art.appendChild(note); }
     }
@@ -96,8 +95,7 @@ function renderInline(data) {
            + '<span class="ja-desc">' + s.desc + '</span>'
            + '<span class="ja-go">無料で相談する →</span></a></li>';
       });
-      h += '</ul><p class="ja-note">本セクションは広告です。掲載順は当サイトの計測データに'
-         + '基づくもので、報酬額の多寡で順位を操作することはありません。</p>';
+      h += '</ul><p class="ja-note">本セクションは広告です。</p>';
       box.innerHTML = h;
       box.classList.add("is-ready");
 
