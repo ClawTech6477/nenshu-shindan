@@ -584,13 +584,16 @@ function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, param
 // 「近日公開」で終わらせず一次統計にもとづく解説へ送る。記事側には承認済みの
 // アフィリンクが自動で出る仕組み(blog/affiliate.js)があるため導線としても繋がる。
 const JOB_ARTICLE = {
-  nurse:     ["看護師の年収を上げる転職とは", "blog/nurse-tenshoku-nenshu.html"],
-  childcare: ["保育士の給料は「どこで働くか」で決まる", "blog/hoikushi-tenshoku-kyuyo.html"],
+  // 自動生成(scripts/affiliate/blog_affiliates_build.py)。手で編集しても翌日上書きされます。
+  acct:      ["経理の年収は、どの業界で働くかで決まる", "blog/keiri-gyoushu-nenshu.html"],
   care:      ["介護職の給料は「サービスの種類」で決まる", "blog/kaigo-tenshoku-kyuyo.html"],
-  rehab:     ["リハビリ職の年収は年齢とともに上がり続ける", "blog/rehabili-tenshoku-kyuyo.html"],
-  it:        ["ITエンジニアの年収は「作る側」か「決める側」か", "blog/it-engineer-tenshoku-nenshu.html"],
+  childcare: ["公立と私立で給料はどれだけ違うか", "blog/youchien-kounritsu-shiritsu-kyuyo.html"],
+  constr:    ["施工管理の年収は、扱う工種で決まる", "blog/kensetsu-koushu-tenshoku-nenshu.html"],
+  consul:    ["コンサルの年収は、辞めた先の業態で決まる", "blog/consultant-exit-gyoutai-nenshu.html"],
+  it:        ["ITエンジニアの年収は、企業タイプで変わる", "blog/it-engineer-kigyou-type-nenshu.html"],
+  nurse:     ["看護師の年収を上げる転職とは", "blog/nurse-tenshoku-nenshu.html"],
   pharma:    ["薬剤師の年収は「業態」で決まる", "blog/yakuzaishi-tenshoku-nenshu.html"],
-  acct:      ["経理の年収は「担当できる範囲」で決まる", "blog/keiri-tenshoku-nenshu.html"],
+  rehab:     ["理学療法士・作業療法士・言語聴覚士の年収は上がり続ける。ただし50代はほとんど残っていない", "blog/rehabili-tenshoku-kyuyo.html"],
 };
 const JOB_LABEL = {it:"IT・Web",sales:"営業",acct:"事務・経理",nurse:"看護師",pharma:"薬剤師",care:"介護・福祉",rehab:"リハビリ職",therapist:"治療家・整体",constr:"建設・不動産",maker:"製造",service:"販売・サービス",childcare:"保育",other:"その他"};
 const DIR_LABEL = {same:"同業種で年収UP",toit:"IT・コンサルへ挑戦",new:"未経験の職種へ",wlb:"働き方重視",unsure:"方向性を模索中"};
@@ -863,10 +866,14 @@ document.getElementById("go").onclick=()=>{
     const art = JOB_ARTICLE[st.job];
     fitEl.innerHTML =
       `<b>${JOB_LABEL[st.job]||st.job}</b>×<b>${DIR_LABEL[st.dir]||st.dir}</b>に合うサービスを提携準備中です。`
+      // 2026-08-19: ここが「近日公開しますので、しばらくお待ちください」で
+      // 終わっていたため、提携先が無い組み合わせ(営業×同業種で年収UP等)の読者が
+      // 何もできずに離脱していた。記事が無い職種でも読みもの一覧へは送る。
       + (art
          ? `<br>いま出せる情報として、${JOB_LABEL[st.job]}の給与が何で決まるのかを公的統計から整理した解説があります。<br>`
            + `<a class="empty-article" href="${art[1]}" data-job="${st.job}">${art[0]} →</a>`
-         : "近日公開しますので、しばらくお待ちください。");
+         : `<br>いま出せる情報として、職種ごとに給与が何で決まるのかを公的統計から整理した解説をまとめています。<br>`
+           + `<a class="empty-article" href="blog/" data-job="${st.job}">職種別の読みものを見る →</a>`);
     const ea = fitEl.querySelector(".empty-article");
     if(ea) ea.addEventListener("click", ()=>track("empty_state_article_click",{job:st.job}));
   }else{
