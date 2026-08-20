@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T12:35:01",
+  "generated_at": "2026-08-20T12:35:02",
   "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
   "jobs": {
     "it": [
@@ -9,9 +9,9 @@
         "desc": "ITエンジニアのハイクラス転職",
         "key": "technogo",
         "effective_epc": 74.9,
-        "measured_imp": 70,
+        "measured_imp": 92,
         "measured_click": 1,
-        "yen_per_1000imp": 1361.8,
+        "yen_per_1000imp": 1134.8,
         "dead": false
       },
       {
@@ -20,9 +20,9 @@
         "desc": "20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）",
         "key": "meiko",
         "effective_epc": 35.9,
-        "measured_imp": 64,
-        "measured_click": 1,
-        "yen_per_1000imp": 690.4,
+        "measured_imp": 86,
+        "measured_click": 2,
+        "yen_per_1000imp": 854.8,
         "dead": false
       }
     ],
@@ -33,9 +33,9 @@
         "desc": "建設業界特化のキャリア面談",
         "key": "buildjob",
         "effective_epc": 120.0,
-        "measured_imp": 57,
+        "measured_imp": 80,
         "measured_click": 0,
-        "yen_per_1000imp": 1237.1,
+        "yen_per_1000imp": 1000.0,
         "dead": false
       }
     ],
@@ -46,9 +46,9 @@
         "desc": "会計士・税理士特化。経理・財務のキャリア相談も無料",
         "key": "twinpro",
         "effective_epc": 78.6,
-        "measured_imp": 70,
+        "measured_imp": 92,
         "measured_click": 1,
-        "yen_per_1000imp": 1429.1,
+        "yen_per_1000imp": 1190.9,
         "dead": false
       }
     ],
@@ -59,9 +59,9 @@
         "desc": "働きながら0円で介護資格。求人7000件以上",
         "key": "kaigobatake",
         "effective_epc": 24.0,
-        "measured_imp": 56,
-        "measured_click": 0,
-        "yen_per_1000imp": 250.0,
+        "measured_imp": 77,
+        "measured_click": 1,
+        "yen_per_1000imp": 410.3,
         "dead": false
       }
     ],
