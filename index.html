@@ -851,6 +851,7 @@ document.getElementById("go").onclick=()=>{
   // ミスマッチ(看護師にITエージェントを"最適"として出す等)になるため、
   // GENERAL フラグを立てて見出し・訴求文を一般向けの文言に差し替える。
   let isGeneralFallback = false;
+  let isBroadFallback = false;
   if(scored.length === 0){
     // 2026-08-19修正: 以前は isReady な全サービスから実効EPC順に選んでいたため、
     // 看護師で診断すると「ビルドジョブ(建設特化)」「ツインプロ(会計士特化)」が
@@ -862,7 +863,23 @@ document.getElementById("go").onclick=()=>{
       let sc = (s.tags.dir.includes(st.dir) ? 40 : 0) + Math.sqrt(effEpcOf(s))*3.5 + Math.random()*8;
       return {...s, sc};
     }).sort((a,b)=>b.sc-a.sc);
-    const picked = dedupe(general).sort((a,b)=>b.sc-a.sc).slice(0,2);
+    let picked = dedupe(general).sort((a,b)=>b.sc-a.sc).slice(0,2);
+    // 2026-08-24修正: general:true(全職種対応)のサービスは現状どちらも提携未承認(#)で、
+    // 上のpickedが常に0件になっていた。その結果 dir≠toit かつ job∈{nurse,rehab,
+    // therapist,sales,maker,service,other,childcare} 等の組合せでCTAが丸ごと非表示になり
+    // (GA4実測 2026-08-17〜08-24: diagnosis_complete=5 に対し site_click=0)、
+    // 「近日公開」表示のまま離脱させていた。承認済み(#プレースホルダーではない)全プログラム
+    // から実効EPC最高の1件を、職種の一致を主張しない「幅広相談先」として最低1件は必ず出す。
+    // 未承認(#)リンクを出さない安全設計は維持する(isReadyでの絞り込みは変えない)。
+    if(picked.length === 0){
+      const anyReady = dedupe(
+        SITES.filter(isReady).map(s=>({...s, sc: effEpcOf(s)}))
+      ).sort((a,b)=>b.sc-a.sc);
+      if(anyReady.length){
+        picked = [anyReady[0]];
+        isBroadFallback = true;
+      }
+    }
     if(picked.length){
       isGeneralFallback = true;
       scored.push(...picked);
@@ -895,8 +912,12 @@ document.getElementById("go").onclick=()=>{
       // 一般向けフォールバック。専門特化のランキングと誤解されないよう、
       // 見出しも訴求文も「幅広く相談できる先」であることを明示する。
       titleEl.textContent = "まずは相談できる転職サービス";
-      fitEl.innerHTML =
-        `<b>${JOB_LABEL[st.job]||st.job}</b>の専門サービスは提携準備中です。まずは幅広い職種に対応する下記から相談できます。`;
+      // isBroadFallback(2026-08-24追加)は general:true ではない職種特化サービスを
+      // 実効EPC最高値で代打表示しているケース。「幅広い職種に対応する」と書くと
+      // 実態と食い違う(嘘になる)ため、職種を主張しない文言に切り替える。
+      fitEl.innerHTML = isBroadFallback
+        ? `<b>${JOB_LABEL[st.job]||st.job}</b>の専門サービスは提携準備中です。まずは下記の転職エージェントに無料相談してみることもできます。`
+        : `<b>${JOB_LABEL[st.job]||st.job}</b>の専門サービスは提携準備中です。まずは幅広い職種に対応する下記から相談できます。`;
     }else{
       titleEl.textContent =
         scored.length>=2 ? `あなたに合う転職サービス TOP${scored.length}` : "あなたに合う転職サービス";
@@ -910,10 +931,15 @@ document.getElementById("go").onclick=()=>{
       a.href=s.affi; a.target="_blank"; a.rel="noopener sponsored";
       const isTop = i===0 && !isGeneralFallback;
       a.className="site"+(isTop?" top":"");
+      // isBroadFallback時はs.rs(職種特化の紹介文)をそのまま出すと、実際の職種と
+      // 食い違ってミスマッチに見えるため、職種を主張しない汎用文言に差し替える。
+      const rsText = isBroadFallback
+        ? "まずは無料相談で、あなたに合う転職の選択肢を聞いてみませんか。"
+        : s.rs;
       a.innerHTML=`
         <div class="ord"><small>其の</small>${ORDINAL[i]||i+1}</div>
         <div class="nm">${s.name}</div>
-        <p class="rs">${s.rs}</p>
+        <p class="rs">${rsText}</p>
         <div class="site-cta">無料相談へ進む<span class="arrow" aria-hidden="true">→</span></div>
         ${isTop?'<div class="seal" aria-hidden="true">推薦</div>':''}`;
       if(motion){
