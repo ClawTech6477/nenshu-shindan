@@ -204,4 +204,10 @@
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url>
+    <loc>https://nenshu.clawtechjp.com/blog/acct-nenshu-three-types.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>
