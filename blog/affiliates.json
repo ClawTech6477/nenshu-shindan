@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-27T12:35:01",
+  "generated_at": "2026-08-28T12:35:01",
   "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
   "jobs": {
     "it": [
@@ -8,10 +8,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY",
         "desc": "ITエンジニアのハイクラス転職",
         "key": "technogo",
-        "effective_epc": 95.5,
-        "measured_imp": 129,
+        "effective_epc": 95.6,
+        "measured_imp": 134,
         "measured_click": 2,
-        "yen_per_1000imp": 1695.3,
+        "yen_per_1000imp": 1648.3,
         "dead": false
       },
       {
@@ -19,10 +19,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM",
         "desc": "20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）",
         "key": "meiko",
-        "effective_epc": 24.8,
-        "measured_imp": 123,
+        "effective_epc": 29.1,
+        "measured_imp": 128,
         "measured_click": 4,
-        "yen_per_1000imp": 760.7,
+        "yen_per_1000imp": 866.1,
         "dead": false
       }
     ],
@@ -32,10 +32,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY",
         "desc": "建設業界特化のキャリア面談",
         "key": "buildjob",
-        "effective_epc": 146.2,
-        "measured_imp": 117,
+        "effective_epc": 71.4,
+        "measured_imp": 122,
         "measured_click": 1,
-        "yen_per_1000imp": 1862.4,
+        "yen_per_1000imp": 881.5,
         "dead": false
       }
     ],
@@ -45,10 +45,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE",
         "desc": "会計士・税理士特化。経理・財務のキャリア相談も無料",
         "key": "twinpro",
-        "effective_epc": 100.3,
-        "measured_imp": 129,
+        "effective_epc": 100.4,
+        "measured_imp": 134,
         "measured_click": 2,
-        "yen_per_1000imp": 1780.5,
+        "yen_per_1000imp": 1731.0,
         "dead": false
       }
     ],
@@ -58,10 +58,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B9VHD+8GTYIA+1W34+C0B9U",
         "desc": "働きながら0円で介護資格。求人7000件以上",
         "key": "kaigobatake",
-        "effective_epc": 51.6,
-        "measured_imp": 114,
+        "effective_epc": 35.7,
+        "measured_imp": 119,
         "measured_click": 2,
-        "yen_per_1000imp": 1005.2,
+        "yen_per_1000imp": 673.6,
         "dead": false
       }
     ],
@@ -71,10 +71,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4BA7X7+8G8JOA+276A+5ZEMQ",
         "desc": "薬剤師専門。求人・派遣・転職まで",
         "key": "pharmastaff",
-        "effective_epc": 264.4,
+        "effective_epc": 261.8,
         "measured_imp": 0,
         "measured_click": 1,
-        "yen_per_1000imp": 13220.0,
+        "yen_per_1000imp": 13090.0,
         "dead": false
       }
     ]
