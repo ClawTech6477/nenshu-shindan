@@ -534,7 +534,7 @@ const LINE_URL = "#line"; // ← LINE公式アカウントの友だち追加URL�
 // nullは「悪い」ではないので罰点にせず、データのある中央値として中立に扱う。
 const EFFECTIVE_EPC = {
   buildjob: null,           // s00000024757004 A8に実績データも成果条件も無し
-  gks: null,                // s00000022176005 A8に実績データも成果条件も無し
+  gks: null,                // s00000023057002 A8に実績データも成果条件も無し
   hoikubank: null,          // s00000001248025 A8に実績データも成果条件も無し
   kaigobatake: null,        // s00000008824002 A8に実績データも成果条件も無し
   keirijobs: null,          // s00000026359002 A8に実績データも成果条件も無し
@@ -547,7 +547,7 @@ const EFFECTIVE_EPC = {
   miraiba: null,            // s00000027503001 A8に実績データも成果条件も無し
   myvision: null,           // s00000024757001 A8に実績データも成果条件も無し
   nursesenka: null,         // s00000001248024 A8に実績データも成果条件も無し
-  oshigoto: null,           // s00000027473001 A8に実績データも成果条件も無し
+  oshigoto: null,           // s00000022413001 A8に実績データも成果条件も無し
   p14765001: null,          // s00000014765001 A8に実績データも成果条件も無し
   p17718049: null,          // s00000017718049 A8に実績データも成果条件も無し
   p17718053: null,          // s00000017718053 A8に実績データも成果条件も無し
@@ -569,23 +569,23 @@ const EFFECTIVE_EPC = {
   rsg: null,                // s00000021947004 A8に実績データも成果条件も無し
   sap: null,                // s00000026342002 A8に実績データも成果条件も無し
   techadapt: null,          // s00000024196001 A8に実績データも成果条件も無し
-  techgate: null,           // s00000025047005 A8に実績データも成果条件も無し
+  techgate: null,           // s00000027288001 A8に実績データも成果条件も無し
   technogo: null,           // s00000024757003 A8に実績データも成果条件も無し
   twinpro: null,            // s00000024757002 A8に実績データも成果条件も無し
-  zeroichi: null,           // s00000023866002 A8に実績データも成果条件も無し
+  zeroichi: null,           // s00000027574001 A8に実績データも成果条件も無し
 };
 
 const AFFILIATE_URLS = {
   recruit:     "#recruit",     // s00000011454002 リクルートエージェント(新規WEBエントリー後初回受付¥2,000)
   levtech:     "#levtech",     // s00000011866029 レバテックダイレクト(新規登録¥10,000)
   technogo:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY", // s00000024757003 TechGo 提携承認済み(2026/08/01)
-  techgate:    "#techgate",    // s00000025047005 テックゲートエキスパート(新規面談完了¥54,000)
+  techgate:    "#techgate",    // s00000027288001 キャリアカンパニー(IT転職・申込2026-10-01)
   meiko:       "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM", // s00000026573001 明光キャリアパートナーズ(strategy career) 提携承認済み(2026/08/03)
   sap:         "https://px.a8.net/svt/ejp?a8mat=4BA7XD+36B9P6+5N98+BXB8X",         // s00000026342002 SAPテンショク(新規転職相談¥15,000)
   techadapt:   "#techadapt",   // s00000024196001 techadapt(新規面談¥70,000)
   myvision:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C506SY+5B0Y+5YJRM", // s00000024757001 MyVision コンサル特化 提携承認済み(2026/08/07)
-  zeroichi:    "#zeroichi",    // s00000023866002 ゼロイチ転職(新規面談¥15,000)
-  gks:         "#gks",         // s00000022176005 GKSキャリア(新規面談実施¥25,000)
+  zeroichi:    "#zeroichi",    // s00000027574001 JAIC就職カレッジ(第二新卒・申込2026-10-01)
+  gks:         "#gks",         // s00000023057002 建設JOBs(施工管理・提携申請中)
   buildjob:    "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY", // s00000024757004 ビルドジョブ 提携承認済み(2026/08/07)
   rsg:         "#rsg",         // s00000021947004 RSG不動産転職(新規カウンセリング¥3,000)
   keirijobs:   "#keirijobs",   // s00000026359002 経理Jobs(新規転職支援申込¥10,000)
@@ -603,7 +603,7 @@ const AFFILIATE_URLS = {
   kokushi:     "#kokushi",     // s00000001248026 国試黒本 治療家エージェント(初回登録¥26,000)
   lebchiryo:   "#lebchiryo",   // s00000011866037 レバウェル治療家(会員登録¥11,000)
   massagenavi: "#massagenavi", // s00000026070001 マッサージキャリアナビ(¥9,000)
-  oshigoto:    "#oshigoto",    // s00000027473001 おしごとカルテ(地域特化・会員登録¥10,000/実効EPC2,947円)   // s00000027480001 介護タウン(新規面談実施¥10,000) 申込2026/08/01
+  oshigoto:    "#oshigoto",    // s00000022413001 Strategy Consultant Bank(申込2026-10-01)
   p2006: "https://px.a8.net/svt/ejp?a8mat=3TCVV1+CIP5PU+0K+10FXXU",              // s00000000002006
   p18015: "https://px.a8.net/svt/ejp?a8mat=3TCVV1+CM9RCI+50+2I3IZ5",            // s00000000018015
   p14765001: "https://px.a8.net/svt/ejp?a8mat=4B8BWQ+A7XWMQ+35XE+5ZEMP",      // s00000014765001
@@ -668,7 +668,7 @@ const SITES = [
   // 挑戦」志向の人にとっても妥当な入口なので、業種を問わず toit の人には出す。
   {name:"TechGo", tags:{dir:["same","toit"],job:["it"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"ITエンジニアのハイクラス転職"},
   {name:"TechGo", tags:{dir:["toit"],job:["*"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.technogo, rs:"IT業界へのキャリアチェンジも相談できるハイクラス転職"},
-  {name:"テックゲートエキスパート", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:54000, affi:AFFILIATE_URLS.techgate, rs:"20代・30代のITコンサル転職"},
+  {name:"キャリアカンパニー", tags:{dir:["same","toit"],job:["it"],age:["20","30"]}, payout:10000, affi:AFFILIATE_URLS.techgate, rs:"20〜30代のIT転職。キャリア相談から内定まで一貫サポート"},
   // 遷移先の実サービス名は「strategy career」(運営=明光キャリアパートナーズ)。
   // カード名を運営会社名のままにすると着地ページと名前が合わず不信感につながるため、
   // 表示はサービス名、運営会社は説明文側に出す。20-30代エンジニア向けの訴求。
@@ -676,8 +676,8 @@ const SITES = [
   {name:"SAPテンショク", tags:{dir:["same"],job:["it"],age:["20","30","40"]}, payout:15000, affi:AFFILIATE_URLS.sap, rs:"SAPコンサル・エンジニア経験者専門"},
   {name:"techadapt", tags:{dir:["same","wlb"],job:["it"],age:["20","30","40","50"]}, payout:70000, affi:AFFILIATE_URLS.techadapt, rs:"正社員ではなくITフリーランス案件を探すなら"},
   {name:"MyVision", tags:{dir:["toit"],job:["*"],age:["20","30"]}, payout:50000, affi:AFFILIATE_URLS.myvision, rs:"コンサル業界への転身。8割超が未経験から"},
-  {name:"ゼロイチ転職", tags:{dir:["new","unsure"],job:["*"],age:["20"]}, payout:15000, affi:AFFILIATE_URLS.zeroichi, rs:"第二新卒・既卒の完全オーダーメイド就職"},
-  {name:"GKSキャリア", tags:{dir:["new"],job:["*"],age:["20","30"]}, payout:25000, affi:AFFILIATE_URLS.gks, rs:"未経験から施工管理へ。資格取得も支援"},
+  {name:"JAIC就職カレッジ", tags:{dir:["new","unsure"],job:["*"],age:["20"]}, payout:15000, affi:AFFILIATE_URLS.zeroichi, rs:"フリーター・未経験から正社員へ。就職成功率81.1%"},
+  {name:"建設JOBs", tags:{dir:["new","same"],job:["constr"],age:["20","30"]}, payout:25000, affi:AFFILIATE_URLS.gks, rs:"施工管理転職のプロ。資格取得サポートあり"},
   {name:"ビルドジョブ", tags:{dir:["same","new"],job:["constr"],age:["20","30","40"]}, payout:50000, affi:AFFILIATE_URLS.buildjob, rs:"建設業界特化のキャリア面談"},
   {name:"RSG不動産転職", tags:{dir:["same"],job:["constr"],age:["20","30","40"]}, payout:3000, affi:AFFILIATE_URLS.rsg, rs:"不動産業界専門。経験を活かして年収UP"},
   {name:"経理Jobs", tags:{dir:["same"],job:["acct"],age:["20","30","40"]}, payout:10000, affi:AFFILIATE_URLS.keirijobs, rs:"経理特化の転職エージェント"},
@@ -700,7 +700,7 @@ const SITES = [
   {name:"レバウェル治療家", tags:{dir:["same","new","wlb"],job:["therapist"],age:["20","30","40"]}, payout:11000, affi:AFFILIATE_URLS.lebchiryo, rs:"治療家の転職を専門家が無料でサポート"},
   {name:"マッサージキャリアナビ", tags:{dir:["same","wlb"],job:["therapist"],age:["20","30","40","50"]}, payout:9000, affi:AFFILIATE_URLS.massagenavi, rs:"あん摩マッサージ指圧師に特化した人材紹介"},
   // 地域密着型。業種を問わないため "*"。実効EPC2,947円と汎用枠では最上位
-  {name:"おしごとカルテ", general:true, tags:{dir:["same","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.oshigoto, rs:"住んでいる地域に詳しいアドバイザーが担当。地元で探したい人向け"},
+  {name:"Strategy Consultant Bank", general:true, tags:{dir:["same","new","wlb","unsure"],job:["*"],age:["20","30","40","50"]}, payout:10000, affi:AFFILIATE_URLS.oshigoto, rs:"コンサル・ハイクラス転職のスペシャリスト。年収アップを目指す人向け"},
   {name:"ファルマスタッフ", tags:{dir:["same","wlb","unsure"],job:["pharma"],age:["20","30","40","50"]}, payout:65000, affi:AFFILIATE_URLS.pharmastaff, rs:"薬剤師専門。求人・派遣・転職まで"},
 ];
 
