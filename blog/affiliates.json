@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T12:35:01",
+  "generated_at": "2026-10-10T12:35:01",
   "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
   "jobs": {
     "it": [
@@ -8,10 +8,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY",
         "desc": "ITエンジニアのハイクラス転職",
         "key": "technogo",
-        "effective_epc": 48.1,
-        "measured_imp": 26,
+        "effective_epc": 48.3,
+        "measured_imp": 34,
         "measured_click": 0,
-        "yen_per_1000imp": 728.8,
+        "yen_per_1000imp": 652.7,
         "dead": false
       },
       {
@@ -20,9 +20,9 @@
         "desc": "20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）",
         "key": "meiko",
         "effective_epc": 12.1,
-        "measured_imp": 26,
+        "measured_imp": 35,
         "measured_click": 0,
-        "yen_per_1000imp": 183.3,
+        "yen_per_1000imp": 161.3,
         "dead": false
       },
       {
@@ -30,10 +30,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4BA7XD+36B9P6+5N98+BXB8X",
         "desc": "SAPコンサル・エンジニア経験者専門",
         "key": "sap",
-        "effective_epc": 5.4,
+        "effective_epc": 5.3,
         "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 135.0,
+        "yen_per_1000imp": 132.5,
         "dead": false
       }
     ],
@@ -43,10 +43,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY",
         "desc": "建設業界特化のキャリア面談",
         "key": "buildjob",
-        "effective_epc": 144.7,
-        "measured_imp": 26,
+        "effective_epc": 131.2,
+        "measured_imp": 34,
         "measured_click": 0,
-        "yen_per_1000imp": 2192.4,
+        "yen_per_1000imp": 1773.0,
         "dead": false
       }
     ],
@@ -56,10 +56,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C6720I+5B0Y+BWVTE",
         "desc": "会計士・税理士特化。経理・財務のキャリア相談も無料",
         "key": "twinpro",
-        "effective_epc": 50.2,
-        "measured_imp": 26,
+        "effective_epc": 69.0,
+        "measured_imp": 34,
         "measured_click": 0,
-        "yen_per_1000imp": 760.6,
+        "yen_per_1000imp": 932.4,
         "dead": false
       }
     ],
@@ -69,10 +69,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B9VHD+8GTYIA+1W34+C0B9U",
         "desc": "働きながら0円で介護資格。求人7000件以上",
         "key": "kaigobatake",
-        "effective_epc": 46.2,
-        "measured_imp": 26,
+        "effective_epc": 47.2,
+        "measured_imp": 34,
         "measured_click": 0,
-        "yen_per_1000imp": 700.0,
+        "yen_per_1000imp": 637.8,
         "dead": false
       }
     ],
@@ -82,10 +82,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4BA7X7+8G8JOA+276A+5ZEMQ",
         "desc": "薬剤師専門。求人・派遣・転職まで",
         "key": "pharmastaff",
-        "effective_epc": 119.5,
+        "effective_epc": 127.8,
         "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 2987.5,
+        "yen_per_1000imp": 3195.0,
         "dead": false
       }
     ]
