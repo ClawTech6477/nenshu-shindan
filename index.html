@@ -622,7 +622,7 @@ const AFFILIATE_URLS = {
 };
 
 // ===== GA4計測 安全ラッパー（gtag未定義でもエラーにならない） =====
-function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, params||{}); }
+function track(ev, params){ if(typeof gtag==="function") gtag("event", ev, Object.assign({transport_type:"beacon"},params||{})); }
 
 // ===== 表示用ラベル(推薦状の「あなたの適性」表示・位番号に使用) =====
 // 職種別の解説記事(2026-08-19追加)。提携が準備中で紹介できるサービスが無いとき、
