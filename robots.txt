@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nenshu.clawtechjp.com/sitemap.xml
