@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T12:35:02",
+  "generated_at": "2026-11-04T12:35:05",
   "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
   "jobs": {
     "it": [
@@ -20,9 +20,9 @@
         "desc": "ITエンジニアのハイクラス転職",
         "key": "technogo",
         "effective_epc": 27.1,
-        "measured_imp": 4,
+        "measured_imp": 9,
         "measured_click": 0,
-        "yen_per_1000imp": 615.9,
+        "yen_per_1000imp": 553.1,
         "dead": false
       },
       {
@@ -31,9 +31,9 @@
         "desc": "20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）",
         "key": "meiko",
         "effective_epc": 4.3,
-        "measured_imp": 4,
+        "measured_imp": 9,
         "measured_click": 0,
-        "yen_per_1000imp": 97.7,
+        "yen_per_1000imp": 87.8,
         "dead": false
       }
     ],
@@ -44,9 +44,9 @@
         "desc": "建設業界特化のキャリア面談",
         "key": "buildjob",
         "effective_epc": 234.9,
-        "measured_imp": 4,
+        "measured_imp": 9,
         "measured_click": 0,
-        "yen_per_1000imp": 5338.6,
+        "yen_per_1000imp": 4793.9,
         "dead": false
       },
       {
@@ -68,9 +68,9 @@
         "desc": "会計士・税理士特化。経理・財務のキャリア相談も無料",
         "key": "twinpro",
         "effective_epc": 280.3,
-        "measured_imp": 4,
+        "measured_imp": 9,
         "measured_click": 0,
-        "yen_per_1000imp": 6370.5,
+        "yen_per_1000imp": 5720.4,
         "dead": false
       }
     ],
