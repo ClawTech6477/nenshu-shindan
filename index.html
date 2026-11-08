@@ -987,6 +987,9 @@ document.getElementById("go").onclick=()=>{
     }
 
     const motion = !NO_MOTION();
+    const AB_CTA="無料で求人を見る"; // ct-ab:nenshu_cta (勝ち案が決まると improve_loop が書き換える)
+    const abCta=window.CTAB?CTAB.html("nenshu_cta",AB_CTA):AB_CTA;
+    if(window.CTAB) CTAB.view("nenshu_cta");
     scored.forEach((s,i)=>{
       const a=document.createElement("a");
       a.href=s.affi; a.target="_blank"; a.rel="noopener sponsored";
@@ -1001,7 +1004,7 @@ document.getElementById("go").onclick=()=>{
         <div class="ord"><small>其の</small>${ORDINAL[i]||i+1}</div>
         <div class="nm">${s.name}</div>
         <p class="rs">${rsText}</p>
-        <div class="site-cta">無料で求人を見る<span class="arrow" aria-hidden="true">→</span></div>
+        <div class="site-cta">${abCta}<span class="arrow" aria-hidden="true">→</span></div>
         ${isTop?'<div class="seal" aria-hidden="true">推薦</div>':''}`;
       if(motion){
         // 推薦状を1枚ずつ置き、置き終わってから朱印を押す
@@ -1012,7 +1015,7 @@ document.getElementById("go").onclick=()=>{
           setTimeout(()=>{ seal.classList.add("press"); }, 560+520+140);
         }
       }
-      a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout, general_fallback:isGeneralFallback}); });
+      a.addEventListener("click",()=>{ track("site_click",{site_name:s.name, rank:i+1, payout:s.payout, general_fallback:isGeneralFallback}); if(window.CTAB) CTAB.click("nenshu_cta"); });
       box.appendChild(a);
     });
   }
@@ -1113,5 +1116,5 @@ if(!NO_MOTION() && "IntersectionObserver" in window){
   document.querySelectorAll(".doc-tablewrap").forEach(el=>{ el.classList.add("reveal"); io.observe(el); });
 }
 </script>
-<!-- stat-link --><nav aria-label="公的統計の年収データ" style="max-width:720px;margin:24px auto;padding:0 16px;font-size:14px;text-align:center"><a href="/nenshu/" style="color:inherit">職種別・都道府県別の平均年収一覧(令和7年賃金構造基本統計調査)</a></nav></body>
+<!-- stat-link --><nav aria-label="公的統計の年収データ" style="max-width:720px;margin:24px auto;padding:0 16px;font-size:14px;text-align:center"><a href="/nenshu/" style="color:inherit">職種別・都道府県別の平均年収一覧(令和7年賃金構造基本統計調査)</a></nav><script src="https://clawtechjp.com/ui/ct-ab.js" defer></script></body>
 </html>
