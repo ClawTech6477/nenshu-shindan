@@ -32,7 +32,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=optional" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=optional"></noscript>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZ1TP2K3N0"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -46,8 +46,8 @@
     --ink:#22252B; --ink-soft:#6A6E77; --line:#DDD6C8;
     --shu:#CE3A24; --shu-deep:#B02F1B;
     --green:#06C755; --green-deep:#05A94A;
-    --f-min:'Shippori Mincho B1',serif;
-    --f-body:'Zen Kaku Gothic New',sans-serif;
+    --f-min:'Shippori Mincho B1','Hiragino Mincho ProN','Yu Mincho',serif;
+    --f-body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',sans-serif;
     --f-dot:'DotGothic16',monospace;
     /* 紙が置かれる/印が押される動きの基準イージング(終わりを静かに止める) */
     --ease-paper:cubic-bezier(.22,.85,.28,1);
@@ -69,7 +69,7 @@
   /* 見出し→朱線の順に、書き上がるように立ち上げる */
   @keyframes riseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
   @keyframes markDraw{to{background-size:100% 100%;}}
-  .hero .eyebrow,.hero h1,.hero .lede,.hero .pills,.hero .herocta,.hero .prline{animation:riseIn .6s var(--ease-paper) both;}
+  .hero .eyebrow,.hero .pills,.hero .herocta,.hero .prline{animation:riseIn .6s var(--ease-paper) both;}
   .hero .eyebrow{animation-delay:.04s;}
   .hero h1{animation-delay:.12s;}
   .hero .lede{animation-delay:.24s;}

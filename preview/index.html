@@ -33,7 +33,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=swap" rel="stylesheet">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=optional" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DotGothic16&display=optional"></noscript>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RZ1TP2K3N0"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -54,8 +54,8 @@
     --ai:#1C4E63; --ai-deep:#143A4A;
     --shu:#B8402C; --shu-deep:#9A3423;
     --green:#06C755; --green-deep:#05A94A;
-    --f-min:'Shippori Mincho B1',serif;
-    --f-body:'Zen Kaku Gothic New',sans-serif;
+    --f-min:'Shippori Mincho B1','Hiragino Mincho ProN','Yu Mincho',serif;
+    --f-body:'Zen Kaku Gothic New','Hiragino Sans','Noto Sans JP',sans-serif;
     --f-dot:'DotGothic16',monospace;
     /* 紙が置かれる/印が押される動きの基準イージング(終わりを静かに止める) */
     --ease-paper:cubic-bezier(.22,.85,.28,1);
