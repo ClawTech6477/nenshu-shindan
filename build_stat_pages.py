@@ -7,6 +7,9 @@
   - 職種 第5表 (statInfId 000040421120) 職種(小分類)・年齢階級別
   - 都道府県別 参考表1 (statInfId 000040421202) 性・都道府県別
   - 都道府県別 第1表 (statInfId 000040421167-190) 都道府県・産業・年齢階級別
+  - 都道府県別 第3表 (statInfId 000040421195-198) 都道府県・職種(特掲)・性別 → 職種×都道府県ページ
+職種×都道府県ページは段階公開: 公開件数は ~/openclaw/data/seo/nenshu_pref_occ.json の rollout
+(scripts/seo/nenshu_pref_occ_loop.py が掲載率を見て週1で増減)。労働者数の多い組み合わせから出す。
 年収 = きまって支給する現金給与額(月額) x 12 + 年間賞与その他特別給与額。単位は千円→万円に換算。
 
 使い方:
@@ -44,6 +47,9 @@ OCC1_ID = 40421116
 OCC5_ID = 40421120
 PREF_REF1_ID = 40421202
 PREF1_IDS = list(range(40421167, 40421191))
+PREF3_IDS = [40421195, 40421196, 40421197, 40421198]  # 都道府県別 第3表 職種(特掲)×性別
+PO_CONF = Path.home() / "openclaw" / "data" / "seo" / "nenshu_pref_occ.json"
+PO_BUILT = Path.home() / "openclaw" / "data" / "seo" / "nenshu_pref_occ_built.json"
 
 # 掲載の足切り(薄いデータは出さない)
 MIN_OCC_WORKERS = 5000      # 職種: 企業規模計・男女計の推計労働者数(人)
@@ -52,6 +58,9 @@ MIN_AGE_WORKERS = 500       # 年齢階級行を出す最低人数
 MIN_SIZE_WORKERS = 1000     # 企業規模別の行を出す最低人数
 MIN_PREF_AGE_WORKERS = 2000
 MIN_PREF_IND_WORKERS = 5000
+MIN_PO_WORKERS = 1000       # 職種×都道府県ページを作る最低人数(男女計)
+MIN_PO_TABLE_WORKERS = 300  # 比較表に載せる最低人数
+MIN_PO_SEX_WORKERS = 500    # 職種×都道府県の男女別を出す最低人数
 
 PREFS = ["北海道", "青森県", "岩手県", "宮城県", "秋田県", "山形県", "福島県", "茨城県", "栃木県", "群馬県",
          "埼玉県", "千葉県", "東京都", "神奈川県", "新潟県", "富山県", "石川県", "福井県", "山梨県", "長野県",
@@ -231,6 +240,42 @@ def parse_pref_detail():
     return ages, inds
 
 
+def parse_pref_occ():
+    """都道府県別 第3表 -> out[県番号(0=全国)][職種名][男女計|男|女] = rec"""
+    out = {}
+    for sid in PREF3_IDS:
+        wb = openpyxl.load_workbook(fetch(sid), read_only=True)
+        rows = list(wb.worksheets[0].iter_rows(values_only=True))
+        cols = {}
+        for i, v in enumerate(rows[5]):
+            if v is None:
+                continue
+            lab = norm(v)
+            m = re.match(r"^(\d{2})", lab)
+            if lab == "全国":
+                cols[i] = 0
+            elif m:
+                cols[i] = int(m.group(1))
+        sex = "男女計"
+        for r in rows[9:]:
+            if len(r) < 4 or r[1] is None:
+                continue
+            parts = [norm(x) for x in str(r[1]).split("\n") if x.strip()]
+            if not parts:
+                continue
+            if len(parts) > 1 and parts[0] in ("男女計", "男", "女"):
+                sex = parts[0]
+            name = parts[-1]
+            if name in ("男女計", "男", "女"):
+                continue
+            for c, code in cols.items():
+                d = rec(r, c)
+                if d["annual"] is None or not d["wk"]:
+                    continue
+                out.setdefault(code, {}).setdefault(name, {})[sex] = d
+    return out
+
+
 # ---------------------------------------------------------------- 表示ヘルパ
 
 def man(x):
@@ -346,7 +391,7 @@ def page_shell(path, title, desc, crumbs, body_html, jobj_extra=None):
 <meta property="og:site_name" content="年収UPシミュレーター">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary">
-<script type="application/ld+json">%(ld)s</script>
+<script type="application/ld+json">%(ld)s</script>%(ld2)s
 <link rel="stylesheet" href="%(css)s">
 <style>.ct-table td.n{white-space:normal;min-width:11em}.ct-body{max-width:none}.ct-body p{max-width:46em}html,body{overflow-x:hidden}</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=%(ga)s"></script>
@@ -360,7 +405,8 @@ def page_shell(path, title, desc, crumbs, body_html, jobj_extra=None):
 </main>
 </body></html>
 """ % dict(title=esc(title), desc=esc(desc), url=url, base=BASE, css=CSS_URL, ga=GA_ID,
-           ld=json.dumps(crumb_ld, ensure_ascii=False), crumb=crumb_html, body=body_html)
+           ld=json.dumps(crumb_ld, ensure_ascii=False), crumb=crumb_html, body=body_html,
+           ld2=('\n<script type="application/ld+json">%s</script>' % json.dumps(jobj_extra, ensure_ascii=False)) if jobj_extra else "")
 
 
 def cta_diagnosis(page_id):
@@ -373,7 +419,7 @@ def cta_diagnosis(page_id):
 
 def source_note():
     return ('<p class="ct-note">%s。<a href="%s" rel="noopener" target="_blank">e-Stat 統計表ファイル</a>・'
-            '<a href="%s" rel="noopener" target="_blank">結果の概況</a>より当サイトで集計。'
+            '<a href="%s" rel="noopener" target="_blank">結果の概況</a>を当サイトで加工して作成。'
             '年収は「きまって支給する現金給与額(月額)×12+年間賞与その他特別給与額」で算出した目安で、'
             '企業規模10人以上の事業所の一般労働者(短時間労働者を除く)の平均です。'
             '推計値のため実際の年収を保証するものではありません。最終確認日: %s</p>'
@@ -403,6 +449,29 @@ def build(argv):
     keep.sort(key=lambda n: -occ[n]["男女計"]["all"]["annual"])
     rank = {n: i + 1 for i, n in enumerate(keep)}
     N = len(keep)
+
+    # --- 職種×都道府県(段階公開)
+    po = parse_pref_occ()
+    try:
+        rollout = int(json.loads(PO_CONF.read_text())["rollout"])
+    except Exception:
+        rollout = 1000
+    po_cands = [(c, n) for c in range(1, 48) for n in keep
+                if (po.get(c, {}).get(n, {}).get("男女計") or {}).get("wk", 0) >= MIN_PO_WORKERS]
+    po_cands.sort(key=lambda t: -po[t[0]][t[1]]["男女計"]["wk"])
+    po_live = set(po_cands[:rollout])
+
+    def po_path(c, n):
+        return "/nenshu/pref/%02d/%s/" % (c, slug[n])
+
+    def po_link(c, n, label):
+        return ('<a href="%s">%s</a>' % (po_path(c, n), esc(label))) if (c, n) in po_live else esc(label)
+
+    def po_rows_for(n):  # その職種の都道府県別(比較表に載せられるもの)を年収順
+        rs = [(c, po[c][n]["男女計"]) for c in range(1, 48)
+              if (po.get(c, {}).get(n, {}).get("男女計") or {}).get("wk", 0) >= MIN_PO_TABLE_WORKERS]
+        rs.sort(key=lambda t: -t[1]["annual"])
+        return rs
 
     out_dirs = [REPO / "nenshu" / "shokushu", REPO / "nenshu" / "pref"]
     for d in out_dirs:
@@ -472,6 +541,21 @@ def build(argv):
                       % (slug[x], esc(x), man(occ[x]["男女計"]["all"]["annual"])) for x in near)
 
         aff, matched = pick_affiliates(n, jobs)
+
+        def occ_pref_html(n):
+            rs = po_rows_for(n)
+            if len(rs) < 5:
+                return ""
+            hi, lo = rs[0], rs[-1]
+            lead = ('<p>都道府県別(令和7年 都道府県別第3表)では、%sが約%s万円で最も高く、%sが約%s万円で最も低くなっています'
+                    '(労働者数%s人以上の%d都道府県)。</p>'
+                    % (PREFS[hi[0] - 1], man(hi[1]["annual"]), PREFS[lo[0] - 1], man(lo[1]["annual"]),
+                       "{:,}".format(MIN_PO_TABLE_WORKERS), len(rs)))
+            t = table(["順位", "都道府県", "平均年収(万円)", "月額(万円)", "労働者数(人)"], [
+                [str(i + 1), po_link(c, n, PREFS[c - 1]), man(d["annual"]), man1(d["cash"]), "{:,}".format(int(d["wk"]))]
+                for i, (c, d) in enumerate(rs)], num_cols=(0, 2, 3, 4))
+            return '<h2 class="ct-h2">都道府県別の%sの年収</h2><div class="ct-body">%s</div>%s' % (esc(n), lead, t)
+
         body = ('<section class="ct-section" style="padding-top:var(--ct-s-4)"><p class="ct-eyebrow">令和7年 賃金構造基本統計調査</p>'
                 '<h1 class="ct-h1">%sの平均年収は約%s万円【%d年版】</h1>'
                 '<p class="ct-lead">月給約%s万円+賞与等約%s万円。男女別・年齢別・企業規模別の年収を公的統計で確認できます。</p>'
@@ -480,7 +564,6 @@ def build(argv):
                 '%s'
                 '<h2 class="ct-h2">企業規模別の年収</h2>%s'
                 '%s'
-                '<p class="ct-note">賃金構造基本統計調査の職種別データは全国集計のみで、都道府県別の職種データは公表されていません。地域差は<a href="/nenshu/pref/">都道府県別の平均年収</a>をご覧ください。</p>'
                 '%s%s'
                 '%s'
                 '<nav class="ct-related" aria-label="関連ページ"><h2 class="ct-h3">年収が近い職種</h2><ul>%s</ul>'
@@ -490,7 +573,7 @@ def build(argv):
                    "".join("<p>%s</p>" % esc(s) for s in sents),
                    esc(n), t_main,
                    ("<h2 class=\"ct-h2\">年齢階級別の年収</h2>" + t_age) if t_age else "",
-                   t_size, "", cta_diagnosis(sid), aff_html(sid, aff, matched),
+                   t_size, occ_pref_html(n), cta_diagnosis(sid), aff_html(sid, aff, matched),
                    ('<p class="ct-note" style="border:0;padding:0">本ページは転職サービスのアフィリエイト広告(PR)を含みます。</p>' if aff else ""),
                    rel, source_note()))
         title = "%sの平均年収は約%s万円｜%d年版 男女別・年齢別・企業規模別" % (n, man(ann), YEAR)
@@ -556,12 +639,21 @@ def build(argv):
         occ_rel = "".join('<li><a href="/nenshu/shokushu/%s/">%s(全国平均 約%s万円)</a></li>'
                           % (slug[x], esc(x), man(occ[x]["男女計"]["all"]["annual"])) for x in top_occ)
         aff = top_affiliates(jobs)
+        cnum = PREFS.index(pf) + 1
+        ol = [(n_, po[cnum][n_]["男女計"]) for n_ in keep
+              if (po.get(cnum, {}).get(n_, {}).get("男女計") or {}).get("wk", 0) >= MIN_PO_TABLE_WORKERS]
+        ol.sort(key=lambda t: -t[1]["annual"])
+        t_po = ('<h2 class="ct-h2" id="shokushu">%sの職種別の年収</h2>' % pf + table(
+            ["職種", "平均年収(万円)", "全国との差(万円)", "労働者数(人)"],
+            [[po_link(cnum, n_, n_), man(x["annual"]),
+              "%+d" % int(round((x["annual"] - occ[n_]["男女計"]["all"]["annual"]) / 10.0)), "{:,}".format(int(x["wk"]))]
+             for n_, x in ol], num_cols=(1, 2, 3), first_wrap=True)) if len(ol) >= 5 else ""
         body = ('<section class="ct-section" style="padding-top:var(--ct-s-4)"><p class="ct-eyebrow">令和7年 賃金構造基本統計調査</p>'
                 '<h1 class="ct-h1">%sの平均年収は約%s万円【%d年版】</h1>'
                 '<p class="ct-lead">全国%d位。男女別・年齢階級別・産業別の年収を公的統計で確認できます。</p>'
                 '<div class="ct-body">%s</div>'
                 '<h2 class="ct-h2">%sの年収データ</h2>%s'
-                '%s%s'
+                '%s%s%s'
                 '%s%s'
                 '<p class="ct-note" style="border:0;padding:0">本ページは転職サービスのアフィリエイト広告(PR)を含みます。</p>'
                 '<nav class="ct-related" aria-label="関連ページ"><h2 class="ct-h3">年収が近い都道府県</h2><ul>%s</ul>'
@@ -570,7 +662,7 @@ def build(argv):
                 '%s</section>'
                 % (pf, man(ann), YEAR, pr, "".join("<p>%s</p>" % esc(s) for s in sents), pf, t_main,
                    ("<h2 class=\"ct-h2\">年齢階級別の年収</h2>" + t_age) if t_age else "",
-                   ("<h2 class=\"ct-h2\">産業別の年収</h2>" + t_ind) if t_ind else "",
+                   ("<h2 class=\"ct-h2\">産業別の年収</h2>" + t_ind) if t_ind else "", t_po,
                    cta_diagnosis("pref" + code), aff_html("pref" + code, aff, False), rel, occ_rel, source_note()))
         title = "%sの平均年収は約%s万円｜%d年版 男女別・年齢別・産業別" % (pf, man(ann), YEAR)
         desc = ("%sの平均年収は約%s万円(全国%d位、全国平均より%s万円%s)。令和7年賃金構造基本統計調査から男女別・年齢階級別・産業別の年収を掲載。"
@@ -578,6 +670,98 @@ def build(argv):
         crumbs = [("年収UPシミュレーター", "/"), ("平均年収一覧", "/nenshu/"), (pf, path)]
         wr(REPO / "nenshu" / "pref" / code / "index.html", page_shell(path, title, desc, crumbs, body))
         urls.append((path, "0.6"))
+
+    # --- 職種×都道府県ページ(段階公開分だけ)
+    po_paths = []
+    for (c, n) in po_cands:
+        if (c, n) not in po_live:
+            continue
+        pf = PREFS[c - 1]
+        x = po[c][n]["男女計"]
+        nat_o = occ[n]["男女計"]["all"]
+        path = po_path(c, n)
+        rs = po_rows_for(n)
+        prk = next(i + 1 for i, (cc, _) in enumerate(rs) if cc == c)
+        dn = int(round((x["annual"] - nat_o["annual"]) / 10.0))
+        pref_all = pref_ref.get(short_pref(pf), {}).get("男女計")
+        sents = ["令和7年賃金構造基本統計調査(都道府県別第3表)によると、%sの%sの平均年収は約%s万円です。内訳は、毎月のきまって支給する現金給与額が約%s万円、"
+                 "年間賞与その他特別給与額が約%s万円で、年収は「月額×12+賞与」で計算しています。"
+                 % (pf, n, man(x["annual"]), man1(x["cash"]), man(x["bonus"]))]
+        if abs(dn) >= 1:
+            sents.append("全国の%s(約%s万円)と比べると%s万円%s、データのある%d都道府県のうち%d位です。"
+                         % (n, man(nat_o["annual"]), "{:,}".format(abs(dn)), "高く" if dn > 0 else "低く", len(rs), prk))
+        else:
+            sents.append("全国の%s(約%s万円)とほぼ同じ水準で、データのある%d都道府県のうち%d位です。" % (n, man(nat_o["annual"]), len(rs), prk))
+        if pref_all and pref_all["annual"]:
+            dp = int(round((x["annual"] - pref_all["annual"]) / 10.0))
+            sents.append("%sの全職種平均(約%s万円)と比べると%s。" % (
+                pf, man(pref_all["annual"]), ("約%s万円%s" % ("{:,}".format(abs(dp)), "高い水準です" if dp > 0 else "低い水準です")) if abs(dp) >= 1 else "ほぼ同じ水準です"))
+        m, f = po[c][n].get("男"), po[c][n].get("女")
+        sx_ok = m and f and (m["wk"] or 0) >= MIN_PO_SEX_WORKERS and (f["wk"] or 0) >= MIN_PO_SEX_WORKERS
+        if sx_ok:
+            sents.append("男女別では男性が約%s万円、女性が約%s万円です。" % (man(m["annual"]), man(f["annual"])))
+        sents.append("平均年齢は%s歳、平均勤続年数は%s年、月の所定内実労働時間は約%d時間・超過実労働時間は約%d時間で、推計の労働者数は約%s人です。"
+                     % (x["age"], x["ten"], x["hrs"], x["ot"], "{:,}".format(int(x["wk"]))))
+        t_main = table(["区分", "平均年収(万円)", "月額(万円)", "賞与等(万円)", "労働者数(人)"], [
+            [lab, man(d["annual"]), man1(d["cash"]), man(d["bonus"]), "{:,}".format(int(d["wk"]))]
+            for lab, d in (("男女計", x),) + ((("男性", m), ("女性", f)) if sx_ok else ())] + [
+            ["(参考)全国の%s" % esc(n), man(nat_o["annual"]), man1(nat_o["cash"]), man(nat_o["bonus"]), "{:,}".format(int(nat_o["wk"]))]],
+            num_cols=(1, 2, 3, 4))
+        near = rs[max(0, prk - 4):prk + 3]
+        t_near = table(["順位", "都道府県", "平均年収(万円)"], [
+            [str(rs.index(t) + 1), ("<b>%s</b>" % esc(pf)) if t[0] == c else po_link(t[0], n, PREFS[t[0] - 1]), man(t[1]["annual"])]
+            for t in near], num_cols=(0, 2))
+        others = sorted([n_ for n_ in keep if (c, n_) in po_live and n_ != n],
+                        key=lambda n_: abs(po[c][n_]["男女計"]["annual"] - x["annual"]))[:8]
+        o_rel = "".join('<li><a href="%s">%s(約%s万円)</a></li>' % (po_path(c, n_), esc(n_), man(po[c][n_]["男女計"]["annual"])) for n_ in others)
+        pid = "po%02d%s" % (c, slug[n])
+        aff, matched = pick_affiliates(n, jobs)
+        q1 = "%sの%sの平均年収はいくらですか?" % (pf, n)
+        a1 = "令和7年賃金構造基本統計調査では約%s万円(月給約%s万円+賞与等約%s万円)です。" % (man(x["annual"]), man1(x["cash"]), man(x["bonus"]))
+        q2 = "%sの%sの年収は全国と比べて高いですか?" % (pf, n)
+        a2 = ("全国平均(約%s万円)より約%s万円%s、%d都道府県中%d位です。" % (man(nat_o["annual"]), "{:,}".format(abs(dn)), "高く" if dn > 0 else "低く", len(rs), prk)
+              if abs(dn) >= 1 else "全国平均(約%s万円)とほぼ同じで、%d都道府県中%d位です。" % (man(nat_o["annual"]), len(rs), prk))
+        faq = {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+            {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in ((q1, a1), (q2, a2))]}
+        body = ('<section class="ct-section" style="padding-top:var(--ct-s-4)"><p class="ct-eyebrow">令和7年 賃金構造基本統計調査</p>'
+                '<h1 class="ct-h1">%sの%sの平均年収は約%s万円【%d年版】</h1>'
+                '<p class="ct-lead">全国の%sと比べて%s。%d都道府県中%d位。</p>'
+                '<div class="ct-body">%s</div>'
+                '<h2 class="ct-h2">%sの%sの年収データ</h2>%s'
+                '<h2 class="ct-h2">近い順位の都道府県(%s)</h2>%s'
+                '<p><a href="/nenshu/shokushu/%s/">%sの全国の年収(年齢別・企業規模別・47都道府県の比較)</a></p>'
+                '<h2 class="ct-h2">よくある質問</h2><div class="ct-body"><h3 class="ct-h3">%s</h3><p>%s</p><h3 class="ct-h3">%s</h3><p>%s</p></div>'
+                '%s%s%s'
+                '<nav class="ct-related" aria-label="関連ページ"><h2 class="ct-h3">%sのほかの職種</h2><ul>%s</ul>'
+                '<ul style="margin-top:var(--ct-s-3)"><li><a href="/nenshu/pref/%02d/">%sの平均年収(全職種)</a></li>'
+                '<li><a href="/nenshu/">職種別・都道府県別の平均年収一覧</a></li></ul></nav>'
+                '%s</section>'
+                % (pf, esc(n), man(x["annual"]), YEAR,
+                   esc(n), ("約%s万円%s" % ("{:,}".format(abs(dn)), "高い" if dn > 0 else "低い")) if abs(dn) >= 1 else "ほぼ同じ", len(rs), prk,
+                   "".join("<p>%s</p>" % esc(t) for t in sents), pf, esc(n), t_main, esc(n), t_near,
+                   slug[n], esc(n), esc(q1), esc(a1), esc(q2), esc(a2),
+                   cta_diagnosis(pid), aff_html(pid, aff, matched),
+                   ('<p class="ct-note" style="border:0;padding:0">本ページは転職サービスのアフィリエイト広告(PR)を含みます。</p>' if aff else ""),
+                   pf, o_rel, c, pf, source_note()))
+        title = "%sの%sの平均年収は約%s万円｜%d年版 全国比較・順位" % (pf, n, man(x["annual"]), YEAR)
+        desc = ("%sの%sの平均年収は約%s万円(月給約%s万円+賞与等約%s万円)。全国の%sより%s、%d都道府県中%d位。令和7年賃金構造基本統計調査より。"
+                % (pf, n, man(x["annual"]), man1(x["cash"]), man(x["bonus"]), n,
+                   ("%s万円%s" % ("{:,}".format(abs(dn)), "高い" if dn > 0 else "低い")) if abs(dn) >= 1 else "ほぼ同じ", len(rs), prk))
+        crumbs = [("年収UPシミュレーター", "/"), ("平均年収一覧", "/nenshu/"), (pf, "/nenshu/pref/%02d/" % c), (n, path)]
+        wr(REPO / path.strip("/") / "index.html", page_shell(path, title, desc, crumbs, body, faq))
+        urls.append((path, "0.5"))
+        po_paths.append(path)
+    # 公開から外れた組み合わせはゴミ箱へ(rollout を縮めたとき)
+    keepset = {p_.strip("/") for p_ in po_paths}
+    trash = Path.home() / ".Trash" / ("nenshu_po_" + TODAY)
+    for d in sorted((REPO / "nenshu" / "pref").glob("[0-9][0-9]/j[0-9][0-9][0-9]")):
+        rel_ = str(d.relative_to(REPO))
+        if rel_ not in keepset:
+            trash.mkdir(parents=True, exist_ok=True)
+            os.rename(d, trash / rel_.replace("/", "_"))
+    PO_BUILT.parent.mkdir(parents=True, exist_ok=True)
+    PO_BUILT.write_text(json.dumps({"built": TODAY, "rollout": rollout, "candidates": len(po_cands), "pages": len(po_paths),
+                                    "paths": po_paths}, ensure_ascii=False), encoding="utf-8")
 
     # --- 一覧ページ
     p_rows = [['<a href="/nenshu/pref/%02d/">%s</a>' % (PREFS.index(p) + 1, esc(p)), man(pref_ref[short_pref(p)]["男女計"]["annual"])]
@@ -610,7 +794,8 @@ def build(argv):
     update_sitemap(urls)
     if do_link:
         add_internal_links()
-    stats = dict(occupations_total=len(order), occupations_pages=N, pref_pages=P, index=1, total=len(urls))
+    stats = dict(occupations_total=len(order), occupations_pages=N, pref_pages=P, pref_occ_pages=len(po_paths),
+                 pref_occ_candidates=len(po_cands), index=1, total=len(urls))
     (REPO / "nenshu" / "_build_stats.json").write_text(json.dumps(stats, ensure_ascii=False), encoding="utf-8")
     print(json.dumps(stats, ensure_ascii=False))
 
