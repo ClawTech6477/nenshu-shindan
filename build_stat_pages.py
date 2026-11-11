@@ -391,7 +391,9 @@ def page_shell(path, title, desc, crumbs, body_html, jobj_extra=None):
 <meta property="og:site_name" content="年収UPシミュレーター">
 <meta property="og:locale" content="ja_JP">
 <meta name="twitter:card" content="summary">
+<link rel="icon" href="/favicon.ico">
 <script type="application/ld+json">%(ld)s</script>%(ld2)s
+<link rel="preconnect" href="https://clawtechjp.com">
 <link rel="stylesheet" href="%(css)s">
 <style>.ct-table td.n{white-space:normal;min-width:11em}.ct-body{max-width:none}.ct-body p{max-width:46em}html,body{overflow-x:hidden}</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=%(ga)s"></script>
@@ -577,6 +579,8 @@ def build(argv):
                    ('<p class="ct-note" style="border:0;padding:0">本ページは転職サービスのアフィリエイト広告(PR)を含みます。</p>' if aff else ""),
                    rel, source_note()))
         title = "%sの平均年収は約%s万円｜%d年版 男女別・年齢別・企業規模別" % (n, man(ann), YEAR)
+        if len(title) > 60:  # 2026-11-11 SEO監査29: 職種名が長い時は検索結果で切れないよう末尾を詰める
+            title = "%sの平均年収は約%s万円｜%d年版 男女別・年齢別" % (n, man(ann), YEAR)
         desc = ("%sの平均年収は約%s万円(月給約%s万円+賞与等約%s万円)。平均年齢%s歳・勤続%s年。令和7年賃金構造基本統計調査から男女別・年齢別・企業規模別の年収を掲載。"
                 % (n, man(ann), man1(cash), man(bonus), a["age"], a["ten"]))
         crumbs = [("年収UPシミュレーター", "/"), ("平均年収一覧", "/nenshu/"), (n, path)]
@@ -744,6 +748,8 @@ def build(argv):
                    ('<p class="ct-note" style="border:0;padding:0">本ページは転職サービスのアフィリエイト広告(PR)を含みます。</p>' if aff else ""),
                    pf, o_rel, c, pf, source_note()))
         title = "%sの%sの平均年収は約%s万円｜%d年版 全国比較・順位" % (pf, n, man(x["annual"]), YEAR)
+        if len(title) > 60:  # 2026-11-11 SEO監査29
+            title = "%sの%sの平均年収は約%s万円｜%d年版 全国順位" % (pf, n, man(x["annual"]), YEAR)
         desc = ("%sの%sの平均年収は約%s万円(月給約%s万円+賞与等約%s万円)。全国の%sより%s、%d都道府県中%d位。令和7年賃金構造基本統計調査より。"
                 % (pf, n, man(x["annual"]), man1(x["cash"]), man(x["bonus"]), n,
                    ("%s万円%s" % ("{:,}".format(abs(dn)), "高い" if dn > 0 else "低い")) if abs(dn) >= 1 else "ほぼ同じ", len(rs), prk))
