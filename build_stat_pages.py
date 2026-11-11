@@ -591,7 +591,7 @@ def build(argv):
             '<h1 class="ct-h1">職種別・都道府県別の平均年収一覧【%d年版】</h1>'
             '<p class="ct-lead">厚生労働省の賃金構造基本統計調査(令和7年)をもとに、%d職種と47都道府県の平均年収をまとめました。</p>'
             '<div class="ct-body"><p>%s</p></div>'
-            '<h2 class="ct-h2">都道府県別の平均年収ランキング</h2>%s'
+            '<h2 class="ct-h2" id="pref">都道府県別の平均年収ランキング</h2>%s'
             '<h2 class="ct-h2">職種別の平均年収ランキング</h2>%s'
             '%s'
             '<p class="ct-note" style="border:0;padding:0">転職サービスのリンクは、ページ内の職種別ページに掲載しています(アフィリエイト広告を含みます)。</p>'
@@ -636,22 +636,68 @@ def update_sitemap(urls):
 LINK_MARK = "<!-- stat-link -->"
 
 
+# ブログ記事のファイル名の頭 → 対応する職種ページ(SEO: 記事⇔統計ページを相互に結ぶ)
+BLOG_JOBS = [
+    (("acct-", "keiri-"), ["j056", "j033"]),
+    (("care-", "kaigo-"), ["j070", "j071", "j030"]),
+    (("constr-", "construction-", "kensetsu-"), ["j007", "j008"]),
+    (("it-engineer-", "freelance-engineer-"), ["j011", "j010"]),
+    (("hoikushi-",), ["j029"]),
+    (("youchien-",), ["j035", "j029"]),
+    (("kangoshi-", "nurse-"), ["j020", "j021"]),
+    (("pharma-", "pharmacist-", "yakuzaishi-"), ["j017"]),
+    (("rehabili-",), ["j024"]),
+]
+TOP_JOBS = ["j020", "j070", "j029", "j017", "j024", "j011", "j010", "j056", "j007", "j008", "j033", "j030"]
+A = 'style="color:inherit"'
+
+
+def _job_name(jid):
+    f = REPO / "nenshu" / "shokushu" / jid / "index.html"
+    if not f.exists():
+        return None
+    m = re.search(r"<title>(.+?)の平均年収", f.read_text(encoding="utf-8"))
+    return m.group(1) if m else None
+
+
+def _blog_title(f):
+    m = re.search(r"<title>(.+?)</title>", f.read_text(encoding="utf-8"), flags=re.S)
+    return html.unescape(m.group(1).split("｜")[0].split("|")[0].strip()) if m else f.stem
+
+
+def _strip_mark(t, closing):
+    return re.sub(r"\n?" + re.escape(LINK_MARK) + r".*?" + closing, "", t, flags=re.S)
+
+
 def add_internal_links():
-    # トップページ: フッター付近(</body>直前)に1ブロック
+    pref_links = " / ".join('<a href="/nenshu/pref/%02d/" %s>%s</a>' % (i + 1, A, esc(short_pref(n)))
+                            for i, n in enumerate(PREFS))
+    top_jobs = [(j, _job_name(j)) for j in TOP_JOBS]
+    job_links = " / ".join('<a href="/nenshu/shokushu/%s/" %s>%s</a>' % (j, A, esc(n)) for j, n in top_jobs if n)
+    # トップページ: 人気職種と47都道府県へ直接リンク(クロールの入口)
     idx = REPO / "index.html"
-    s = idx.read_text(encoding="utf-8")
-    block = (LINK_MARK + '<nav aria-label="公的統計の年収データ" style="max-width:720px;margin:24px auto;padding:0 16px;font-size:14px;text-align:center">'
-             '<a href="/nenshu/" style="color:inherit">職種別・都道府県別の平均年収一覧(令和7年賃金構造基本統計調査)</a></nav>')
-    s = re.sub(re.escape(LINK_MARK) + r".*?</nav>", "", s, flags=re.S)
+    s = _strip_mark(idx.read_text(encoding="utf-8"), "</nav>")
+    block = (LINK_MARK + '<nav aria-label="公的統計の年収データ" style="max-width:720px;margin:24px auto;padding:0 16px;font-size:14px;line-height:2">'
+             '<h2 style="font-size:16px;margin:0 0 4px">職種別・都道府県別の平均年収(令和7年賃金構造基本統計調査)</h2>'
+             '<p style="margin:0 0 8px"><b>職種別:</b> ' + job_links + ' / <a href="/nenshu/" ' + A + '>全142職種</a></p>'
+             '<p style="margin:0"><b>都道府県別:</b> ' + pref_links + '</p></nav>')
     if "</body>" in s:
-        s = s.replace("</body>", block + "</body>", 1)
-        idx.write_text(s, encoding="utf-8")
-    # ブログ記事
+        idx.write_text(s.replace("</body>", block + "</body>", 1), encoding="utf-8")
+    # ブログ記事 → 対応する職種ページ + 一覧。逆向き(職種ページ → 記事)も集める
+    job_posts = {}
     for f in sorted((REPO / "blog").glob("*.html")):
-        t = f.read_text(encoding="utf-8")
-        t = re.sub(r"\n?" + re.escape(LINK_MARK) + r".*?</p>", "", t, flags=re.S)
-        blk = (LINK_MARK + '<p class="stat-link" style="max-width:720px;margin:24px auto;padding:0 16px;font-size:14px">'
-               '<a href="/nenshu/">職種別・都道府県別の平均年収一覧(令和7年賃金構造基本統計調査)を見る</a></p>')
+        if f.name == "index.html":
+            continue
+        t = _strip_mark(f.read_text(encoding="utf-8"), "</p>")
+        jobs = next((js for pre, js in BLOG_JOBS if f.name.startswith(pre)), [])
+        links = ['<a href="/nenshu/shokushu/%s/">%sの平均年収(公的統計)</a>' % (j, esc(n)) for j in jobs for n in [_job_name(j)] if n]
+        if "todofuken" in f.name or "chiiki" in f.name:
+            links.append('<a href="/nenshu/#pref">都道府県別の平均年収ランキング</a>')
+        links.append('<a href="/nenshu/">職種別・都道府県別の平均年収一覧</a>')
+        for j in jobs:
+            job_posts.setdefault(j, []).append((f.name, _blog_title(f)))
+        blk = (LINK_MARK + '<p class="stat-link" style="max-width:720px;margin:24px auto;padding:0 16px;font-size:14px;line-height:2">'
+               '令和7年賃金構造基本統計調査のデータ: ' + " / ".join(links) + '</p>')
         if "</article>" in t:
             t = t.replace("</article>", "</article>\n" + blk, 1)
         elif "</body>" in t:
@@ -659,7 +705,17 @@ def add_internal_links():
         else:
             continue
         f.write_text(t, encoding="utf-8")
-
+    # 職種ページ → 関連するブログ記事(最大6本)
+    for d in sorted((REPO / "nenshu" / "shokushu").iterdir()):
+        f = d / "index.html"
+        if not f.exists():
+            continue
+        t = _strip_mark(f.read_text(encoding="utf-8"), "</section>")
+        posts = job_posts.get(d.name, [])[:6]
+        if posts:
+            items = "".join('<li><a href="/blog/%s">%s</a></li>' % (n, esc(ti)) for n, ti in posts)
+            t = t.replace("</main>", LINK_MARK + '<section><h2>この職種の年収・転職の解説記事</h2><ul>' + items + '</ul></section>\n</main>', 1)
+        f.write_text(t, encoding="utf-8")
 
 if __name__ == "__main__":
     build(sys.argv[1:])

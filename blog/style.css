@@ -164,3 +164,4 @@ tbody tr:last-child th,tbody tr:last-child td{border-bottom:none;}
   .hero-photo{margin:20px 0 4px;}
   .hero-photo img{border-radius:10px;}
 }
+:not(.table-scroll)>table{display:block;overflow-x:auto;min-width:0;max-width:100%;}
