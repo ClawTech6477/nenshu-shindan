@@ -1,0 +1,13 @@
+# 年収UPシミュレーター
+
+> 職種・年齢・地域から年収の目安と、転職で上がる余地を計算する無料の診断サイト。入力は端末の中で計算し、送信しない。
+
+## 主なページ
+- [年収診断(登録不要)](https://nenshu.clawtechjp.com/)
+- [職種×都道府県の年収の一覧(厚生労働省 賃金構造基本統計調査をもとに集計)](https://nenshu.clawtechjp.com/nenshu/)
+- [職種別の年収・転職の解説記事](https://nenshu.clawtechjp.com/blog/)
+
+## 出典と注意
+- 年収の数字は厚生労働省「賃金構造基本統計調査」の公表値を集計したもの。記事には広告(PR)を含む。
+- 運営: ClawTech(https://clawtechjp.com/)
+- サイトマップ: https://nenshu.clawtechjp.com/sitemap.xml
