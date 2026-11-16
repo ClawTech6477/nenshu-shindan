@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-15T12:35:02",
+  "generated_at": "2026-11-16T12:35:04",
   "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
   "jobs": {
     "it": [
@@ -8,10 +8,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C8KSFM+5P1E+5YJRM",
         "desc": "20〜30代エンジニア向け。リモート可・年収1000万以上の求人も（明光キャリアパートナーズ運営）",
         "key": "meiko",
-        "effective_epc": 40.9,
+        "effective_epc": 43.2,
         "measured_imp": 66,
         "measured_click": 0,
-        "yen_per_1000imp": 385.8,
+        "yen_per_1000imp": 407.5,
         "dead": false
       },
       {
@@ -19,10 +19,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4BA7XD+36B9P6+5N98+BXB8X",
         "desc": "SAPコンサル・エンジニア経験者専門",
         "key": "sap",
-        "effective_epc": 12.8,
+        "effective_epc": 13.1,
         "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 320.0,
+        "yen_per_1000imp": 327.5,
         "dead": false
       },
       {
@@ -30,10 +30,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+BRWNHU+5B0Y+HVFKY",
         "desc": "ITエンジニアのハイクラス転職",
         "key": "technogo",
-        "effective_epc": 21.0,
+        "effective_epc": 19.3,
         "measured_imp": 66,
         "measured_click": 0,
-        "yen_per_1000imp": 198.1,
+        "yen_per_1000imp": 182.1,
         "dead": false
       }
     ],
@@ -43,10 +43,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4B8DGQ+C5LMEQ+5B0Y+NTJWY",
         "desc": "建設業界特化のキャリア面談",
         "key": "buildjob",
-        "effective_epc": 157.2,
+        "effective_epc": 148.1,
         "measured_imp": 66,
         "measured_click": 0,
-        "yen_per_1000imp": 1483.0,
+        "yen_per_1000imp": 1397.2,
         "dead": false
       },
       {
@@ -54,10 +54,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4BE68R+383KII+4PCE+NTJWY",
         "desc": "不動産業界専門。経験を活かして年収UP",
         "key": "rsg",
-        "effective_epc": 10.7,
+        "effective_epc": 10.9,
         "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 267.5,
+        "yen_per_1000imp": 272.5,
         "dead": false
       }
     ],
@@ -93,10 +93,10 @@
         "url": "https://px.a8.net/svt/ejp?a8mat=4BA7X7+8G8JOA+276A+5ZEMQ",
         "desc": "薬剤師専門。求人・派遣・転職まで",
         "key": "pharmastaff",
-        "effective_epc": 59.3,
+        "effective_epc": 62.7,
         "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 1482.5,
+        "yen_per_1000imp": 1567.5,
         "dead": false
       }
     ]
