@@ -308,6 +308,25 @@
   .docfig img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:10px;background:var(--paper-deep);}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "年収UPシミュレーター", "url": "https://nenshu.clawtechjp.com/", "inLanguage": "ja", "publisher": {"@type": "Organization", "name": "ClawTech", "url": "https://clawtechjp.com/"}}</script>
+<script>
+/* ct-aff-loop(2026-11-17): アフィボタンごとの 表示(cta_view)・クリック(cta_click) を GA4 へ送り、
+   a8_link_sync が毎日クリック率から CTR_W(並び順の点数に掛ける倍率。データが無ければ1)を書き換える。
+   link_id は a8mat の案件部分(サイトや画像が変わっても同じ案件なら同じ) */
+var CTR_W = {
+};
+function ctaKey(url){var m=String(url||"").match(/a8mat=[0-9A-Z]+\+([0-9A-Z]+\+[0-9A-Z]+)/);return m?m[1]:null}
+function ctaW(url){var k=ctaKey(url);return (k&&CTR_W[k])||1}
+document.addEventListener("DOMContentLoaded",function(){
+  var send=function(n,p){try{window.gtag&&gtag("event",n,p)}catch(e){}};
+  var seen=new WeakSet();
+  var io=("IntersectionObserver" in window)?new IntersectionObserver(function(es){es.forEach(function(e){
+    if(e.isIntersecting){var k=ctaKey(e.target.href);if(k)send("cta_view",{link_id:k});io.unobserve(e.target)}})},{threshold:0.5}):null;
+  var scan=function(){document.querySelectorAll('a[href*="px.a8.net"]').forEach(function(a){if(!seen.has(a)){seen.add(a);io&&io.observe(a)}})};
+  document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href*="px.a8.net"]');
+    if(a){var k=ctaKey(a.href);if(k)send("cta_click",{link_id:k,transport_type:"beacon"})}},true);
+  scan();new MutationObserver(scan).observe(document.body,{childList:true,subtree:true});
+});
+</script>
 </head>
 <body>
 
@@ -861,7 +880,7 @@ document.getElementById("go").onclick=()=>{
   // sqrt(実効EPC)*6 で幅を約39に広げ、乱数10(≒26%)に収めている。
   // 乱数を残すのは、実績データの無いプログラムにも露出を与えて
   // EPCが付くまでのデータを取るため(全部を最上位1件に固定しない)。
-  const scoreOf = s=>Math.sqrt(effEpcOf(s))*6 + Math.random()*10;
+  const scoreOf = s=>Math.sqrt(effEpcOf(s)*ctaW(s.affi))*6 + Math.random()*10;   // ctaW=クリック率の倍率(ct-aff-loop)
   const scored = dedupe(eligible.map(s=>{
     let sc=0;
     if(s.tags.income && s.tags.income.includes("high") && isHigh) sc+=35;
