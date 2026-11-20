@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T12:35:04",
+  "generated_at": "2026-11-20T12:35:04",
   "note": "自動生成。編集しても a8_link_sync 翌日の再生成で上書きされます。",
   "jobs": {
     "it": [
@@ -31,9 +31,9 @@
         "desc": "ITエンジニアのハイクラス転職",
         "key": "technogo",
         "effective_epc": 15.0,
-        "measured_imp": 66,
+        "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 141.5,
+        "yen_per_1000imp": 375.0,
         "dead": false
       }
     ],
@@ -68,9 +68,9 @@
         "desc": "会計士・税理士特化。経理・財務のキャリア相談も無料",
         "key": "twinpro",
         "effective_epc": 281.2,
-        "measured_imp": 66,
+        "measured_imp": 0,
         "measured_click": 0,
-        "yen_per_1000imp": 2652.8,
+        "yen_per_1000imp": 7030.0,
         "dead": false
       }
     ],
