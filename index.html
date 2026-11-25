@@ -313,6 +313,7 @@
    a8_link_sync が毎日クリック率から CTR_W(並び順の点数に掛ける倍率。データが無ければ1)を書き換える。
    link_id は a8mat の案件部分(サイトや画像が変わっても同じ案件なら同じ) */
 var CTR_W = {
+  "8G8JOA+276A": 1.0,
 };
 function ctaKey(url){var m=String(url||"").match(/a8mat=[0-9A-Z]+\+([0-9A-Z]+\+[0-9A-Z]+)/);return m?m[1]:null}
 function ctaW(url){var k=ctaKey(url);return (k&&CTR_W[k])||1}
