@@ -460,6 +460,44 @@ document.addEventListener("DOMContentLoaded",function(){
     </p>
   </section>
 
+  <style>
+  .vs{--vs-acc:var(--shu);margin-top:46px;padding:28px 22px 0;border-top:2px solid var(--line);max-width:640px;margin-left:auto;margin-right:auto}
+  .vs .eyebrow{font-family:var(--f-dot);font-size:12px;letter-spacing:.14em;color:var(--ink-soft);margin-bottom:10px}
+  .vs h2{position:relative;font-family:var(--f-min);font-size:18px;font-weight:800;letter-spacing:.04em;padding-left:12px;margin-bottom:8px}
+  .vs h2::before{content:"";position:absolute;left:0;top:.16em;bottom:.16em;width:4px;background:var(--vs-acc)}
+  .vs__lede{font-size:14px;color:var(--ink-soft);margin-bottom:14px}
+  .vs__tbl{border:1.5px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper-2)}
+  .vs__head{display:grid;grid-template-columns:1fr 1fr}
+  .vs__head span{padding:10px 13px;font-size:12px;font-weight:800;font-family:var(--f-dot);letter-spacing:.04em}
+  .vs__u{color:var(--vs-acc)}.vs__t{color:var(--ink-soft)}
+  .vs__row{display:grid;grid-template-columns:1fr 1fr;border-top:1.5px solid var(--line)}
+  .vs__rh{grid-column:1/3;background:var(--paper-deep);padding:7px 13px;font-size:11.5px;font-weight:800;color:var(--ink-soft);font-family:var(--f-dot);letter-spacing:.03em}
+  .vs__c{padding:12px 13px;font-size:13.5px;border-top:1.5px solid var(--line)}
+  .vs__c--u{background:var(--paper-2)}.vs__c--u{background:color-mix(in srgb,var(--vs-acc) 7%,var(--paper-2))}
+  .vs__c b{font-weight:800;display:block;line-height:1.5;font-family:var(--f-min)}
+  .vs__c small{color:var(--ink-soft);font-size:11px;display:block;margin-top:3px}
+  .vs__c:not(.vs__c--u) b{color:var(--ink-soft);font-weight:700}
+  .vs__note{font-size:11px;color:var(--ink-soft);margin-top:10px}
+  </style>
+  <section class="vs" aria-label="他の年収診断との違い">
+    <p class="eyebrow">他との違い</p>
+    <h2>「よくある年収診断」との違い</h2>
+    <p class="vs__lede">同じ“無料”でも、登録の要否と最後の出口が違います。</p>
+    <div class="vs__tbl">
+      <div class="vs__head"><span class="vs__u">この診断</span><span class="vs__t">よくある年収診断</span></div>
+      <div class="vs__row"><div class="vs__rh">登録</div>
+        <div class="vs__c vs__c--u"><b>登録なしで即結果</b><small>名前・メール不要</small></div>
+        <div class="vs__c"><b>会員登録・エージェント登録が必要</b></div></div>
+      <div class="vs__row"><div class="vs__rh">出てくるもの</div>
+        <div class="vs__c vs__c--u"><b>適正年収＋上げられる金額＋合う転職サービスTOP3</b></div>
+        <div class="vs__c"><b>登録後に担当から連絡</b></div></div>
+      <div class="vs__row"><div class="vs__rh">このあと</div>
+        <div class="vs__c vs__c--u"><b>見るだけでOK。使うかは自由</b></div>
+        <div class="vs__c"><b>エージェント登録・連絡が前提</b></div></div>
+    </div>
+    <p class="vs__note">比較は一般的な無料の年収診断サービスの公開情報にもとづく一般論で、特定の社名を指すものではありません。</p>
+  </section>
+
   <!-- ===== 解説セクション(常時表示。診断の算出根拠の開示 + 検索流入の受け皿) ===== -->
   <section class="doc" aria-label="適正年収の考え方">
     <h2 class="doc-h2">適正年収とは？この診断の考え方</h2>
