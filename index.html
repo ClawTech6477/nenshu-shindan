@@ -1018,7 +1018,31 @@ document.getElementById("go").onclick=()=>{
     track("diagnosis_complete",{fit_income:fit, diff:diff, above_market:above,
       job:st.job, age:st.age, income:st.income, dir:st.dir});
   }
+  // 読み直しても結果が消えないように、答えをURLの#へ(スクロール・履歴は増やさない)
+  try{ history.replaceState(null,"",location.pathname+location.search+"#r="+encodeURIComponent(JSON.stringify(st))); }catch(e){}
 };
+
+// 戻り読み込み時、URLの#に答えがあれば同じ結果を復元する
+(function(){
+  try{
+    const h = location.hash;
+    if(!h.startsWith("#r=")) return;
+    Object.assign(st, JSON.parse(decodeURIComponent(h.slice(3))));
+    ["age","dir"].forEach(id=>{
+      if(!st[id]) return;
+      document.querySelectorAll(`#${id} button`).forEach(b=>{
+        const on = b.dataset.v === st[id];
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-pressed", on ? "true":"false");
+      });
+    });
+    if(st.income) document.getElementById("income").value = st.income;
+    if(st.job) document.getElementById("job").value = st.job;
+    sync();
+    const go = document.getElementById("go");
+    if(!go.disabled) go.click();
+  }catch(e){}
+})();
 
 // ===== LINE誘導（URL未設定の間はカードごと非表示） =====
 const lb=document.getElementById("linebtn");
